@@ -13,6 +13,17 @@
 		2804CE2A1E85CE6C000008E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2804CE291E85CE6C000008E8 /* Assets.xcassets */; };
 		2804CE2D1E85CE6C000008E8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2804CE2B1E85CE6C000008E8 /* LaunchScreen.storyboard */; };
 		2804CE381E85CE6C000008E8 /* cofriendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE371E85CE6C000008E8 /* cofriendTests.swift */; };
+		2804CE431E8AE2F7000008E8 /* ScoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE421E8AE2F7000008E8 /* ScoreViewController.swift */; };
+		2804CE451E8AE5E4000008E8 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE441E8AE5E4000008E8 /* Layout.swift */; };
+		2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE461E8AEABB000008E8 /* PlayerViewController.swift */; };
+		2804CE491E8AEC48000008E8 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE481E8AEC48000008E8 /* FriendsViewController.swift */; };
+		2804CE4B1E8AF268000008E8 /* PlayerDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE4A1E8AF268000008E8 /* PlayerDataModel.swift */; };
+		2804CE4D1E8AF277000008E8 /* FriendsDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE4C1E8AF277000008E8 /* FriendsDataModel.swift */; };
+		2804CE4F1E8AF286000008E8 /* ScoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE4E1E8AF286000008E8 /* ScoreDataModel.swift */; };
+		2804CE541E8B7EA4000008E8 /* StoryboardDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE531E8B7EA4000008E8 /* StoryboardDataModel.swift */; };
+		2804CE571E9C9DA3000008E8 /* AddScoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE561E9C9DA3000008E8 /* AddScoreViewController.swift */; };
+		2804CE591E9F40C6000008E8 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE581E9F40C5000008E8 /* Errors.swift */; };
+		2804CE601EA37153000008E8 /* StoredData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE5F1EA37153000008E8 /* StoredData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +47,17 @@
 		2804CE331E85CE6C000008E8 /* cofriendTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cofriendTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2804CE371E85CE6C000008E8 /* cofriendTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cofriendTests.swift; sourceTree = "<group>"; };
 		2804CE391E85CE6C000008E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2804CE421E8AE2F7000008E8 /* ScoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreViewController.swift; sourceTree = "<group>"; };
+		2804CE441E8AE5E4000008E8 /* Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		2804CE461E8AEABB000008E8 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		2804CE481E8AEC48000008E8 /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
+		2804CE4A1E8AF268000008E8 /* PlayerDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerDataModel.swift; sourceTree = "<group>"; };
+		2804CE4C1E8AF277000008E8 /* FriendsDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsDataModel.swift; sourceTree = "<group>"; };
+		2804CE4E1E8AF286000008E8 /* ScoreDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreDataModel.swift; sourceTree = "<group>"; };
+		2804CE531E8B7EA4000008E8 /* StoryboardDataModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardDataModel.swift; sourceTree = "<group>"; };
+		2804CE561E9C9DA3000008E8 /* AddScoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddScoreViewController.swift; sourceTree = "<group>"; };
+		2804CE581E9F40C5000008E8 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		2804CE5F1EA37153000008E8 /* StoredData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,8 +99,11 @@
 		2804CE211E85CE6C000008E8 /* cofriend */ = {
 			isa = PBXGroup;
 			children = (
-				2804CE221E85CE6C000008E8 /* AppDelegate.swift */,
-				2804CE241E85CE6C000008E8 /* ViewController.swift */,
+				2804CE551E8B7EAB000008E8 /* Buttons */,
+				2804CE501E8AF290000008E8 /* Player */,
+				2804CE511E8AF296000008E8 /* Friends */,
+				2804CE521E8AF29D000008E8 /* Score */,
+				2804CE5A1E9F40DE000008E8 /* Main */,
 				2804CE261E85CE6C000008E8 /* Main.storyboard */,
 				2804CE291E85CE6C000008E8 /* Assets.xcassets */,
 				2804CE2B1E85CE6C000008E8 /* LaunchScreen.storyboard */,
@@ -94,6 +119,54 @@
 				2804CE391E85CE6C000008E8 /* Info.plist */,
 			);
 			path = cofriendTests;
+			sourceTree = "<group>";
+		};
+		2804CE501E8AF290000008E8 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				2804CE461E8AEABB000008E8 /* PlayerViewController.swift */,
+				2804CE4A1E8AF268000008E8 /* PlayerDataModel.swift */,
+			);
+			name = Player;
+			sourceTree = "<group>";
+		};
+		2804CE511E8AF296000008E8 /* Friends */ = {
+			isa = PBXGroup;
+			children = (
+				2804CE481E8AEC48000008E8 /* FriendsViewController.swift */,
+				2804CE4C1E8AF277000008E8 /* FriendsDataModel.swift */,
+			);
+			name = Friends;
+			sourceTree = "<group>";
+		};
+		2804CE521E8AF29D000008E8 /* Score */ = {
+			isa = PBXGroup;
+			children = (
+				2804CE421E8AE2F7000008E8 /* ScoreViewController.swift */,
+				2804CE561E9C9DA3000008E8 /* AddScoreViewController.swift */,
+				2804CE4E1E8AF286000008E8 /* ScoreDataModel.swift */,
+				2804CE5F1EA37153000008E8 /* StoredData.swift */,
+			);
+			name = Score;
+			sourceTree = "<group>";
+		};
+		2804CE551E8B7EAB000008E8 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				2804CE241E85CE6C000008E8 /* ViewController.swift */,
+				2804CE531E8B7EA4000008E8 /* StoryboardDataModel.swift */,
+			);
+			name = Buttons;
+			sourceTree = "<group>";
+		};
+		2804CE5A1E9F40DE000008E8 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				2804CE221E85CE6C000008E8 /* AppDelegate.swift */,
+				2804CE441E8AE5E4000008E8 /* Layout.swift */,
+				2804CE581E9F40C5000008E8 /* Errors.swift */,
+			);
+			name = Main;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,8 +274,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2804CE431E8AE2F7000008E8 /* ScoreViewController.swift in Sources */,
+				2804CE451E8AE5E4000008E8 /* Layout.swift in Sources */,
 				2804CE251E85CE6C000008E8 /* ViewController.swift in Sources */,
+				2804CE541E8B7EA4000008E8 /* StoryboardDataModel.swift in Sources */,
+				2804CE591E9F40C6000008E8 /* Errors.swift in Sources */,
+				2804CE4B1E8AF268000008E8 /* PlayerDataModel.swift in Sources */,
+				2804CE601EA37153000008E8 /* StoredData.swift in Sources */,
 				2804CE231E85CE6C000008E8 /* AppDelegate.swift in Sources */,
+				2804CE4F1E8AF286000008E8 /* ScoreDataModel.swift in Sources */,
+				2804CE491E8AEC48000008E8 /* FriendsViewController.swift in Sources */,
+				2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */,
+				2804CE4D1E8AF277000008E8 /* FriendsDataModel.swift in Sources */,
+				2804CE571E9C9DA3000008E8 /* AddScoreViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
