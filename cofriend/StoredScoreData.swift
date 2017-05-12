@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import os.log
 
 class StoredScoreData: NSObject, NSCoding {
     
@@ -21,6 +22,7 @@ class StoredScoreData: NSObject, NSCoding {
     var yourScore: Point
     var friendScore: Point
     var date: String
+    var id: Int
     
     // MARK: Archiving Paths
     
@@ -43,12 +45,13 @@ class StoredScoreData: NSObject, NSCoding {
         static let yourNameKey = "yourName"
         static let friendNameKey = "friendName"
         static let dateKey = "date"
+        static let idKey = "id"
     }
     
     
     // MARK: Initialization
     
-    init?(scoreTitle: String, yourScore: Int, friendScore: Int, yourImage: UIImage, friendImage: UIImage, date: String, yourName: String, friendName: String) {
+    init?(scoreTitle: String, yourScore: Int, friendScore: Int, yourImage: UIImage, friendImage: UIImage, date: String, yourName: String, friendName: String, id: Int) {
         // Initialize stored properties.
         self.scoreTitle = scoreTitle
         self.yourScore = yourScore
@@ -58,6 +61,7 @@ class StoredScoreData: NSObject, NSCoding {
         self.date = date
         self.yourName = yourName
         self.friendName =  friendName
+        self.id = id
         
         //add a call to the superclass’s initializer.
         super.init()
@@ -76,7 +80,7 @@ class StoredScoreData: NSObject, NSCoding {
         aCoder.encode(date, forKey: PropertyKey.dateKey)
         aCoder.encode(friendName, forKey: PropertyKey.friendNameKey)
         aCoder.encode(yourName, forKey: PropertyKey.yourNameKey)
-
+        aCoder.encode(id, forKey: PropertyKey.idKey)
 
     }
     
@@ -85,6 +89,7 @@ class StoredScoreData: NSObject, NSCoding {
         
         let yourScore = aDecoder.decodeInteger(forKey: PropertyKey.yourScoreKey)
         let friendScore = aDecoder.decodeInteger(forKey: PropertyKey.friendScoreKey)
+        let id = aDecoder.decodeInteger(forKey: PropertyKey.idKey)
         
         let yourImage = aDecoder.decodeObject(forKey: PropertyKey.yourImageKey) as! UIImage
         let friendImage = aDecoder.decodeObject(forKey: PropertyKey.friendImageKey) as! UIImage
@@ -95,11 +100,37 @@ class StoredScoreData: NSObject, NSCoding {
         let yourName = aDecoder.decodeObject(forKey: PropertyKey.yourNameKey) as! String
         
         
+        
         // Must call designated initilizer.
-        self.init(scoreTitle: scoreTitle, yourScore: yourScore, friendScore: friendScore, yourImage: yourImage, friendImage: friendImage, date: date, yourName: yourName, friendName: friendName)
+        self.init(scoreTitle: scoreTitle, yourScore: yourScore, friendScore: friendScore, yourImage: yourImage, friendImage: friendImage, date: date, yourName: yourName, friendName: friendName, id: id)
     }
     
 }
+
+// MARK: Global
+
+// Global variables
+var addStoredData = [StoredScoreData]()
+
+// Global functions
+func loadData() -> [StoredScoreData]?  {
+    return NSKeyedUnarchiver.unarchiveObject(withFile: StoredScoreData.ArchiveURL.path) as? [StoredScoreData]
+}
+
+/*
+ You mark these constants with the static keyword, which means they belong to the class instead of an instance of the class.
+ Outside of the Meal class, you’ll access the path using the syntax Meal.ArchiveURL.path. There will only ever be one copy of these properties, no matter how many instances of the Meal class you create.
+ */
+
+func saveData() {
+    let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(addStoredData, toFile: StoredScoreData.ArchiveURL.path)
+    if isSuccessfulSave {
+        os_log("Successfully saved.", log: OSLog.default, type: .debug)
+    } else {
+        os_log("Failed to save...", log: OSLog.default, type: .error)
+    }
+}
+
 
 
 

@@ -19,11 +19,6 @@ func setDefaultButtonLayout(button: UIButton) {
     button.layer.cornerRadius = 5
 }
 
-func setRoundButtonLayout(button: UIButton) {
-    button.layer.cornerRadius = 0.5 * button.bounds.size.width
-    button.clipsToBounds = true
-}
-
 func setButtonLayout(eachButton: UIButton) {
     eachButton.setTitleColor(UIColor.orange, for: .normal)
     eachButton.backgroundColor = UIColor.darkGray
@@ -49,4 +44,11 @@ func setTextFieldButtonLayout(button: UIButton) {
     button.setBackgroundImage(#imageLiteral(resourceName: "GreenButton"), for: .normal)
     setDefaultButtonLayout(button: button)
     //setRoundButtonLayout(button: button)
+}
+
+func onboardingButtonLayout(button: UIButton) {
+    button.setTitleColor(UIColor.white, for: .normal)
+    button.layer.borderWidth = 1
+    button.layer.cornerRadius = 1.0
+    //button.layer.borderColor = UIColor.white.cgColor
 }

@@ -1,0 +1,14 @@
+Development:
+
+No rotating
+
+Instructions of App:
+
+Friends
+You can add users locally to your app but you can also get friend request and if accepted that friend will be stored locally as well.
+You can only add one user to the database that will be available for others to search for.
+There is a possability to merge a local user with a database user.
+
+elements.sort(by: {
+$0.atomicNumber < $1.atomicNumber
+})

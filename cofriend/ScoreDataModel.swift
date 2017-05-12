@@ -72,13 +72,6 @@ enum Titles: String {
     case Delete
 }
 
-enum GameTitles: String {
-    case FIFA
-    case NHL
-    case Badminton
-    case Squash
-    case Tennis
-}
 
 enum Images: String {
     case Default = "DefaultImage.jpg"
@@ -86,21 +79,9 @@ enum Images: String {
 
 
 
-// MARK: Arrays
-var scoreTitleArray = [
-    GameTitles.Badminton.rawValue,
-    GameTitles.FIFA.rawValue,
-    GameTitles.NHL.rawValue,
-    GameTitles.Squash.rawValue,
-    GameTitles.Tennis.rawValue
-]
+// MARK: Global variables
 
-var defaultPlayer = Player(userName: "Riverland", userImage: UIImage(named: Images.Default.rawValue)!)
-var defaultPlayerAgain = Player(userName: "mFlodmark", userImage: UIImage(named: Images.Default.rawValue)!)
-
-var playerArray = [defaultPlayer, defaultPlayerAgain]
-
-var addStoredData = [StoredScoreData]()
-var pagesWithStoredDataArray = [[StoredScoreData]]()
-
-var intForDateArray = Int()
+var playerArray = addUserData
+var identifiedSegue = String()
+var selectedId = Int()
+var selectedTitle = String()

@@ -17,6 +17,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        /*
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let storyboard = UIStoryboard(name: identifiersStoryboard.Main.rawValue, bundle: nil)
+        var vc: UIViewController
+        
+        if (UserDefaults.standard.value(forKey: forKey.Username.rawValue) as? String) == nil {
+            // Show onbaording screen
+            vc = storyboard.instantiateViewController(withIdentifier: identifiersVC.OnboardingVC.rawValue)
+        } else {
+            // SHow main screen
+            vc = storyboard.instantiateInitialViewController()!
+        }
+        
+        self.window?.rootViewController = vc
+        self.window?.makeKeyAndVisible()
+        */
         return true
     }
 
