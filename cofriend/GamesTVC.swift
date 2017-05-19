@@ -20,6 +20,7 @@ class GamesTVC: UITableViewController {
         
         loadAnySavedData()
         loadMyArray()
+        setUpRefreshController()
         
         myTableView.delegate = self
         myTableView.dataSource = self
@@ -30,6 +31,7 @@ class GamesTVC: UITableViewController {
         loadAnySavedData()
         loadMyArray()
         myTableView.reloadData()
+        
     }
     
     
@@ -38,9 +40,28 @@ class GamesTVC: UITableViewController {
     
     var myArray = addGameTitle
     var gameTitle = String()
-    
+    var refreshController: UIRefreshControl = UIRefreshControl()
+
     
     // MARK: Functions
+    
+    func setUpRefreshController() {
+        refreshController.tintColor = UIColor.orange
+        refreshController.backgroundColor = UIColor.darkGray
+        refreshController.attributedTitle = NSAttributedString(string: "Updating table..", attributes: [NSForegroundColorAttributeName : refreshController.tintColor])
+        refreshController.addTarget(self, action: #selector(refreshData), for: UIControlEvents.valueChanged)
+        
+        if #available(iOS 10.0, *) {
+            myTableView.refreshControl = refreshController
+        } else {
+            myTableView.addSubview(refreshController)
+        }
+    }
+    
+    func refreshData() {
+        myTableView.reloadData()
+        refreshController.endRefreshing()
+    }
     
     func loadAnySavedData() {
         // Load any saved data, otherwise load default.
@@ -59,14 +80,9 @@ class GamesTVC: UITableViewController {
             }
         }
     }
-    
-
-    
-    
+     
     
     // MARK: - Table view data source
-    
-    /*To display dynamic data, a table view needs two important helpers: a data source and a delegate. A table view data source, as implied by its name, supplies the table view with the data it needs to display. A table view delegate helps the table view manage cell selection, row heights, and other aspects related to displaying the data.*/
     
     //tells the table view how many sections to display.
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -82,22 +98,20 @@ class GamesTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Table view cells are reused and should be dequeued using a cell identifier.
-        let cellIdentifier = identifiersCell.GamesCell.rawValue
+        let cellIdentifier = identifiersCell.AddGamesCell.rawValue
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AddGameCell
         
         // Fetches the appropriate data for the data source layout.
         let game = myArray[indexPath.row]
         cell.myLabel.text = game.scoreTitle
         
-        // Cell status
-        //cell.selectionStyle = .none
-        
         return cell
     }
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let selectGame = myArray[(indexPath as NSIndexPath).row]
+        selectedGame = selectGame
     }
     
     
@@ -105,5 +119,6 @@ class GamesTVC: UITableViewController {
         
     }
     
+
     
 }

@@ -46,6 +46,9 @@
 		2867D8D71EB9154100B72CDE /* AddGameTitleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8D61EB9154100B72CDE /* AddGameTitleVC.swift */; };
 		2867D8D91EB91F8E00B72CDE /* AddNewPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8D81EB91F8E00B72CDE /* AddNewPlayerVC.swift */; };
 		2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */; };
+		2867D8DE1ECA301400B72CDE /* ScoreCollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */; };
+		2867D8E01ECD5D5E00B72CDE /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */; };
+		28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +105,9 @@
 		2867D8D61EB9154100B72CDE /* AddGameTitleVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddGameTitleVC.swift; sourceTree = "<group>"; };
 		2867D8D81EB91F8E00B72CDE /* AddNewPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewPlayerVC.swift; sourceTree = "<group>"; };
 		2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreInsideCell.swift; sourceTree = "<group>"; };
+		2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreCollCell.swift; sourceTree = "<group>"; };
+		2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
+		28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomControls.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,13 +175,14 @@
 				2804CE511E8AF296000008E8 /* Friends */,
 				2804C7651EA627BA00913ACE /* Onboarding */,
 				2867D8B31EACE3E400B72CDE /* ScoreTournament */,
-				2804CE521E8AF29D000008E8 /* ScoreHeadToHead */,
 				2804CE5A1E9F40DE000008E8 /* Main */,
 				2804C76C1EA7C0B100913ACE /* StoredData */,
 				2804CE261E85CE6C000008E8 /* Main.storyboard */,
 				2804CE291E85CE6C000008E8 /* Assets.xcassets */,
 				2804CE2B1E85CE6C000008E8 /* LaunchScreen.storyboard */,
 				2804CE2E1E85CE6C000008E8 /* Info.plist */,
+				28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */,
+				28F034211ECEAFAC000AAFCB /* CustomControls */,
 			);
 			path = cofriend;
 			sourceTree = "<group>";
@@ -300,6 +307,7 @@
 		2867D8D11EB8538C00B72CDE /* Depreceded */ = {
 			isa = PBXGroup;
 			children = (
+				2804CE521E8AF29D000008E8 /* ScoreHeadToHead */,
 				2867D8B61EACEBC100B72CDE /* DragDrop.swift */,
 				2804CE551E8B7EAB000008E8 /* Buttons */,
 			);
@@ -310,9 +318,18 @@
 			isa = PBXGroup;
 			children = (
 				2867D8BA1EACF47500B72CDE /* ScoreInsideTourVC.swift */,
+				2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */,
 				2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */,
+				2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */,
 			);
 			name = Add;
+			sourceTree = "<group>";
+		};
+		28F034211ECEAFAC000AAFCB /* CustomControls */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = CustomControls;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -438,7 +455,9 @@
 				2867D8D71EB9154100B72CDE /* AddGameTitleVC.swift in Sources */,
 				2867D8CF1EB852BA00B72CDE /* GamesTVC.swift in Sources */,
 				2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */,
+				28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */,
 				2804C7741EAB56D800913ACE /* EditVC.swift in Sources */,
+				2867D8DE1ECA301400B72CDE /* ScoreCollCell.swift in Sources */,
 				2867D8C11EAD25EC00B72CDE /* AddTourVC.swift in Sources */,
 				2804CE591E9F40C6000008E8 /* Errors.swift in Sources */,
 				2867D8B21EACDAA300B72CDE /* GradientView.swift in Sources */,
@@ -455,6 +474,7 @@
 				2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */,
 				2867D8CA1EAE75C700B72CDE /* AddTourCell.swift in Sources */,
 				2867D8D31EB9093A00B72CDE /* AddGameCell.swift in Sources */,
+				2867D8E01ECD5D5E00B72CDE /* DatePicker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

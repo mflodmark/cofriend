@@ -19,7 +19,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         stepperValues()
         //addDoneButtonToTextField(field: textField, button: doneButton)
         loadAnySavedData()
-        
+        setUpRefreshController()
     
         myTableView.delegate = self
         myTableView.dataSource = self
@@ -44,6 +44,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var draw = 0
     var lose = 0
     var playerArray = [StoredUserData]()
+    var refreshController: UIRefreshControl = UIRefreshControl()
 
 
     
@@ -78,6 +79,30 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // MARK: Functions
     
+    
+    func setUpRefreshController() {
+        refreshController.tintColor = UIColor.orange
+        refreshController.backgroundColor = UIColor.darkGray
+        refreshController.attributedTitle = NSAttributedString(string: "Updating table..", attributes: [NSForegroundColorAttributeName : refreshController.tintColor])
+        refreshController.addTarget(self, action: #selector(refreshData), for: UIControlEvents.valueChanged)
+        
+        if #available(iOS 10.0, *) {
+            myTableView.refreshControl = refreshController
+        } else {
+            myTableView.addSubview(refreshController)
+        }
+    }
+    
+    func refreshData() {
+        myTableView.reloadData()
+        refreshController.endRefreshing()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        loadAnySavedData()
+        myTableView.reloadData()
+    }
+    
     // Done button added to textfield
     let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked))
     let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -95,14 +120,14 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func loadAnySavedData() {
-        if addUserData.count == 0 {
-            // Load any saved data, otherwise load default.
-            if let savedData = loadUserData() {
-                addUserData += savedData
-            }
+        // Load any saved data
+        addUserData = []
+        if let savedData = loadUserData() {
+            addUserData += savedData
         }
-        
     }
+    
+    
 
     func stepperValues() {
         
@@ -166,7 +191,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         cell.myLabel.text = user.username
         
         // Cell status
-        //cell.selectionStyle = .none
         tableView.allowsMultipleSelection = true
         
         

@@ -26,17 +26,27 @@ class ScoreInsideCell: UITableViewCell {
     
     @IBOutlet weak var teamAButton: UIButton!
     @IBOutlet weak var label: UILabel!
-    
-
     @IBOutlet weak var teamBButton: UIButton!
+    var buttonPressed: UIButton = UIButton()
+
     
     // MARK: Actions 
     
-    
     @IBAction func teamAActionButton(_ sender: UIButton) {
+        buttonPressed = sender
+        teamAButton.backgroundColor = UIColor.orange
+        // Add to array
     }
     
     @IBAction func teamBActionButton(_ sender: UIButton) {
+        buttonPressed = sender
+        teamAButton.backgroundColor = UIColor.orange
+
+    }
+    
+    // Change to array, then let view chekc this value
+    func returnButtonPressed() -> UIButton{
+        return buttonPressed
     }
     
 }

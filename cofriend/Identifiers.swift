@@ -37,8 +37,9 @@ enum identifiersCell: String {
     case InsideTourTableViewCell
     case AddTourCell
     case TournamentCell
-    case GamesCell
+    case AddGamesCell
     case ScoreInsideCell
+    case ScoreCollCell
 }
 
 enum identifiersStoryboard: String {

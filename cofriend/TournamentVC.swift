@@ -15,23 +15,43 @@ class TournamentVC: UITableViewController {
         super.viewDidLoad()
     
         loadAnySavedData()
+        setUpRefreshController()
         
         nyTableView.delegate = self
         nyTableView.dataSource = self
-    
+            
     }
     
     override func viewDidAppear(_ animated: Bool) {
         loadAnySavedData()
-        tableView.reloadData()
+        nyTableView.reloadData()
     }
     
     // MARK: Declarations
 
     @IBOutlet var nyTableView: UITableView!
+    var refreshController: UIRefreshControl = UIRefreshControl()
     
     
     // MARK: Functions
+    
+    func setUpRefreshController() {
+        refreshController.tintColor = UIColor.orange
+        refreshController.backgroundColor = UIColor.darkGray
+        refreshController.attributedTitle = NSAttributedString(string: "Updating table..", attributes: [NSForegroundColorAttributeName : refreshController.tintColor])
+        refreshController.addTarget(self, action: #selector(refreshData), for: UIControlEvents.valueChanged)
+        
+        if #available(iOS 10.0, *) {
+            nyTableView.refreshControl = refreshController
+        } else {
+            nyTableView.addSubview(refreshController)
+        }
+    }
+    
+    func refreshData() {
+        nyTableView.reloadData()
+        refreshController.endRefreshing()
+    }
     
     func loadAnySavedData() {
         // Load any saved data, otherwise load default.
@@ -43,8 +63,6 @@ class TournamentVC: UITableViewController {
     }
     
     // MARK: - Table view data source
-    
-    /*To display dynamic data, a table view needs two important helpers: a data source and a delegate. A table view data source, as implied by its name, supplies the table view with the data it needs to display. A table view delegate helps the table view manage cell selection, row heights, and other aspects related to displaying the data.*/
     
     //tells the table view how many sections to display.
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -67,9 +85,6 @@ class TournamentVC: UITableViewController {
         let tour = addTourData[indexPath.row]
         cell.name.text = tour.tournamentTitle
         cell.countingPlayer.text = String(tour.players.count)
-        
-        // Cell status
-        //cell.selectionStyle = .none
         
         return cell
     }

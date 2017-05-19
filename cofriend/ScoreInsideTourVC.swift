@@ -9,13 +9,26 @@
 import Foundation
 import UIKit
 
-class ScoreInsideTourVC: UIViewController {
+class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        addTodaysDate()
         
+        //collectionArray[0] = "Markus"
         
+        myTableView.delegate = self
+        myTableView.dataSource = self
+        
+        myCollactionView.delegate = self
+        myCollactionView.dataSource = self
+    
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let text = datePickerClass.returnDate()
+        dateButton.setTitle(text, for: .normal)
     }
     
     // MARK: Declarations
@@ -29,9 +42,21 @@ class ScoreInsideTourVC: UIViewController {
     @IBOutlet weak var pointsA: UILabel!
     @IBOutlet weak var pointsB: UILabel!
     @IBOutlet weak var addPointsButton: UIButton!
-    @IBOutlet weak var scoreLabel: UILabel!
-    @IBOutlet weak var teamA: UILabel!
-    @IBOutlet weak var teamB: UILabel!
+    @IBOutlet weak var stepperA: UIStepper!
+    @IBOutlet weak var stepperB: UIStepper!
+    @IBOutlet weak var myTableView: UITableView!
+    @IBOutlet weak var myCollactionView: UICollectionView!
+
+    var teamOneArray = [StoredUserData]()
+    var teamTwoArray = [StoredUserData]()
+    var pointA = Int()
+    var pointB = Int()
+    var myArray = selectedTour?.players
+    var collectionArray = [String]()
+    var buttonPressed: UIButton = UIButton()
+    let datePickerClass = DatePickerClass()
+    let scoreInsideCell = ScoreInsideCell()
+    
     
     // MARK: Actions
     
@@ -46,18 +71,45 @@ class ScoreInsideTourVC: UIViewController {
     }
     
     @IBAction func dateActionButton(_ sender: UIButton) {
+
+
     }
     
     @IBAction func addPointsActionButton(_ sender: UIButton) {
+        
+    }
+    
+    @IBAction func stepperValueChanged(_ sender: UIStepper) {
+        if sender == stepperA {
+            pointA = Int(sender.value)
+            pointsA.text = "\(pointA)"
+        } else if sender == stepperB {
+            pointB = Int(sender.value)
+            pointsB.text = "\(pointB)"
+        }
+    }
+    
+    @IBAction func teamAActionButton(_ sender: UIButton) {
+        buttonPressed = sender
     }
     
     
+    @IBAction func teamBActionButton(_ sender: UIButton) {
+        buttonPressed = sender
+
+    }
+    
     
     // MARK: Functions
-    // cast pointA & B
+
+    
+    func addTodaysDate() {
+        // Add todays date to dateButton
+    }
+    
     func prepareSavingData() {
-        if let tournament = selectedTour?.tournamentTitle, let game = selectedGame?.scoreTitle, let date = dateButton.title(for: .normal) {
-            let game = StoredTournamentData(tournamentTitle: tournament, gameTitle: game, teamOnePlayers: <#T##[StoredUserData]#>, teamTwoPlayers: <#T##[StoredUserData]#>, teamOneScore: pointsA, teamTwoScore: pointsB, image: nil, date: date, id: idForTournamentData)
+        if let tournament = selectedTour?.tournamentTitle, let game = selectedGame?.scoreTitle, let date = dateButton.title(for: .normal), let pointsACast = Int(pointsA.text!), let pointsBCast = Int(pointsB.text!) {
+            let game = StoredTournamentData(tournamentTitle: tournament, gameTitle: game, teamOnePlayers: teamOneArray, teamTwoPlayers: teamTwoArray, teamOneScore: pointsACast, teamTwoScore: pointsBCast, image: #imageLiteral(resourceName: "DefaultImage"), date: date, id: idForTournamentData)
             addTournamentData.append(game!)
             
             idForTournamentData += 1
@@ -66,8 +118,64 @@ class ScoreInsideTourVC: UIViewController {
         }
     }
     
+    // MARK: - Table view data source
+        
+    //tells the table view how many sections to display.
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    //Each meal should have its own row in that section
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (myArray?.count)!
+    }
+    
+    //only ask for the cells for rows that are being displayed
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        // Table view cells are reused and should be dequeued using a cell identifier.
+        let cellIdentifier = identifiersCell.ScoreInsideCell.rawValue
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ScoreInsideCell
+        
+        // Fetches the appropriate data for the data source layout.
+        let score = myArray?[indexPath.row].username
+        cell.label.text = score
+        
+        // Cell status
+        tableView.allowsMultipleSelection = true
+        
+        return cell
+    }
     
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selection = myArray?[(indexPath as NSIndexPath).row]
+
+    }
     
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        
+    }
+    
+    // MARK: Collection view
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return collectionArray.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        // Cells are reused and should be dequeued using a cell identifier.
+        let cellIdentifier = identifiersCell.ScoreCollCell.rawValue
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ScoreCollCell
+        
+        // Fetches the appropriate data for the data source layout.
+        let scoreLabel = collectionArray
+        cell.myLabel.text = scoreLabel[indexPath.row]
+        
+        
+        return cell
+    }
     
 }

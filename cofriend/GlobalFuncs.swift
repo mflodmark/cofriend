@@ -74,6 +74,30 @@ func checkSelectedIdPositionInUserData(id: Int) -> Int? {
     return checked
 }
 
+/*
+// MARK: Refresh 
+
+func setUpRefreshController(refreshController: UIRefreshControl, myTableView: UITableView, myView: UIView) {
+    
+    // Styling
+    refreshController.tintColor = UIColor.orange
+    refreshController.backgroundColor = UIColor.darkGray
+    refreshController.attributedTitle = NSAttributedString(string: "Updating table..", attributes: [NSForegroundColorAttributeName : refreshController.tintColor])
+    
+    // Add target
+    refreshController.addTarget(myView, action: #selector(refreshData(refreshController: refreshController, myTableView: myTableView)), for: UIControlEvents.valueChanged)
+    
+    if #available(iOS 10.0, *) {
+        myTableView.refreshControl = refreshController
+    } else {
+        myTableView.addSubview(refreshController)
+    }
+}
+
+func refreshData(refreshController: UIRefreshControl, myTableView: UITableView) {
+    myTableView.reloadData()
+    refreshController.endRefreshing()
+}*/
 
 
 

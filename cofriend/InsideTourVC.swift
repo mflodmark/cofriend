@@ -16,6 +16,7 @@ class InsideTourVC: UITableViewController {
         
         loadAnySavedData()
         loadMyArray()
+        setUpRefreshController()
         
         myTableView.delegate = self
         myTableView.dataSource = self
@@ -24,6 +25,7 @@ class InsideTourVC: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         loadAnySavedData()
+        loadMyArray()
         myTableView.reloadData()
     }
     
@@ -32,9 +34,27 @@ class InsideTourVC: UITableViewController {
     @IBOutlet var myTableView: UITableView!
 
     var myArray = addTournamentData
-
+    var refreshController: UIRefreshControl = UIRefreshControl()
     
     // MARK: Functions
+    
+    func setUpRefreshController() {
+        refreshController.tintColor = UIColor.orange
+        refreshController.backgroundColor = UIColor.darkGray
+        refreshController.attributedTitle = NSAttributedString(string: "Updating table..", attributes: [NSForegroundColorAttributeName : refreshController.tintColor])
+        refreshController.addTarget(self, action: #selector(refreshData), for: UIControlEvents.valueChanged)
+        
+        if #available(iOS 10.0, *) {
+            myTableView.refreshControl = refreshController
+        } else {
+            myTableView.addSubview(refreshController)
+        }
+    }
+    
+    func refreshData() {
+        myTableView.reloadData()
+        refreshController.endRefreshing()
+    }
     
     func loadAnySavedData() {
         addTournamentData = []
@@ -73,9 +93,7 @@ class InsideTourVC: UITableViewController {
     
     
     // MARK: - Table view data source
-    
-    /*To display dynamic data, a table view needs two important helpers: a data source and a delegate. A table view data source, as implied by its name, supplies the table view with the data it needs to display. A table view delegate helps the table view manage cell selection, row heights, and other aspects related to displaying the data.*/
-    
+        
     //tells the table view how many sections to display.
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -108,6 +126,7 @@ class InsideTourVC: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            
             // Delete the row from the data source
             addTournamentData.remove(at: (indexPath as NSIndexPath).row)
             
@@ -115,6 +134,7 @@ class InsideTourVC: UITableViewController {
             saveTournamentData()
             
             tableView.deleteRows(at: [indexPath], with: .fade)
+            
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
