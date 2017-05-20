@@ -25,4 +25,6 @@ class AddGameCell: UITableViewCell {
     
     @IBOutlet weak var myLabel: UILabel!
     
+    @IBOutlet weak var secondLabel: UILabel!
+    
 }

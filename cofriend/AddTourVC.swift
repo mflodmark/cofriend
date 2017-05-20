@@ -18,11 +18,22 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         getIdForSavedData()
         stepperValues()
         //addDoneButtonToTextField(field: textField, button: doneButton)
-        loadAnySavedData()
+        //loadAnySavedData()
         setUpRefreshController()
-    
+        //animateConstraints()
+        setViewLayout(view: self.view)
+        
         myTableView.delegate = self
         myTableView.dataSource = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        //animateView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        animateTable(tableView: myTableView)
     }
 
     // MARK: Declaration
@@ -73,11 +84,73 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     
     @IBAction func newPlayerAction(_ sender: UIButton) {
-        
+        bounceButton(theButton: sender)
     }
     
     
     // MARK: Functions
+    
+    /*
+    func animateConstraints() {
+        button1Constraint.constant -= view.bounds.width
+        button2Constraint.constant -= view.bounds.width
+    }
+    
+    var animationPerformedOnce = false
+    
+    func animateView() {
+        
+        while animationPerformedOnce == false {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+                self.button1Constraint.constant += self.view.bounds.width
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+            
+            UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseOut, animations: {
+                self.button2Constraint.constant += self.view.bounds.width
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+            
+            animationPerformedOnce = true
+        }
+    }*/
+    
+    func bounceButton(theButton: UIButton) {
+        let bounds = theButton.bounds
+        
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
+            theButton.bounds = CGRect(x: bounds.origin.x - 20, y: bounds.origin.y, width: bounds.size.width + 60, height: bounds.size.height)
+        }) { (success:Bool) in
+            if success {
+                
+                UIView.animate(withDuration: 0.5, animations: {
+                    theButton.bounds = bounds
+                })
+                
+            }
+        }
+    }
+    
+    func animateTable(tableView: UITableView) {
+        loadAnySavedData()
+        
+        tableView.reloadData()
+        let cells = tableView.visibleCells
+        
+        let tableViewHeight = tableView.bounds.size.height
+        
+        for cell in cells {
+            cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeight)
+        }
+        
+        var delayCounter = 0
+        for cell in cells {
+            UIView.animate(withDuration: 1.75, delay: Double(delayCounter) * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                cell.transform = CGAffineTransform.identity
+            }, completion: nil)
+            delayCounter += 1
+        }
+    }
     
     
     func setUpRefreshController() {
@@ -97,11 +170,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         myTableView.reloadData()
         refreshController.endRefreshing()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        loadAnySavedData()
-        myTableView.reloadData()
-    }
+
     
     // Done button added to textfield
     let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked))

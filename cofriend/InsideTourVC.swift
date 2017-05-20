@@ -14,9 +14,10 @@ class InsideTourVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadAnySavedData()
-        loadMyArray()
+        //loadAnySavedData()
+        //loadMyArray()
         setUpRefreshController()
+        setViewLayout(view: self.view)
         
         myTableView.delegate = self
         myTableView.dataSource = self
@@ -24,9 +25,14 @@ class InsideTourVC: UITableViewController {
     
     
     override func viewDidAppear(_ animated: Bool) {
-        loadAnySavedData()
-        loadMyArray()
-        myTableView.reloadData()
+        //loadAnySavedData()
+        //loadMyArray()
+        //myTableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        animateTable(tableView: myTableView)
     }
     
     // MARK: Declarations
@@ -37,6 +43,28 @@ class InsideTourVC: UITableViewController {
     var refreshController: UIRefreshControl = UIRefreshControl()
     
     // MARK: Functions
+    
+    func animateTable(tableView: UITableView) {
+        loadAnySavedData()
+        loadMyArray()
+        
+        tableView.reloadData()
+        let cells = tableView.visibleCells
+        
+        let tableViewHeight = tableView.bounds.size.height
+        
+        for cell in cells {
+            cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeight)
+        }
+        
+        var delayCounter = 0
+        for cell in cells {
+            UIView.animate(withDuration: 1.75, delay: Double(delayCounter) * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                cell.transform = CGAffineTransform.identity
+            }, completion: nil)
+            delayCounter += 1
+        }
+    }
     
     func setUpRefreshController() {
         refreshController.tintColor = UIColor.orange

@@ -15,6 +15,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         super.viewDidLoad()
         
         addTodaysDate()
+        setViewLayout(view: self.view)
         
         //collectionArray[0] = "Markus"
         
@@ -53,7 +54,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     var pointB = Int()
     var myArray = selectedTour?.players
     var collectionArray = [String]()
-    var buttonPressed: UIButton = UIButton()
+    //var buttonPressed: UIButton = UIButton()
     let datePickerClass = DatePickerClass()
     let scoreInsideCell = ScoreInsideCell()
     
@@ -89,15 +90,6 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         }
     }
     
-    @IBAction func teamAActionButton(_ sender: UIButton) {
-        buttonPressed = sender
-    }
-    
-    
-    @IBAction func teamBActionButton(_ sender: UIButton) {
-        buttonPressed = sender
-
-    }
     
     
     // MARK: Functions
@@ -138,8 +130,8 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ScoreInsideCell
         
         // Fetches the appropriate data for the data source layout.
-        let score = myArray?[indexPath.row].username
-        cell.label.text = score
+        let score = myArray?[indexPath.row]
+        cell.label.text = score?.username
         
         // Cell status
         tableView.allowsMultipleSelection = true

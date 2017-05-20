@@ -15,6 +15,7 @@ class AddNewPlayerVC: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         addButtonsToTextField(field: myTextField)
+        setViewLayout(view: self.view)
         
         popUpView.layer.cornerRadius = 10
         popUpView.layer.masksToBounds = true

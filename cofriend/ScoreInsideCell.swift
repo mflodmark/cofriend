@@ -11,6 +11,8 @@ import UIKit
 
 class ScoreInsideCell: UITableViewCell {
     
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         //Initalixation code
@@ -28,21 +30,31 @@ class ScoreInsideCell: UITableViewCell {
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var teamBButton: UIButton!
     var buttonPressed: UIButton = UIButton()
+    var teamAArray: [StoredUserData] = [StoredUserData]()
+    var teamBArray: [StoredUserData] = [StoredUserData]()
+
 
     
     // MARK: Actions 
     
-    @IBAction func teamAActionButton(_ sender: UIButton) {
-        buttonPressed = sender
-        teamAButton.backgroundColor = UIColor.orange
+    @IBAction func teamActionButton(_ sender: UIButton) {
+        
+        // Change background color
+        if sender.backgroundColor == UIColor.orange {
+            sender.backgroundColor = UIColor.white
+        } else {
+            sender.backgroundColor = UIColor.orange
+        }
+        
         // Add to array
+        if sender == teamAButton {
+            
+        } else if sender == teamBButton {
+            
+        }
     }
     
-    @IBAction func teamBActionButton(_ sender: UIButton) {
-        buttonPressed = sender
-        teamAButton.backgroundColor = UIColor.orange
 
-    }
     
     // Change to array, then let view chekc this value
     func returnButtonPressed() -> UIButton{

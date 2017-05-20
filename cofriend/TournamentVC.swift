@@ -11,11 +11,14 @@ import UIKit
 
 class TournamentVC: UITableViewController {
     
+    // MARK: Views
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        loadAnySavedData()
+        //loadAnySavedData()
         setUpRefreshController()
+        setViewLayout(view: self.view)
         
         nyTableView.delegate = self
         nyTableView.dataSource = self
@@ -23,8 +26,13 @@ class TournamentVC: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        loadAnySavedData()
-        nyTableView.reloadData()
+        //loadAnySavedData()
+        //nyTableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        animateTable(tableView: nyTableView)
     }
     
     // MARK: Declarations
@@ -61,6 +69,29 @@ class TournamentVC: UITableViewController {
         }
         
     }
+    
+    func animateTable(tableView: UITableView) {
+        loadAnySavedData()
+
+        tableView.reloadData()
+        let cells = tableView.visibleCells
+        
+        let tableViewHeight = tableView.bounds.size.height
+        
+        for cell in cells {
+            cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeight)
+        }
+        
+        var delayCounter = 0
+        for cell in cells {
+            UIView.animate(withDuration: 1.75, delay: Double(delayCounter) * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                cell.transform = CGAffineTransform.identity
+            }, completion: nil)
+            delayCounter += 1
+        }
+    }
+
+
     
     // MARK: - Table view data source
     
