@@ -19,6 +19,8 @@ class AddGameTitleVC: UIViewController {
         popUpView.layer.cornerRadius = 10
         popUpView.layer.masksToBounds = true
         
+        
+        
     }
 
     
@@ -26,6 +28,7 @@ class AddGameTitleVC: UIViewController {
     @IBOutlet weak var popUpView: UIView!
     var keyBoardIsActive: Bool = false
     @IBOutlet weak var topConstraintOfTextFIeld: NSLayoutConstraint!
+    //let gamesTVC: GamesTVC = GamesTVC()
     
     override func viewWillAppear(_ animated: Bool) {
         myTextField.addTarget(self, action: #selector(myTargetFunction), for: UIControlEvents.touchDown)
@@ -52,6 +55,7 @@ class AddGameTitleVC: UIViewController {
             dismiss(animated: true, completion: nil)
         } else {
             myTextField.resignFirstResponder()
+            keyBoardIsActive = false
             topConstraintOfTextFIeld.constant = -300
         }
     }
@@ -78,7 +82,9 @@ class AddGameTitleVC: UIViewController {
     }
     
     func prepareSavingData() {
-        if let text = myTextField.text, let tournament = selectedTour?.tournamentTitle {
+        if myTextField.text == "" || myTextField.text == " " {
+            showAlert(title: "Missing Title", message: "Plese Try Again", dismissButton: "Cancel", okButton: "Ok")
+        } else if let text = myTextField.text, let tournament = selectedTour?.tournamentTitle {
             let game = StoredGameTitleData(tournamentTitle: tournament, scoreTitle: text, id: idForGameTitle)
             
             addGameTitle.append(game!)
@@ -87,16 +93,18 @@ class AddGameTitleVC: UIViewController {
             saveGameTitleData()
             print("Saving game title!")
             
-            // Dismiss view
-            dismiss(animated: true, completion: nil)
-
             idForGameTitle += 1
             
             // Save id
             UserDefaults.standard.set(String(idForGameTitle), forKey: forKey.GameTitleId.rawValue)
-        } else if myTextField.text == "" || myTextField.text == " " {
-            showAlert(title: "Missing Title", message: "Plese Try Again", dismissButton: "Cancel", okButton: "Ok")
+            
+            // Dismiss view
+            dismiss(animated: true, completion: nil)
         }
+    
+
+            
+ 
     }
     
     // MARK: Alert

@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+// Global declarations
+var teamOneArray = [StoredUserData]()
+var teamTwoArray = [StoredUserData]()
+var dateString: String? = "No date available"
+
 class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
     
     override func viewDidLoad() {
@@ -16,20 +21,29 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         
         addTodaysDate()
         setViewLayout(view: self.view)
+        setRoundButtons()
         
-        //collectionArray[0] = "Markus"
+        collectionArray.append("Markus")
+        
         
         myTableView.delegate = self
         myTableView.dataSource = self
         
-        myCollactionView.delegate = self
-        myCollactionView.dataSource = self
+        // Clear array before adding new users to score
+        teamOneArray.removeAll()
+        teamTwoArray.removeAll()
     
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let text = datePickerClass.returnDate()
-        dateButton.setTitle(text, for: .normal)
+        print("Viewwillappear --- \(String(describing: dateString))")
+        if dateString == "No date available" {
+            addTodaysDate()
+        } else {
+            if let text = dateString {
+                dateButton.setTitle(text, for: .normal)
+            }
+        }
     }
     
     // MARK: Declarations
@@ -46,17 +60,18 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     @IBOutlet weak var stepperA: UIStepper!
     @IBOutlet weak var stepperB: UIStepper!
     @IBOutlet weak var myTableView: UITableView!
-    @IBOutlet weak var myCollactionView: UICollectionView!
-
-    var teamOneArray = [StoredUserData]()
-    var teamTwoArray = [StoredUserData]()
+    @IBOutlet weak var navBar: UINavigationItem!
+    @IBOutlet weak var collTableView: UITableView!
+    
     var pointA = Int()
     var pointB = Int()
     var myArray = selectedTour?.players
     var collectionArray = [String]()
     //var buttonPressed: UIButton = UIButton()
-    let datePickerClass = DatePickerClass()
-    let scoreInsideCell = ScoreInsideCell()
+    //let datePickerClass = DatePickerClass()
+    //let scoreInsideCell = ScoreInsideCell()
+    var image: UIImage = UIImage()
+    
     
     
     // MARK: Actions
@@ -73,35 +88,86 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     
     @IBAction func dateActionButton(_ sender: UIButton) {
 
-
     }
     
     @IBAction func addPointsActionButton(_ sender: UIButton) {
-        
+
     }
     
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
         if sender == stepperA {
-            pointA = Int(sender.value)
-            pointsA.text = "\(pointA)"
+            bounceLabelStepper(label: pointsA, sender: sender)
         } else if sender == stepperB {
-            pointB = Int(sender.value)
-            pointsB.text = "\(pointB)"
+            bounceLabelStepper(label: pointsB, sender: sender)
         }
     }
     
     
     
     // MARK: Functions
+    
+    
+    func setRoundButtons() {
+        setRound(button: dateButton)
+        setRound(button: addPointsButton)
+    }
+    
+    func bounceLabelStepper(label: UILabel, sender: UIStepper) {
+        // Make the label bounce
+        label.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 6, options: .allowUserInteraction, animations: {
+            
+            label.transform = CGAffineTransform.identity
+            
+        }, completion: nil)
+        
+        label.text = "\(Int(sender.value))"
+
+    }
+    
+    func bounceButton(theButton: UIButton) {
+        let bounds = theButton.bounds
+        
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
+            theButton.bounds = CGRect(x: bounds.origin.x - 20, y: bounds.origin.y, width: bounds.size.width + 60, height: bounds.size.height)
+        }) { (success:Bool) in
+            if success {
+                
+                UIView.animate(withDuration: 0.5, animations: {
+                    theButton.bounds = bounds
+                })
+                
+            }
+        }
+    }
 
     
     func addTodaysDate() {
         // Add todays date to dateButton
+        let date = Date()
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        let result = formatter.string(from: date)
+        
+        dateButton.setTitle(result, for: .normal)
+    }
+    
+    func getDateFromDatePicker() {
+        dateButton.setTitle(dateString, for: .normal)
     }
     
     func prepareSavingData() {
+        
+        print("teamOneArray count     \(teamOneArray.count)")
+        print("teamTwoArray count     \(teamTwoArray.count)")
+    
         if let tournament = selectedTour?.tournamentTitle, let game = selectedGame?.scoreTitle, let date = dateButton.title(for: .normal), let pointsACast = Int(pointsA.text!), let pointsBCast = Int(pointsB.text!) {
+            
             let game = StoredTournamentData(tournamentTitle: tournament, gameTitle: game, teamOnePlayers: teamOneArray, teamTwoPlayers: teamTwoArray, teamOneScore: pointsACast, teamTwoScore: pointsBCast, image: #imageLiteral(resourceName: "DefaultImage"), date: date, id: idForTournamentData)
+            
             addTournamentData.append(game!)
             
             idForTournamentData += 1
@@ -119,35 +185,69 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     
     //Each meal should have its own row in that section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (myArray?.count)!
+        var integer = 0
+        
+        if tableView == myTableView {
+            integer = (myArray?.count)!
+        } else if tableView == collTableView {
+            integer = 1
+        }
+        
+        return integer
     }
     
     //only ask for the cells for rows that are being displayed
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        // Table view cells are reused and should be dequeued using a cell identifier.
-        let cellIdentifier = identifiersCell.ScoreInsideCell.rawValue
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ScoreInsideCell
+        var viewCell = UITableViewCell()
         
-        // Fetches the appropriate data for the data source layout.
-        let score = myArray?[indexPath.row]
-        cell.label.text = score?.username
-        
-        // Cell status
-        tableView.allowsMultipleSelection = true
-        
-        return cell
-    }
-    
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selection = myArray?[(indexPath as NSIndexPath).row]
+        if tableView == myTableView {
+            // Table view cells are reused and should be dequeued using a cell identifier.
+            let cellIdentifier = identifiersCell.ScoreInsideCell.rawValue
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ScoreInsideCell
+            
+            // Fetches the appropriate data for the data source layout.
+            if let score = myArray?[indexPath.row] {
+                cell.label.text = score.username
+                cell.user = score
+            }
+            
+            
+            // Cell status
+            tableView.allowsSelection = false
+            
+            viewCell = cell
+            
+        } else if tableView == collTableView {
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifiersCell.TableCollCell.rawValue, for: indexPath) as! TableViewCollCell
+            
+            
+            viewCell = cell
+        }
 
+        return viewCell
     }
     
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
+        if tableView == collTableView {
+            guard let tableViewCell = cell as? TableViewCollCell else { return }
+            
+            tableViewCell.setCollectionViewDataSourceDelegate(self, forRow: indexPath.row)
+            tableViewCell.collectionViewOffset = storedOffsets[indexPath.row] ?? 0
+        }
+    }
+    
+    var storedOffsets = [Int: CGFloat]()
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if tableView == collTableView {
+            guard let tableViewCell = cell as? TableViewCollCell else { return }
+        
+            storedOffsets[indexPath.row] = tableViewCell.collectionViewOffset
+        }
     }
     
     // MARK: Collection view
@@ -165,9 +265,16 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         // Fetches the appropriate data for the data source layout.
         let scoreLabel = collectionArray
         cell.myLabel.text = scoreLabel[indexPath.row]
-        
+        cell.setLabel.text = "Set: \(indexPath.row)"
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Collection view at row \(collectionView.tag) selected index path \(indexPath)")
+    }
+
+    
+
     
 }

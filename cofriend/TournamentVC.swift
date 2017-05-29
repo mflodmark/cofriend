@@ -15,14 +15,23 @@ class TournamentVC: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
+        // Get Id so that new saved data get the correct id
+        getIdForSavedData()
+        
         //loadAnySavedData()
         setUpRefreshController()
         setViewLayout(view: self.view)
-        
+                
         nyTableView.delegate = self
         nyTableView.dataSource = self
-            
+        
+        //self.navigationItem.titleView = UIImageView(image: UIImage(named: "Logo"))
+        // Change navigation back button
+        //self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+        
+        self.navigationController?.hidesBarsOnSwipe = true
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -33,6 +42,8 @@ class TournamentVC: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animateTable(tableView: nyTableView)
+        
+
     }
     
     // MARK: Declarations
@@ -128,14 +139,30 @@ class TournamentVC: UITableViewController {
             print(selectedTournament.tournamentTitle)
             
     }
+    
 
-    
-    
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 
     }
     
-
+    // Override to support editing the table view.
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            print("Deleting..")
+            
+            // Delete the row from the data source
+            if let id = checkSelectedIdPositionInTournamentData(id: addTourData[indexPath.row].id) {
+                addTourData.remove(at: id)
+            } else {
+                print("Failing to delete..")
+            }
+            
+            // This code saves the array whenever an item is deleted.
+            saveTourData()
+            loadAnySavedData()
+            nyTableView.reloadData()
+        }
+    }
     
     
 }

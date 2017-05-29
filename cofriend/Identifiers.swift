@@ -40,10 +40,15 @@ enum identifiersCell: String {
     case AddGamesCell
     case ScoreInsideCell
     case ScoreCollCell
+    case PlayerCell
+    case TableCollCell
 }
 
 enum identifiersStoryboard: String {
     case Main
+    case Data
+    case Score
+    case DatePicker
 }
 
 enum identifiersArchiveUrl: String {

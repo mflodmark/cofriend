@@ -14,8 +14,6 @@ class InsideTourVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //loadAnySavedData()
-        //loadMyArray()
         setUpRefreshController()
         setViewLayout(view: self.view)
         
@@ -24,15 +22,15 @@ class InsideTourVC: UITableViewController {
     }
     
     
-    override func viewDidAppear(_ animated: Bool) {
-        //loadAnySavedData()
-        //loadMyArray()
-        //myTableView.reloadData()
-    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animateTable(tableView: myTableView)
+        
+        // Check id
+        for each in myArray {
+            print("Id counter:   \(each.id)")
+        }
     }
     
     // MARK: Declarations
@@ -49,6 +47,7 @@ class InsideTourVC: UITableViewController {
         loadMyArray()
         
         tableView.reloadData()
+        
         let cells = tableView.visibleCells
         
         let tableViewHeight = tableView.bounds.size.height
@@ -80,6 +79,8 @@ class InsideTourVC: UITableViewController {
     }
     
     func refreshData() {
+        loadAnySavedData()
+        loadMyArray()
         myTableView.reloadData()
         refreshController.endRefreshing()
     }
@@ -103,6 +104,8 @@ class InsideTourVC: UITableViewController {
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
+    /*
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == identifiersSegue.CellToAddTournamentScore.rawValue {
@@ -117,7 +120,7 @@ class InsideTourVC: UITableViewController {
         } else if segue.identifier == identifiersSegue.AddToAddTournamentScore.rawValue {
             print("Adding new ")
         }
-    }
+    }*/
     
     
     // MARK: - Table view data source
@@ -129,7 +132,7 @@ class InsideTourVC: UITableViewController {
     
     //Each meal should have its own row in that section
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return addTournamentData.count
+        return myArray.count
     }
     
     //only ask for the cells for rows that are being displayed
@@ -140,13 +143,27 @@ class InsideTourVC: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! InsideTourTableViewCell
         
         // Fetches the appropriate data for the data source layout.
-        let tour = addTournamentData[(indexPath as NSIndexPath).row]
+        let tour = myArray[indexPath.row]
         
         cell.date.text = tour.date
         cell.playerScore.text = String(tour.teamOneScore)
         cell.friendScore.text = String(tour.teamTwoScore)
-        cell.playerOne.text = tour.teamOnePlayers[0].username
-        cell.friendOne.text = tour.teamTwoPlayers[0].username
+        
+        if tour.teamOnePlayers.count == 1 {
+            cell.playerOne.text = tour.teamOnePlayers[0].username
+            cell.playerTwo.isHidden = true
+        } else if tour.teamOnePlayers.count == 2 {
+            cell.playerOne.text = tour.teamOnePlayers[0].username
+            cell.playerTwo.text = tour.teamOnePlayers[1].username
+        }
+        
+        if tour.teamTwoPlayers.count == 1 {
+            cell.friendOne.text = tour.teamTwoPlayers[0].username
+            cell.friendTwo.isHidden = true
+        } else if tour.teamTwoPlayers.count == 2 {
+            cell.friendOne.text = tour.teamTwoPlayers[0].username
+            cell.friendTwo.text = tour.teamTwoPlayers[1].username
+        }
         
         return cell
     }
@@ -154,17 +171,20 @@ class InsideTourVC: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            print("Deleting..")
             
             // Delete the row from the data source
-            addTournamentData.remove(at: (indexPath as NSIndexPath).row)
+            if let id = checkSelectedIdPositionInScoreData(id: myArray[indexPath.row].id) {
+                addTournamentData.remove(at: id)
+            } else {
+                print("Failing to delete..")
+            }
             
-            // This code saves the meals array whenever a meal is deleted.
+            // This code saves the array whenever an item is deleted.
             saveTournamentData()
-            
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+            loadAnySavedData()
+            loadMyArray()
+            myTableView.reloadData()
         }
     }
     
@@ -174,29 +194,6 @@ class InsideTourVC: UITableViewController {
         return true
     }
     
-    
-    @IBAction func unwindToMealList(_ sender: UIStoryboardSegue) {
-        
-        /*Optional type cast operator (as?), downcast the source view controller of the segue to type MealViewController. You need to downcast because sender.sourceViewController is of type UIViewController, but you need to work with MealViewController.
-         The operator returns an optional value, which will be nil if the downcast wasn’t possible. If the downcast succeeds, the code assigns that view controller to the local constant sourceViewController, and checks to see if the meal property on sourceViewController is nil. If the meal property is non-nil, the code assigns the value of that property to the local constant meal and executes the if statement.
-         If either the downcast fails or the meal property on sourceViewController is nil, the condition evaluates to false and the if statement doesn’t get executed.*/
-        
-        if let sourceViewController = sender.source as? ScoreInsideTourVC, let tour = sourceViewController.tournament {
-            if let selectedIndexPath = tableView.indexPathForSelectedRow {
-                // Update an existing meal.
-                addTournamentData[(selectedIndexPath as NSIndexPath).row] = tour
-                tableView.reloadRows(at: [selectedIndexPath], with: .none)
-            }
-            else{
-                // Add a new meal.
-                let newIndexPath = IndexPath(row: addTournamentData.count, section: 0)
-                addTournamentData.append(tour)
-                tableView.insertRows(at: [newIndexPath], with: .bottom)
-            }
-            // Save the meals.
-            saveTournamentData()
-        }
-    }
     
     
 }

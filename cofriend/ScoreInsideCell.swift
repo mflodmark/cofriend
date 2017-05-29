@@ -29,37 +29,58 @@ class ScoreInsideCell: UITableViewCell {
     @IBOutlet weak var teamAButton: UIButton!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var teamBButton: UIButton!
-    var buttonPressed: UIButton = UIButton()
-    var teamAArray: [StoredUserData] = [StoredUserData]()
-    var teamBArray: [StoredUserData] = [StoredUserData]()
-
+    var user: StoredUserData = StoredUserData(username: "", image: #imageLiteral(resourceName: "Default"), id: 0)!
 
     
     // MARK: Actions 
     
     @IBAction func teamActionButton(_ sender: UIButton) {
         
-        // Change background color
-        if sender.backgroundColor == UIColor.orange {
-            sender.backgroundColor = UIColor.white
-        } else {
-            sender.backgroundColor = UIColor.orange
-        }
         
-        // Add to array
-        if sender == teamAButton {
+        // Change background color
+        if teamAButton.alpha == 0.5 && teamBButton.alpha == 0.5 {
             
-        } else if sender == teamBButton {
+            // Add to array
+            if sender == teamAButton && teamOneArray.count < 2 {
+                teamOneArray.append(user)
+                sender.alpha = 1.0
+                print("Added user -------> " + user.username)
+            } else if sender == teamBButton && teamTwoArray.count < 2 {
+                teamTwoArray.append(user)
+                sender.alpha = 1.0
+            }
             
+        } else if sender.alpha == 1.0 {
+            sender.alpha = 0.5
+            
+            // Remove from array
+            if sender == teamAButton {
+                // Check position
+                if let position = checkPositionInArray(id: user.id, array: teamOneArray) {                                    teamOneArray.remove(at: position)
+                }
+            } else if sender == teamBButton {
+                // Check position
+                if let position = checkPositionInArray(id: user.id, array: teamTwoArray) {
+                    teamTwoArray.remove(at: position)
+
+                }
+            }
         }
     }
     
-
-    
-    // Change to array, then let view chekc this value
-    func returnButtonPressed() -> UIButton{
-        return buttonPressed
+    func checkPositionInArray(id: Int, array: [StoredUserData]) -> Int? {
+        // starter value
+        var checked = Int()
+        var counter: Int = 0
+        for user in array {
+            print("UserId -----> \(user.id) ")
+            if id == user.id {
+                // Selected user
+                checked = counter
+            }
+            counter += 1
+        }
+        return checked
     }
-    
 }
 

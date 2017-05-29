@@ -15,7 +15,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         super.viewDidLoad()
     
         createTitles()
-        getIdForSavedData()
         stepperValues()
         //addDoneButtonToTextField(field: textField, button: doneButton)
         //loadAnySavedData()
@@ -25,6 +24,8 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         myTableView.delegate = self
         myTableView.dataSource = self
+        
+        setRound(button: newPlayer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -60,6 +61,10 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     
     // MARK: Actions
+    
+    @IBAction func resignButton(_ sender: Any) {
+        textField.resignFirstResponder()
+    }
     
     @IBAction func cancelAction(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
@@ -132,6 +137,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func animateTable(tableView: UITableView) {
+
         loadAnySavedData()
         
         tableView.reloadData()
@@ -236,8 +242,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - Table view data source
     
-    /*To display dynamic data, a table view needs two important helpers: a data source and a delegate. A table view data source, as implied by its name, supplies the table view with the data it needs to display. A table view delegate helps the table view manage cell selection, row heights, and other aspects related to displaying the data.*/
-    
     //tells the table view how many sections to display.
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -281,7 +285,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let user = addUserData[indexPath.row]
-        if let check = checkSelectedIdPositionInArray(id: user.id) {
+        if let check = checkSelectedIdPositionInUserData(id: user.id) {
             playerArray.remove(at: check)
             createTitles()
         }

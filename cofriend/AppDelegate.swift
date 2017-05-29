@@ -17,6 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        // Change color og navigation bar
+        //UINavigationBar.appearance().backgroundColor = UIColor.darkGray
+        UINavigationBar.appearance().tintColor = UIColor.darkGray
+        
+        // Change text size and style of navigation bar
+        let navigationFont = UIFont(name: "AvenirNextCondensed-DemiBold", size: 18)!
+        let navigationFontAttributes = [NSFontAttributeName : navigationFont]
+        
+        UINavigationBar.appearance().titleTextAttributes = navigationFontAttributes
+        UIBarButtonItem.appearance().setTitleTextAttributes(navigationFontAttributes, for: .normal)
+        
         /*
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let storyboard = UIStoryboard(name: identifiersStoryboard.Main.rawValue, bundle: nil)

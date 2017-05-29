@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-class AddNewPlayerVC: UIViewController {
+class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +23,12 @@ class AddNewPlayerVC: UIViewController {
     }
     
     @IBOutlet weak var popUpView: UIView!
-    @IBOutlet weak var myImage: UIImageView!
+    @IBOutlet weak var addPhoto: UIButton!
     @IBOutlet weak var myTextField: UITextField!
     var keyBoardIsActive: Bool = false
     
     override func viewWillAppear(_ animated: Bool) {
+        // Activate keyboard
         myTextField.addTarget(self, action: #selector(myTargetFunction), for: UIControlEvents.touchDown)
     }
 
@@ -50,6 +51,7 @@ class AddNewPlayerVC: UIViewController {
             dismiss(animated: true, completion: nil)
         } else {
             myTextField.resignFirstResponder()
+            keyBoardIsActive = false
         }
     }
     
@@ -90,18 +92,21 @@ class AddNewPlayerVC: UIViewController {
         } else if myTextField.text == "" {
             showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
         } else {
-            if let user = StoredUserData(username: text, image: #imageLiteral(resourceName: "DefaultImage"), id: idForUserData) {
-                
-                addUserData.append(user)
-                saveUserData()
-                idForUserData += 1
-                
-                // Save id
-                UserDefaults.standard.set(String(idForUserData), forKey: forKey.UsernameDataId.rawValue)
-                
-                // Dismiss view
-                dismiss(animated: true, completion: nil)
+            if let image = addPhoto.image(for: .normal) {
+                if let user = StoredUserData(username: text, image: image, id: idForUserData) {
+                    
+                    addUserData.append(user)
+                    saveUserData()
+                    idForUserData += 1
+                    
+                    // Save id
+                    UserDefaults.standard.set(String(idForUserData), forKey: forKey.UsernameDataId.rawValue)
+                    
+                    // Dismiss view
+                    dismiss(animated: true, completion: nil)
+                }
             }
+
         }
     }
 
@@ -146,5 +151,50 @@ class AddNewPlayerVC: UIViewController {
         
         present(alertController, animated: true, completion: nil)
         
+    }
+    
+    // MARK: Image Picker
+    
+    @IBAction func chooseImage(_ sender: Any) {
+        
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        
+        let actionSheet = UIAlertController(title: "Photo Source", message: "Choose a source", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (action:UIAlertAction) in
+            
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePickerController.sourceType = .camera
+                self.present(imagePickerController, animated: true, completion: nil)
+            }else{
+                print("Camera not available")
+            }
+            
+            
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (action:UIAlertAction) in
+            imagePickerController.sourceType = .photoLibrary
+            self.present(imagePickerController, animated: true, completion: nil)
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(actionSheet, animated: true, completion: nil)
+        
+        
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        
+        addPhoto.setImage(image, for: .normal)
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }

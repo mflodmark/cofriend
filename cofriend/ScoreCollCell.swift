@@ -13,5 +13,6 @@ class ScoreCollCell: UICollectionViewCell {
     
     
     @IBOutlet weak var myLabel: UILabel!
+    @IBOutlet weak var setLabel: UILabel!
     
 }

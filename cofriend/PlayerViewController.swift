@@ -9,14 +9,13 @@
 import Foundation
 import UIKit
 
-class PlayerViewController: UIViewController {
+class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         getPlayer()
-        getScoreData()
         addPointsToLabels()
         addPercentToLabels()
         
@@ -30,7 +29,7 @@ class PlayerViewController: UIViewController {
     // MARK: Declarations
     
     @IBOutlet weak var playerName: UILabel!
-    @IBOutlet weak var playerImage: UIImageView!
+    @IBOutlet weak var playerImage: UIButton!
     @IBOutlet weak var winLabel: UILabel!
     @IBOutlet weak var winScoreLabel: UILabel!
     @IBOutlet weak var winPercentLabel: UILabel!
@@ -66,36 +65,11 @@ class PlayerViewController: UIViewController {
             playerName.text = name
             
             let image = addUserData[0].image
-            playerImage.image = image
+            playerImage.setImage(image, for: .normal)
         }
         
     }
     
-    func getScoreData() {
-        for each in addStoredData {
-            // check if userName has any stored data
-            if each.yourName == user {
-                if each.yourScore > each.friendScore {
-                    pointsWin += 1
-                } else if each.yourScore == each.friendScore {
-                    pointsDraw += 1
-                } else if each.yourScore < each.friendScore {
-                    pointsLose += 1
-                }
-            }
-            
-            if each.friendName == user {
-                if each.friendScore > each.yourScore {
-                    pointsWin += 1
-                } else if each.friendScore == each.yourScore {
-                    pointsDraw += 1
-                } else if each.friendScore < each.yourScore {
-                    pointsLose += 1
-                }
-            }
-        }
-
-    }
     
     func addPointsToLabels() {
         winScoreLabel.text = String(pointsWin)
@@ -126,7 +100,50 @@ class PlayerViewController: UIViewController {
         losePercentLabel.text = String(percentLose) + " %"
     }
     
+    // MARK: Image Picker
     
+    @IBAction func chooseImage(_ sender: Any) {
+        
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        
+        let actionSheet = UIAlertController(title: "Photo Source", message: "Choose a source", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (action:UIAlertAction) in
+            
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePickerController.sourceType = .camera
+                self.present(imagePickerController, animated: true, completion: nil)
+            }else{
+                print("Camera not available")
+            }
+            
+            
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (action:UIAlertAction) in
+            imagePickerController.sourceType = .photoLibrary
+            self.present(imagePickerController, animated: true, completion: nil)
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(actionSheet, animated: true, completion: nil)
+        
+        
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        
+        playerImage.setImage(image, for: .normal)
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
     
     
 }

@@ -18,26 +18,26 @@ class GamesTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //loadAnySavedData()
-        //loadMyArray()
         setUpRefreshController()
         setViewLayout(view: self.view)
         
         myTableView.delegate = self
         myTableView.dataSource = self
         
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        //loadAnySavedData()
-        //loadMyArray()
-        //myTableView.reloadData()
+        print("viewdidload --- \(String(describing: selectedTour?.tournamentTitle))")
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animateTable(tableView: myTableView)
+        
+        // Check id
+        for each in myArray {
+            print("Id counter:   \(each.id)")
+        }
+        print("viewillappear --- \(String(describing: selectedTour?.tournamentTitle))")
+
     }
     
     @IBOutlet var myTableView: UITableView!
@@ -63,8 +63,12 @@ class GamesTVC: UITableViewController {
     }
     
     func refreshData() {
+        loadAnySavedData()
+        loadMyArray()
         myTableView.reloadData()
         refreshController.endRefreshing()
+        print("Refreshing --- \(String(describing: selectedTour?.tournamentTitle))")
+
     }
     
     func animateTable(tableView: UITableView) {
@@ -139,11 +143,33 @@ class GamesTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectGame = myArray[(indexPath as NSIndexPath).row]
         selectedGame = selectGame
+        print(selectGame.scoreTitle)
+
     }
     
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         
+    }
+    
+    // Override to support editing the table view.
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            print("Deleting..")
+            
+            // Delete the row from the data source
+            if let id = checkSelectedIdPositionInGameData(id: addGameTitle[indexPath.row].id) {
+                addGameTitle.remove(at: id)
+            } else {
+                print("Failing to delete..")
+            }
+            
+            // This code saves the array whenever an item is deleted.
+            saveGameTitleData()
+            loadAnySavedData()
+            loadMyArray()
+            myTableView.reloadData()
+        }
     }
     
 

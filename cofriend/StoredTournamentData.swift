@@ -18,8 +18,8 @@ class StoredTournamentData: NSObject, NSCoding {
     var gameTitle: String
     var teamOnePlayers: [StoredUserData]
     var teamTwoPlayers: [StoredUserData]
-    var teamOneScore: Point
-    var teamTwoScore: Point
+    var teamOneScore: Int
+    var teamTwoScore: Int
     var image: UIImage
     var date: String
     var id: Int

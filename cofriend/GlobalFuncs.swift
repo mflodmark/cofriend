@@ -36,30 +36,12 @@ func showField(picker: UIPickerView) {
 }
 
 
-// Check position of id
-func checkSelectedIdPositionInArray(id: Int) -> Int? {
-    // starter value
-    print("StoredData:")
-    var checked = Int()
-    var counter: Int = 0
-    for user in addStoredData {
-        print("UserId -----> \(user.id) ")
-        if id == user.id {
-            // Selected user
-            checked = counter
-            
-        }
-        counter += 1
-    }
-    
-    return checked
-}
 
 // Check position of user id in
 func checkSelectedIdPositionInUserData(id: Int) -> Int? {
     // starter value
     print("UserData")
-    var checked = Int()
+    var checked: Int = 0
     var counter: Int = 0
     for user in addUserData {
         print("UserId -----> \(user.id) ")
@@ -73,6 +55,74 @@ func checkSelectedIdPositionInUserData(id: Int) -> Int? {
     
     return checked
 }
+
+// Check position of tournament id in
+func checkSelectedIdPositionInTournamentData(id: Int) -> Int? {
+    // starter value
+    print("Tournamentdata: ")
+    var checked: Int = 0
+    var counter: Int = 0
+    for user in addTourData {
+        print("UserId -----> \(user.id) ")
+        if id == user.id {
+            // Selected user
+            checked = counter
+            
+        }
+        counter += 1
+    }
+    
+    return checked
+}
+
+// Check position of score id in
+func checkSelectedIdPositionInScoreData(id: Int) -> Int? {
+    // starter value
+    print("Tournamentdata: ")
+    var checked: Int = 0
+    var counter: Int = 0
+    for user in addTournamentData {
+        print("UserId -----> \(user.id) ")
+        if id == user.id {
+            // Selected user
+            checked = counter
+            
+        }
+        counter += 1
+    }
+    
+    return checked
+}
+
+// Rounded button
+func setRound(button: UIButton) {
+    button.layer.cornerRadius = 10
+}
+
+// Check position of score id in
+func checkSelectedIdPositionInGameData(id: Int) -> Int? {
+    // starter value
+    print("id: \(id)")
+    print("GameData: ")
+    var checked: Int = 0
+    var counter: Int = 0
+    for user in addGameTitle {
+        print("UserId -----> \(user.id) ")
+        if id == user.id {
+            // Selected user
+            checked = counter
+            
+        }
+        counter += 1
+    }
+    
+    return checked
+}
+
+
+
+
+
 
 /*
 // MARK: Refresh 

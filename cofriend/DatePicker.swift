@@ -20,8 +20,9 @@ class DatePickerClass: UIViewController {
     
 
     @IBOutlet weak var popUpView: UIView!
-    
     @IBOutlet weak var datePicker: UIDatePicker!
+    
+    //let scoreInsideTourVC = ScoreInsideTourVC()
     
     @IBAction func dismissView(_ sender: UIButton) {
         // Keep the last used date
@@ -35,7 +36,24 @@ class DatePickerClass: UIViewController {
     
     @IBAction func doneActionButton(_ sender: UIButton) {
         // Save data
-        dismiss(animated: true, completion: nil)
+        if let date = self.stringFromDatePicker {
+            dateString = date
+            //self.scoreInsideTourVC.addTodaysDate()
+        }
+        
+        dismiss(animated: true, completion: {
+            
+
+            
+            /*
+            let sb = UIStoryboard(name: identifiersStoryboard.DatePicker.rawValue, bundle: nil)
+            
+            if let scoreInside = sb.instantiateViewController(withIdentifier: identifiersStoryboard.Score.rawValue) as? ScoreInsideTourVC {
+                
+                scoreInside.dateButton.setTitle("Hello", for: .normal)
+            }*/
+            
+        })
     }
     
     // Create datePicker
@@ -63,6 +81,8 @@ class DatePickerClass: UIViewController {
         
     }
     
+
+    
     func returnDate() -> String {
         if let text = stringFromDatePicker {
             return text
@@ -71,7 +91,6 @@ class DatePickerClass: UIViewController {
         }
     }
     
-    
-    
+
     
 }
