@@ -8,24 +8,34 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseDatabase
 
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        let cellId = "cellId"
         
         setViewLayout(view: self.view)
         
-        myTableView.delegate = self
-        myTableView.dataSource = self
-        
         self.navigationController?.hidesBarsOnSwipe = true
+
+        myTableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        animateTable(tableView: myTableView)
+        
+        myTableView.delegate = self
+        myTableView.dataSource = self
+        
+        // Reset array
+        users = []
+        fetchUser()
+        
     }
     
 
@@ -38,17 +48,36 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: Functions
     
-    func loadAnySavedData() {
-        // Load any saved data
-        addUserData = []
-        if let savedData = loadUserData() {
-            addUserData += savedData
-        }
+
+    func fetchUser() {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        databaseRef.child("Users").queryOrderedByKey().observe(.childAdded, with: {
+        
+            (snapshot) in
+            
+            // Fetch user
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let user = UserClass(dictionary: dictionary)
+                print(user)
+                user.id = snapshot.key
+                users.append(user)
+                
+                //this will crash because of background thread, so lets use dispatch_async to fix
+                DispatchQueue.main.async(execute: {
+                    self.animateTable(tableView: self.myTableView)
+                })
+                
+            }
+            
+        }, withCancel: nil)
     }
     
+    
     func animateTable(tableView: UITableView) {
-        loadAnySavedData()
-        
+
+        // load data
         tableView.reloadData()
         let cells = tableView.visibleCells
         
@@ -81,7 +110,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //Each meal should have its own row in that section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return addUserData.count
+        //return addUserData.count
+        return users.count
     }
     
     //only ask for the cells for rows that are being displayed
@@ -89,11 +119,18 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         // Table view cells are reused and should be dequeued using a cell identifier.
         let cellIdentifier = identifiersCell.PlayerCell.rawValue
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! PlayerCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! UserCell
         
         // Fetches the appropriate data for the data source layout.
-        let user = addUserData[indexPath.row]
-        cell.myLabel.text = user.username
+        //let user = addUserData[indexPath.row]
+        let user = users[indexPath.row]
+
+        cell.myLabel.text = user.name
+        
+        if let profileImageUrl = user.profileImageUrl {
+            cell.myImage.loadImageUsingCacheWithUrlString(profileImageUrl)
+        }
+        
         
         // Cell status
         tableView.allowsMultipleSelection = true

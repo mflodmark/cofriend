@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 // Global declarations
-var teamOneArray = [StoredUserData]()
-var teamTwoArray = [StoredUserData]()
+var teamOneArray = [UserClass]()
+var teamTwoArray = [UserClass]()
 var dateString: String? = "No date available"
 
 class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
@@ -65,7 +65,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     
     var pointA = Int()
     var pointB = Int()
-    var myArray = selectedTour?.players
+    var myArray = selectedPlayer.players
     var collectionArray = [String]()
     //var buttonPressed: UIButton = UIButton()
     //let datePickerClass = DatePickerClass()
@@ -164,11 +164,11 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         print("teamOneArray count     \(teamOneArray.count)")
         print("teamTwoArray count     \(teamTwoArray.count)")
     
-        if let tournament = selectedTour?.tournamentTitle, let game = selectedGame?.scoreTitle, let date = dateButton.title(for: .normal), let pointsACast = Int(pointsA.text!), let pointsBCast = Int(pointsB.text!) {
+        if let tournament = selectedTour.name, let game = selectedGame.name, let date = dateButton.title(for: .normal), let pointsACast = Int(pointsA.text!), let pointsBCast = Int(pointsB.text!) {
             
-            let game = StoredTournamentData(tournamentTitle: tournament, gameTitle: game, teamOnePlayers: teamOneArray, teamTwoPlayers: teamTwoArray, teamOneScore: pointsACast, teamTwoScore: pointsBCast, image: #imageLiteral(resourceName: "DefaultImage"), date: date, id: idForTournamentData)
+            //let game = StoredTournamentData(tournamentTitle: tournament, gameTitle: game, teamOnePlayers: teamOneArray, teamTwoPlayers: teamTwoArray, teamOneScore: pointsACast, teamTwoScore: pointsBCast, image: #imageLiteral(resourceName: "DefaultImage"), date: date, id: idForTournamentData)
             
-            addTournamentData.append(game!)
+            //addTournamentData.append(game!)
             
             idForTournamentData += 1
             // Save id
@@ -208,7 +208,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
             
             // Fetches the appropriate data for the data source layout.
             if let score = myArray?[indexPath.row] {
-                cell.label.text = score.username
+                cell.label.text = score.name
                 cell.user = score
             }
             

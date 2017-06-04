@@ -18,10 +18,10 @@ enum forKey: String {
     case TournamentDataId
 }
 
-
+/*
 enum identifiersVC: String {
     case OnboardingVC
-}
+}*/
 
 enum identifiersSegue: String {
     case OnboardingVCSegueToMain
@@ -49,6 +49,7 @@ enum identifiersStoryboard: String {
     case Data
     case Score
     case DatePicker
+    case Onboarding
 }
 
 enum identifiersArchiveUrl: String {

@@ -41,8 +41,12 @@
 		2867D8DE1ECA301400B72CDE /* ScoreCollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */; };
 		2867D8E01ECD5D5E00B72CDE /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */; };
 		28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */; };
-		28F034251ED49883000AAFCB /* PlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F034241ED49882000AAFCB /* PlayerCell.swift */; };
+		28F034251ED49883000AAFCB /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F034241ED49882000AAFCB /* UserCell.swift */; };
 		28F034271ED6C829000AAFCB /* TableViewCollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F034261ED6C829000AAFCB /* TableViewCollCell.swift */; };
+		28F034291EDCBDC7000AAFCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */; };
+		28F0342B1EDDFE1C000AAFCB /* LogInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0342A1EDDFE1C000AAFCB /* LogInVC.swift */; };
+		28F0342D1EDF6793000AAFCB /* LoadImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0342C1EDF6793000AAFCB /* LoadImages.swift */; };
+		7D69A5B3322085118DCEDF14 /* libPods-cofriend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2221154FAC88C8886C110389 /* libPods-cofriend.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +60,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2221154FAC88C8886C110389 /* libPods-cofriend.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cofriend.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2804C7661EA627D500913ACE /* OnboardingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		2804C7681EA6443D00913ACE /* Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		2804C76A1EA6B4F800913ACE /* StoredUserData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredUserData.swift; sourceTree = "<group>"; };
@@ -94,8 +99,13 @@
 		2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreCollCell.swift; sourceTree = "<group>"; };
 		2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomControls.swift; sourceTree = "<group>"; };
-		28F034241ED49882000AAFCB /* PlayerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
+		28F034241ED49882000AAFCB /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		28F034261ED6C829000AAFCB /* TableViewCollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCollCell.swift; sourceTree = "<group>"; };
+		28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		28F0342A1EDDFE1C000AAFCB /* LogInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInVC.swift; sourceTree = "<group>"; };
+		28F0342C1EDF6793000AAFCB /* LoadImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadImages.swift; sourceTree = "<group>"; };
+		414285CB8C9100E1C91C2823 /* Pods-cofriend.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cofriend.debug.xcconfig"; path = "Pods/Target Support Files/Pods-cofriend/Pods-cofriend.debug.xcconfig"; sourceTree = "<group>"; };
+		F7DBD34477F4DFCB607551C5 /* Pods-cofriend.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cofriend.release.xcconfig"; path = "Pods/Target Support Files/Pods-cofriend/Pods-cofriend.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D69A5B3322085118DCEDF14 /* libPods-cofriend.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +138,7 @@
 		2804C76C1EA7C0B100913ACE /* StoredData */ = {
 			isa = PBXGroup;
 			children = (
+				28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */,
 				2804C76A1EA6B4F800913ACE /* StoredUserData.swift */,
 				2867D8BC1EAD006200B72CDE /* StoredTournamentData.swift */,
 				2867D8C71EAD2C6600B72CDE /* StoredTourData.swift */,
@@ -142,6 +154,8 @@
 				2804CE211E85CE6C000008E8 /* cofriend */,
 				2804CE361E85CE6C000008E8 /* cofriendTests */,
 				2804CE201E85CE6C000008E8 /* Products */,
+				EA76C744C6500AE6A15B65CD /* Pods */,
+				6DBFF2059D9A78E2E8ACC393 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -185,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				2804CE461E8AEABB000008E8 /* PlayerViewController.swift */,
+				28F0342A1EDDFE1C000AAFCB /* LogInVC.swift */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -193,7 +208,8 @@
 			isa = PBXGroup;
 			children = (
 				2804CE481E8AEC48000008E8 /* FriendsViewController.swift */,
-				28F034241ED49882000AAFCB /* PlayerCell.swift */,
+				28F0342C1EDF6793000AAFCB /* LoadImages.swift */,
+				28F034241ED49882000AAFCB /* UserCell.swift */,
 				2867D8D81EB91F8E00B72CDE /* AddNewPlayerVC.swift */,
 			);
 			name = Friends;
@@ -290,6 +306,23 @@
 			name = CustomControls;
 			sourceTree = "<group>";
 		};
+		6DBFF2059D9A78E2E8ACC393 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2221154FAC88C8886C110389 /* libPods-cofriend.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EA76C744C6500AE6A15B65CD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				414285CB8C9100E1C91C2823 /* Pods-cofriend.debug.xcconfig */,
+				F7DBD34477F4DFCB607551C5 /* Pods-cofriend.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -297,9 +330,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2804CE3C1E85CE6C000008E8 /* Build configuration list for PBXNativeTarget "cofriend" */;
 			buildPhases = (
+				0EA294C78B190075DD5EFD05 /* [CP] Check Pods Manifest.lock */,
 				2804CE1B1E85CE6C000008E8 /* Sources */,
 				2804CE1C1E85CE6C000008E8 /* Frameworks */,
 				2804CE1D1E85CE6C000008E8 /* Resources */,
+				ADE7D272DDC7DD243D23156B /* [CP] Embed Pods Frameworks */,
+				D2484985220EDEB062335515 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -377,6 +413,7 @@
 			files = (
 				2804C7721EAB51DA00913ACE /* File in Resources */,
 				2804CE2D1E85CE6C000008E8 /* LaunchScreen.storyboard in Resources */,
+				28F034291EDCBDC7000AAFCB /* GoogleService-Info.plist in Resources */,
 				2804CE2A1E85CE6C000008E8 /* Assets.xcassets in Resources */,
 				2804CE281E85CE6C000008E8 /* Main.storyboard in Resources */,
 			);
@@ -390,6 +427,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0EA294C78B190075DD5EFD05 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		ADE7D272DDC7DD243D23156B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-cofriend/Pods-cofriend-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D2484985220EDEB062335515 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-cofriend/Pods-cofriend-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2804CE1B1E85CE6C000008E8 /* Sources */ = {
@@ -405,13 +490,14 @@
 				2867D8BD1EAD006200B72CDE /* StoredTournamentData.swift in Sources */,
 				2867D8C51EAD2AB600B72CDE /* TourCell.swift in Sources */,
 				2867D8D51EB90BB500B72CDE /* StoredGameTitleData.swift in Sources */,
+				28F0342D1EDF6793000AAFCB /* LoadImages.swift in Sources */,
 				2867D8BF1EAD0C3800B72CDE /* InsideTourTableViewCell.swift in Sources */,
 				2867D8D71EB9154100B72CDE /* AddGameTitleVC.swift in Sources */,
 				2867D8CF1EB852BA00B72CDE /* GamesTVC.swift in Sources */,
 				2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */,
 				28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */,
 				2867D8DE1ECA301400B72CDE /* ScoreCollCell.swift in Sources */,
-				28F034251ED49883000AAFCB /* PlayerCell.swift in Sources */,
+				28F034251ED49883000AAFCB /* UserCell.swift in Sources */,
 				2867D8C11EAD25EC00B72CDE /* AddTourVC.swift in Sources */,
 				2804CE591E9F40C6000008E8 /* Errors.swift in Sources */,
 				2867D8B21EACDAA300B72CDE /* GradientView.swift in Sources */,
@@ -422,6 +508,7 @@
 				28F034271ED6C829000AAFCB /* TableViewCollCell.swift in Sources */,
 				2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */,
 				2804C7691EA6443D00913ACE /* Identifiers.swift in Sources */,
+				28F0342B1EDDFE1C000AAFCB /* LogInVC.swift in Sources */,
 				2804C7671EA627D500913ACE /* OnboardingVC.swift in Sources */,
 				2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */,
 				2867D8CA1EAE75C700B72CDE /* AddTourCell.swift in Sources */,
@@ -563,6 +650,7 @@
 		};
 		2804CE3D1E85CE6C000008E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 414285CB8C9100E1C91C2823 /* Pods-cofriend.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 3W6ZL6R93D;
@@ -576,6 +664,7 @@
 		};
 		2804CE3E1E85CE6C000008E8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F7DBD34477F4DFCB607551C5 /* Pods-cofriend.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 3W6ZL6R93D;

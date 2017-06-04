@@ -8,10 +8,12 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseDatabase
 
-var selectedTour = StoredTourData(tournamentTitle: "", players: [], pointsWin: 0, pointsDraw: 0, pointsLose: 0, id: 0)
-
-var selectedGame = StoredGameTitleData(tournamentTitle: "", scoreTitle: "", id: 0)
+var selectedTour = TournamentClass(dictionary: ["" : "" as AnyObject])
+var selectedPlayer = PlayerClass(tournamentId: "", players: [])
+var selectedGame = GameClass(dictionary: ["" : "" as AnyObject])
 
 class GamesTVC: UITableViewController {
     
@@ -24,25 +26,20 @@ class GamesTVC: UITableViewController {
         myTableView.delegate = self
         myTableView.dataSource = self
         
-        print("viewdidload --- \(String(describing: selectedTour?.tournamentTitle))")
+        //print("viewdidload --- \(String(describing: selectedTour?.tournamentTitle))")
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        fetchTournamentGames()
         animateTable(tableView: myTableView)
         
-        // Check id
-        for each in myArray {
-            print("Id counter:   \(each.id)")
-        }
-        print("viewillappear --- \(String(describing: selectedTour?.tournamentTitle))")
-
     }
     
     @IBOutlet var myTableView: UITableView!
     
-    var myArray = addGameTitle
+    var myArray = games
     var gameTitle = String()
     var refreshController: UIRefreshControl = UIRefreshControl()
 
@@ -63,18 +60,13 @@ class GamesTVC: UITableViewController {
     }
     
     func refreshData() {
-        loadAnySavedData()
-        loadMyArray()
+        fetchTournamentGames()
         myTableView.reloadData()
         refreshController.endRefreshing()
-        print("Refreshing --- \(String(describing: selectedTour?.tournamentTitle))")
 
     }
     
     func animateTable(tableView: UITableView) {
-        loadAnySavedData()
-        loadMyArray()
-        
         tableView.reloadData()
         let cells = tableView.visibleCells
         
@@ -94,24 +86,42 @@ class GamesTVC: UITableViewController {
         
     }
     
-    func loadAnySavedData() {
-        // Load any saved data, otherwise load default.
-        addGameTitle = []
-        if let savedData = loadGameTitleData() {
-            addGameTitle += savedData
+    
+    func fetchTournamentGames() {
+        // Single fetch
+        if let selectedId = selectedTour.id {
+            Database.database().reference().child("Games").child("Tournaments").child("\(selectedId)").observe(.childAdded, with: {
+            
+            (snapshot) in
+            
+            print(snapshot)
+            
+            
+                // Fetch games
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    let game = GameClass(dictionary: dictionary)
+                    
+                    // add game id
+                    game.id = snapshot.key
+                    game.tournamentId = selectedId
+                    print(game.id as Any)
+                    
+                    // add game to array
+                    games.append(game)
+                    
+                }
+                
+                self.myArray = games
+                
+                //this will crash because of background thread, so lets use dispatch_async to fix
+                DispatchQueue.main.async(execute: {
+                    self.animateTable(tableView: self.myTableView)
+                })
+                
+            }, withCancel: nil)
         }
-        
     }
     
-    func loadMyArray() {
-        myArray = []
-        for each in addGameTitle {
-            if each.tournamentTitle == selectedTour?.tournamentTitle {
-                myArray.append(each)
-            }
-        }
-    }
-     
     
     // MARK: - Table view data source
     
@@ -134,7 +144,7 @@ class GamesTVC: UITableViewController {
         
         // Fetches the appropriate data for the data source layout.
         let game = myArray[indexPath.row]
-        cell.myLabel.text = game.scoreTitle
+        cell.myLabel.text = game.name
         
         return cell
     }
@@ -143,7 +153,7 @@ class GamesTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectGame = myArray[(indexPath as NSIndexPath).row]
         selectedGame = selectGame
-        print(selectGame.scoreTitle)
+        print(selectGame.name)
 
     }
     
@@ -158,16 +168,16 @@ class GamesTVC: UITableViewController {
             print("Deleting..")
             
             // Delete the row from the data source
-            if let id = checkSelectedIdPositionInGameData(id: addGameTitle[indexPath.row].id) {
-                addGameTitle.remove(at: id)
-            } else {
-                print("Failing to delete..")
+            if let gamesId = games[indexPath.row].id {
+                if let id = checkSelectedIdPositionInGameData(id: gamesId) {
+                    games.remove(at: id)
+                    } else {
+                    print("Failing to delete..")
+                }
             }
+
             
             // This code saves the array whenever an item is deleted.
-            saveGameTitleData()
-            loadAnySavedData()
-            loadMyArray()
             myTableView.reloadData()
         }
     }

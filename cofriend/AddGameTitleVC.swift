@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseDatabase
 
 class AddGameTitleVC: UIViewController {
     
@@ -18,26 +20,69 @@ class AddGameTitleVC: UIViewController {
         
         popUpView.layer.cornerRadius = 10
         popUpView.layer.masksToBounds = true
-        
-        
+  
         
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        myTextField.addTarget(self, action: #selector(myTargetFunction), for: UIControlEvents.touchDown)
+    }
     
     @IBOutlet weak var myTextField: UITextField!
     @IBOutlet weak var popUpView: UIView!
     var keyBoardIsActive: Bool = false
     @IBOutlet weak var topConstraintOfTextFIeld: NSLayoutConstraint!
-    //let gamesTVC: GamesTVC = GamesTVC()
     
-    override func viewWillAppear(_ animated: Bool) {
-        myTextField.addTarget(self, action: #selector(myTargetFunction), for: UIControlEvents.touchDown)
-    }
+
+    
+    @IBOutlet weak var pointsWin: UILabel!
+    @IBOutlet weak var pointsDraw: UILabel!
+    @IBOutlet weak var pointsLose: UILabel!
+    @IBOutlet weak var winStepper: UIStepper!
+    @IBOutlet weak var drawStepper: UIStepper!
+    @IBOutlet weak var loseStepper: UIStepper!
+    
+    
+    
+    var win = 0
+    var draw = 0
+    var lose = 0
     
     // MARK: Actions
 
+    @IBAction func stepperValueChanged(_ sender: UIStepper) {
+        if sender == winStepper {
+            win = Int(sender.value)
+        } else if sender == drawStepper {
+            draw = Int(sender.value)
+        } else if sender == loseStepper {
+            lose = Int(sender.value)
+        }
+        createTitles()
+    }
     
     // MARK: Functions
+    
+    func stepperValues() {
+        
+        winStepper.wraps = true
+        winStepper.autorepeat = true
+        winStepper.maximumValue = 100
+        
+        drawStepper.wraps = true
+        drawStepper.autorepeat = true
+        drawStepper.maximumValue = 100
+        
+        loseStepper.wraps = true
+        loseStepper.autorepeat = true
+        loseStepper.maximumValue = 100
+    }
+    
+    func createTitles() {
+        pointsWin.text = "Points for win: \(win)"
+        pointsDraw.text = "Points for draw: \(draw)"
+        pointsLose.text = "Points for lose: \(lose)"
+    }
     
 
     @objc func myTargetFunction() {
@@ -78,33 +123,47 @@ class AddGameTitleVC: UIViewController {
     }
     
     func doneClicked() {
-        prepareSavingData()
+        //prepareSavingData()
+        saveNewGame()
+        dismiss(animated: true, completion: nil)
     }
     
+    /*
     func prepareSavingData() {
         if myTextField.text == "" || myTextField.text == " " {
             showAlert(title: "Missing Title", message: "Plese Try Again", dismissButton: "Cancel", okButton: "Ok")
-        } else if let text = myTextField.text, let tournament = selectedTour?.tournamentTitle {
-            let game = StoredGameTitleData(tournamentTitle: tournament, scoreTitle: text, id: idForGameTitle)
+        } else if let text = myTextField.text, let tournament = selectedTour.name {
+            let game = GameClass
             
-            addGameTitle.append(game!)
+            games.append(game!)
             
             // Save data
-            saveGameTitleData()
+            /7saveGameTitleData()
             print("Saving game title!")
             
-            idForGameTitle += 1
+            //idForGameTitle += 1
             
             // Save id
-            UserDefaults.standard.set(String(idForGameTitle), forKey: forKey.GameTitleId.rawValue)
+            //UserDefaults.standard.set(String(idForGameTitle), forKey: forKey.GameTitleId.rawValue)
             
             // Dismiss view
-            dismiss(animated: true, completion: nil)
         }
+    }*/
     
-
+    func saveNewGame() {
+        
+        if myTextField.text == "" || myTextField.text == " " {
+            showAlert(title: "Missing Title", message: "Plese Try Again", dismissButton: "Cancel", okButton: "Ok")
+        } else if let text = myTextField.text, let tournamentId = selectedTour.id {
+        
+            var databaseRef: DatabaseReference!
+            databaseRef = Database.database().reference()
+                
+            let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject]
             
- 
+            // Games -> Tournaments -> Id => post
+            databaseRef.child("Games").child("Tournaments").child("\(tournamentId)").childByAutoId().setValue(post)
+        }
     }
     
     // MARK: Alert

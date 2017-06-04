@@ -95,7 +95,7 @@ class InsideTourVC: UITableViewController {
     func loadMyArray() {
         myArray = []
         for each in addTournamentData {
-            if each.tournamentTitle == selectedTour?.tournamentTitle && each.gameTitle == selectedGame?.scoreTitle {
+            if each.tournamentTitle == selectedTour.name && each.gameTitle == selectedGame.name {
                 myArray.append(each)
             }
         }

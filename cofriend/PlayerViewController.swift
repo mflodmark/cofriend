@@ -8,6 +8,10 @@
 
 import Foundation
 import UIKit
+import FirebaseAuth
+import Firebase
+import FirebaseDatabase
+
 
 class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
     
@@ -15,19 +19,21 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        getPlayer()
+        //getPlayer()
         addPointsToLabels()
         addPercentToLabels()
         
+        
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillAppear(_ animated: Bool) {
+        checkIfUserIsLoggedIn()
     }
+    
     
     // MARK: Declarations
     
+    @IBOutlet weak var myImageView: UIImageView!
     @IBOutlet weak var playerName: UILabel!
     @IBOutlet weak var playerImage: UIButton!
     @IBOutlet weak var winLabel: UILabel!
@@ -53,21 +59,77 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     // MARK: Actions
     
-    // MARK: Functions
     
-    func getPlayer() {
-        if user == nil {
-            // Don't do anything yet
-        
-        } else {
-            // Load Player data
-            let name = addUserData[0].username
-            playerName.text = name
-            
-            let image = addUserData[0].image
-            playerImage.setImage(image, for: .normal)
+    @IBAction func logOut(_ sender: UIBarButtonItem) {
+        do {
+            try Auth.auth().signOut()
+        } catch let logoutError {
+            print(logoutError)
         }
         
+    }
+    
+    // MARK: Functions
+    
+    func checkIfUserIsLoggedIn() {
+        if Auth.auth().currentUser?.uid == nil {
+            print("User is not logged in")
+            perform(#selector(handleLogout), with: nil, afterDelay: 0)
+            
+        } else {
+            print("User is logged in")
+            
+            fetchUser()
+        }
+    }
+    
+    func fetchUser() {
+        // Current user id
+        let uid = Auth.auth().currentUser?.uid
+        
+        // Single fetch of current user
+        Database.database().reference().child("Users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            print(snapshot)
+            
+            // Adding user to UI
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                self.playerName.text = dictionary["name"] as? String
+                self.navigationItem.title = dictionary["name"] as? String
+                
+                if let profileImageUrl = dictionary["profileImageUrl"] as? String {
+                
+                    self.myImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+                    self.imageLayout()
+                }
+            }
+            
+        }, withCancel: nil)
+    }
+    
+
+    func imageLayout() {
+        myImageView.translatesAutoresizingMaskIntoConstraints = false
+        myImageView.layer.cornerRadius = 24
+        myImageView.layer.masksToBounds = true
+        myImageView.contentMode = .scaleAspectFit
+    }
+    
+    func handleLogout() {
+        
+        do {
+            try Auth.auth().signOut()
+        } catch let logoutError {
+            print(logoutError)
+        }
+        
+        // if logged out, present Log In screen
+        //let logInVC = LogInVC()
+        //present(logInVC, animated: true, completion: nil)
+        
+        let storyboard = UIStoryboard(name: identifiersStoryboard.Main.rawValue, bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: identifiersStoryboard.Onboarding.rawValue) as! LogInVC
+        self.present(vc, animated: true, completion: nil)
     }
     
     
@@ -102,6 +164,7 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     // MARK: Image Picker
     
+    // Amend image of logged in user
     @IBAction func chooseImage(_ sender: Any) {
         
         let imagePickerController = UIImagePickerController()

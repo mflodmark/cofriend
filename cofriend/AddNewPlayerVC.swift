@@ -8,11 +8,13 @@
 
 import Foundation
 import UIKit
+import FirebaseDatabase
+import Firebase
+
 class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
         addButtonsToTextField(field: myTextField)
         setViewLayout(view: self.view)
@@ -41,7 +43,8 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func doneActionButton(_ sender: UIButton) {
         if let text = myTextField.text {
-            checkUserAndSaveUserData(text: text)
+            //checkUserAndSaveUserData(text: text)
+            saveNewUser(text: text)
         }
     }
     
@@ -57,7 +60,31 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     
 
     // MARK: Functions
-    
+        
+    func saveNewUser(text: String) {
+        
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        if checkUsername(text: text) == true {
+            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
+        } else if myTextField.text == "" {
+            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
+        } else {
+            if let image = addPhoto.image(for: .normal) {
+                
+                
+                let post : [String : Any] = ["username" : text, "image": "No image available"]
+                
+                databaseRef.child("Users").childByAutoId().setValue(post)
+                
+                // Dismiss view
+                dismiss(animated: true, completion: nil)
+                
+            }
+            
+        }
+    }
     
     @objc func myTargetFunction() {
         // user touch field

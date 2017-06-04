@@ -10,6 +10,32 @@ import Foundation
 import UIKit
 import os.log
 
+
+var games = [GameClass]()
+
+class GameClass: NSObject {
+    var id: String?
+    var tournamentId: String?
+    var createdByUserId: String?
+    var name: String?
+    var winPoints: String?
+    var drawPoints: String?
+    var losePoints: String?
+    
+    init(dictionary: [String: AnyObject]) {
+        self.id = dictionary["id"] as? String
+        self.tournamentId = dictionary["tournamentId"] as? String
+        self.createdByUserId = dictionary["createdByUserId"] as? String
+        self.name = dictionary["name"] as? String
+        self.winPoints = dictionary["winPoints"] as? String
+        self.drawPoints = dictionary["drawPoints"] as? String
+        self.losePoints = dictionary["losePoints"] as? String
+
+    }
+}
+
+
+/*
 class StoredTitleData: NSObject, NSCoding {
     
     // MARK: Properties
@@ -89,4 +115,4 @@ func saveScoreTitleData() {
 
 func loadScoreTitleData() -> [StoredTitleData]?  {
     return NSKeyedUnarchiver.unarchiveObject(withFile: StoredTitleData.ArchiveURL.path) as? [StoredTitleData]
-}
+}*/

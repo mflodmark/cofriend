@@ -38,13 +38,13 @@ func showField(picker: UIPickerView) {
 
 
 // Check position of user id in
-func checkSelectedIdPositionInUserData(id: Int) -> Int? {
+func checkSelectedIdPositionInUserData(id: String) -> Int? {
     // starter value
     print("UserData")
     var checked: Int = 0
     var counter: Int = 0
-    for user in addUserData {
-        print("UserId -----> \(user.id) ")
+    for user in users {
+        print("UserId -----> \(String(describing: user.id)) ")
         if id == user.id {
             // Selected user
             checked = counter
@@ -57,12 +57,12 @@ func checkSelectedIdPositionInUserData(id: Int) -> Int? {
 }
 
 // Check position of tournament id in
-func checkSelectedIdPositionInTournamentData(id: Int) -> Int? {
+func checkSelectedIdPositionInTournamentData(id: String) -> Int? {
     // starter value
     print("Tournamentdata: ")
     var checked: Int = 0
     var counter: Int = 0
-    for user in addTourData {
+    for user in tournaments {
         print("UserId -----> \(user.id) ")
         if id == user.id {
             // Selected user
@@ -100,13 +100,13 @@ func setRound(button: UIButton) {
 }
 
 // Check position of score id in
-func checkSelectedIdPositionInGameData(id: Int) -> Int? {
+func checkSelectedIdPositionInGameData(id: String) -> Int? {
     // starter value
     print("id: \(id)")
     print("GameData: ")
     var checked: Int = 0
     var counter: Int = 0
-    for user in addGameTitle {
+    for user in games {
         print("UserId -----> \(user.id) ")
         if id == user.id {
             // Selected user

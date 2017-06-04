@@ -8,6 +8,10 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseDatabase
+
+var playerArray = [UserClass]()
 
 class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -16,26 +20,26 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
         createTitles()
         stepperValues()
-        //addDoneButtonToTextField(field: textField, button: doneButton)
-        //loadAnySavedData()
         setUpRefreshController()
-        //animateConstraints()
         setViewLayout(view: self.view)
         
         myTableView.delegate = self
         myTableView.dataSource = self
         
         setRound(button: newPlayer)
+        users = []
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        //animateView()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        animateTable(tableView: myTableView)
+        fetchUser()
     }
+    
+
 
     // MARK: Declaration
     
@@ -55,7 +59,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var win = 0
     var draw = 0
     var lose = 0
-    var playerArray = [StoredUserData]()
     var refreshController: UIRefreshControl = UIRefreshControl()
 
 
@@ -71,8 +74,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     @IBAction func doneAction(_ sender: UIBarButtonItem) {
-        prepareSavingData()
-        saveTourData()
+        saveNewTournament()
         dismiss(animated: true, completion: nil)
     }
     
@@ -92,33 +94,35 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         bounceButton(theButton: sender)
     }
     
-    
-    // MARK: Functions
-    
-    /*
-    func animateConstraints() {
-        button1Constraint.constant -= view.bounds.width
-        button2Constraint.constant -= view.bounds.width
+    // MARK: Fetch Users
+        
+    func fetchUser() {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        databaseRef.child("Users").queryOrderedByKey().observe(.childAdded, with: {
+            
+            (snapshot) in
+            
+            // Fetch user
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let user = UserClass(dictionary: dictionary)
+                // add user id to UserClass
+                user.id = snapshot.key
+                print("userid -----> " + user.id!)
+                users.append(user)
+                
+                //this will crash because of background thread, so lets use dispatch_async to fix
+                DispatchQueue.main.async(execute: {
+                    self.animateTable(tableView: self.myTableView)
+                })
+                
+            }
+            
+        }, withCancel: nil)
     }
     
-    var animationPerformedOnce = false
-    
-    func animateView() {
-        
-        while animationPerformedOnce == false {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
-                self.button1Constraint.constant += self.view.bounds.width
-                self.view.layoutIfNeeded()
-            }, completion: nil)
-            
-            UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseOut, animations: {
-                self.button2Constraint.constant += self.view.bounds.width
-                self.view.layoutIfNeeded()
-            }, completion: nil)
-            
-            animationPerformedOnce = true
-        }
-    }*/
+    // MARK: Functions
     
     func bounceButton(theButton: UIButton) {
         let bounds = theButton.bounds
@@ -137,8 +141,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     func animateTable(tableView: UITableView) {
-
-        loadAnySavedData()
         
         tableView.reloadData()
         let cells = tableView.visibleCells
@@ -194,15 +196,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         view.endEditing(true)
     }
     
-    func loadAnySavedData() {
-        // Load any saved data
-        addUserData = []
-        if let savedData = loadUserData() {
-            addUserData += savedData
-        }
-    }
-    
-    
 
     func stepperValues() {
         
@@ -226,19 +219,45 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         addedPlayers.text = "Added players: \(playerArray.count)"
     }
     
-    func prepareSavingData() {
+
+
+    func saveNewTournament() {
+        
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
         if let text = textField.text {
             if playerArray.count > 0 {
-                let tour = StoredTourData(tournamentTitle: text, players: playerArray, pointsWin: win, pointsDraw: draw, pointsLose: lose, id: idForTourData)
                 
-                addTourData.append(tour!)
+                let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject]
                 
-                idForTourData += 1
-                // Save id
-                UserDefaults.standard.set(String(idForTourData), forKey: forKey.TourDataId.rawValue)
+                var postPlayers: [String] = []
+                
+                for each in playerArray {
+                    if let id = each.id {
+                        postPlayers.append(id)
+                    }
+                }
+                
+                // Save to folder tournament
+                let newRef = databaseRef.child("Tournaments").childByAutoId()
+                let newId = newRef.key
+                newRef.setValue(post)
+                
+                
+                // Tournaments -> Id -> Players => add players
+                databaseRef.child("Players").child("Tournaments").child("\(newId)").setValue(postPlayers)
+                
+                for each in playerArray {
+                    if let eachId = each.id {
+                        databaseRef.child("Users/\(eachId)/Tournaments").setValue([newId])
+                        
+                    }
+                }
             }
         }
     }
+
     
     // MARK: - Table view data source
     
@@ -249,7 +268,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     //Each meal should have its own row in that section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return addUserData.count
+        return users.count
     }
     
     //only ask for the cells for rows that are being displayed
@@ -260,8 +279,8 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AddTourCell
         
         // Fetches the appropriate data for the data source layout.
-        let user = addUserData[indexPath.row]
-        cell.myLabel.text = user.username
+        let user = users[indexPath.row]
+        cell.myLabel.text = user.name
         
         // Cell status
         tableView.allowsMultipleSelection = true
@@ -272,24 +291,24 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let user = addUserData[indexPath.row]
+        let user = users[indexPath.row]
         //let cell: AddTourCell = tableView.cellForRow(at: indexPath) as! AddTourCell
         
         playerArray.append(user)
-
-
+        
         createTitles()
         print("Selected cell")
     }
     
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let user = addUserData[indexPath.row]
-        if let check = checkSelectedIdPositionInUserData(id: user.id) {
+        let user = users[indexPath.row]
+        if let id = user.id {
+            if let check = checkSelectedIdPositionInUserData(id: id) {
             playerArray.remove(at: check)
             createTitles()
+            }
         }
+
     }
- 
-    
 }

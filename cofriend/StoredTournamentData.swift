@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import os.log
 
+
+
 class StoredTournamentData: NSObject, NSCoding {
     
     // MARK: Properties

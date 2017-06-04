@@ -10,6 +10,44 @@ import Foundation
 import UIKit
 import os.log
 
+
+var tournaments = [TournamentClass]()
+
+class TournamentClass: NSObject {
+    var id: String?
+    var createdByUserId: String?
+    var name: String?
+    //var players: [UserClass]?
+    
+    init(dictionary: [String: AnyObject]) {
+        self.id = dictionary["id"] as? String
+        self.createdByUserId = dictionary["createdByUserId"] as? String
+        self.name = dictionary["name"] as? String
+        //self.players = dictionary["players"] as? [UserClass]
+    }
+}
+
+var players = [PlayerClass]()
+
+class PlayerClass: NSObject {
+    var tournamentId: String?
+    var players: [UserClass]?
+    
+    init(tournamentId: String?, players: [UserClass]?) {
+        self.tournamentId = tournamentId
+        self.players = players
+    }
+}
+
+enum stringsInTournamentClass: String {
+    case id
+    case name
+    case createdByUserId
+    case players = "Players"
+}
+
+
+/*
 class StoredTourData: NSObject, NSCoding {
     
     // MARK: Properties
@@ -114,7 +152,7 @@ func saveTourData() {
         os_log("Failed to save...", log: OSLog.default, type: .error)
     }
 }
-
+*/
 
 
 

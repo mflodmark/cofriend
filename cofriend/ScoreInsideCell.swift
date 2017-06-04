@@ -29,7 +29,8 @@ class ScoreInsideCell: UITableViewCell {
     @IBOutlet weak var teamAButton: UIButton!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var teamBButton: UIButton!
-    var user: StoredUserData = StoredUserData(username: "", image: #imageLiteral(resourceName: "Default"), id: 0)!
+    
+    var user: UserClass = UserClass(dictionary: ["": "" as AnyObject])
 
     
     // MARK: Actions 
@@ -44,7 +45,7 @@ class ScoreInsideCell: UITableViewCell {
             if sender == teamAButton && teamOneArray.count < 2 {
                 teamOneArray.append(user)
                 sender.alpha = 1.0
-                print("Added user -------> " + user.username)
+                print("Added user -------> " + user.name!)
             } else if sender == teamBButton && teamTwoArray.count < 2 {
                 teamTwoArray.append(user)
                 sender.alpha = 1.0
@@ -56,19 +57,24 @@ class ScoreInsideCell: UITableViewCell {
             // Remove from array
             if sender == teamAButton {
                 // Check position
-                if let position = checkPositionInArray(id: user.id, array: teamOneArray) {                                    teamOneArray.remove(at: position)
+                if let id = user.id {
+                    if let position = checkPositionInArray(id: id, array: teamOneArray) {                                    teamOneArray.remove(at: position)
+                }
+
                 }
             } else if sender == teamBButton {
                 // Check position
-                if let position = checkPositionInArray(id: user.id, array: teamTwoArray) {
-                    teamTwoArray.remove(at: position)
+                if let id = user.id {
+                    if let position = checkPositionInArray(id: id, array: teamTwoArray) {
+                        teamTwoArray.remove(at: position)
 
+                    }
                 }
             }
         }
     }
     
-    func checkPositionInArray(id: Int, array: [StoredUserData]) -> Int? {
+    func checkPositionInArray(id: String, array: [UserClass]) -> Int? {
         // starter value
         var checked = Int()
         var counter: Int = 0
