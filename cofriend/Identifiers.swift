@@ -7,6 +7,11 @@
 //
 
 import Foundation
+import FirebaseAuth
+import Firebase
+
+let uid = Auth.auth().currentUser?.uid
+
 
 enum forKey: String {
     case Username

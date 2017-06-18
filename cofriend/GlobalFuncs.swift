@@ -76,12 +76,12 @@ func checkSelectedIdPositionInTournamentData(id: String) -> Int? {
 }
 
 // Check position of score id in
-func checkSelectedIdPositionInScoreData(id: Int) -> Int? {
+func checkSelectedIdPositionInScoreData(id: String) -> Int? {
     // starter value
     print("Tournamentdata: ")
     var checked: Int = 0
     var counter: Int = 0
-    for user in addTournamentData {
+    for user in scores {
         print("UserId -----> \(user.id) ")
         if id == user.id {
             // Selected user
@@ -148,6 +148,8 @@ func refreshData(refreshController: UIRefreshControl, myTableView: UITableView) 
     myTableView.reloadData()
     refreshController.endRefreshing()
 }*/
+
+
 
 
 

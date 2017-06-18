@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import Firebase
+import FirebaseDatabase
 
 // Global declarations
 var teamOneArray = [UserClass]()
@@ -46,11 +48,12 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         }
     }
     
+    
     // MARK: Declarations
     let teamOneDefault = StoredUserData(username: "No Data", image: #imageLiteral(resourceName: "DefaultImage"), id: 0)
     let teamTwoDefault = StoredUserData(username: "No Data", image: #imageLiteral(resourceName: "DefaultImage"), id: 0)
 
-    var tournament = StoredTournamentData(tournamentTitle: "No Data", gameTitle: "", teamOnePlayers: [], teamTwoPlayers: [], teamOneScore: 0, teamTwoScore: 0, image: #imageLiteral(resourceName: "DefaultImage"), date: "No Data", id: 0)
+    //var tournament = StoredTournamentData(tournamentTitle: "No Data", gameTitle: "", teamOnePlayers: [], teamTwoPlayers: [], teamOneScore: 0, teamTwoScore: 0, image: #imageLiteral(resourceName: "DefaultImage"), date: "No Data", id: 0)
 
     
     @IBOutlet weak var dateButton: UIButton!
@@ -61,7 +64,6 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     @IBOutlet weak var stepperB: UIStepper!
     @IBOutlet weak var myTableView: UITableView!
     @IBOutlet weak var navBar: UINavigationItem!
-    @IBOutlet weak var collTableView: UITableView!
     
     var pointA = Int()
     var pointB = Int()
@@ -81,8 +83,9 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     @IBAction func doneAction(_ sender: UIBarButtonItem) {
-        prepareSavingData()
-        saveTournamentData()
+        //prepareSavingData()
+        //saveTournamentData()
+        saveNewScore()
         dismiss(animated: true, completion: nil)
     }
     
@@ -158,7 +161,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     func getDateFromDatePicker() {
         dateButton.setTitle(dateString, for: .normal)
     }
-    
+    /*
     func prepareSavingData() {
         
         print("teamOneArray count     \(teamOneArray.count)")
@@ -174,6 +177,138 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
             // Save id
             UserDefaults.standard.set(String(idForTournamentData), forKey: forKey.TournamentDataId.rawValue)
         }
+    }*/
+    
+    func saveNewScore() {
+        
+        if let game = selectedGame.name, let date = dateButton.title(for: .normal), let pointsA = pointsA.text, let pointsB = pointsB.text {
+            
+            var databaseRef: DatabaseReference!
+            databaseRef = Database.database().reference()
+            
+            let post: [String : AnyObject] = ["name" : game as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject, "date" : date as AnyObject, "teamAPoints" : pointsA as AnyObject, "teamBPoints" : pointsB as AnyObject]
+            
+            // Games -> Tournaments -> Id => post
+            if let selectedGameId = selectedGame.id {
+                
+                // Error handling if not adding players
+                if teamOneArray.count == 0 || teamTwoArray.count == 0 {
+                    showAlert(title: "Player missing", message: "Add players", dismissButton: "Cancel", okButton: "Ok")
+                
+                } else {
+                    
+                    // if players are added
+                    let newRef = databaseRef.child("Scores").child("Games").child("\(selectedGameId)").childByAutoId()
+                    let newId = newRef.key
+                    newRef.setValue(post)
+                    
+                    
+                    
+                    for each in teamOneArray {
+                        // Save A array
+                        if let eachId = each.id {
+                            databaseRef.child("Players/Games/\(selectedGameId)/\(newId)").child("TeamA").setValue([eachId:true])
+                        }
+                    }
+                    
+                    for each in teamTwoArray {
+                        // Save B array
+                        if let eachId = each.id {
+                            databaseRef.child("Players/Games/\(selectedGameId)/\(newId)").child("TeamB").setValue([eachId:true])
+                        }
+                    }
+                    
+                    setWinForUsers()
+                }
+            }
+        }
+    }
+    
+    func getUsersPoints(userId: String, varP: String) -> Int {
+        
+        var p: Int = 0
+        
+        for each in users {
+            if each.id == userId && varP == "Win" {
+                // Default value
+                each.win = "0"
+                p = Int(each.win!)!
+            } else if each.id == userId && varP == "Draw" {
+                // Default value
+                each.draw = "0"
+                p = Int(each.draw!)!
+            } else if each.id == userId && varP == "Lose" {
+                // Default value
+                each.lose = "0"
+                p = Int(each.lose!)!
+            }
+        }
+        
+        return p
+    }
+    
+    func setUsersPoints(userArray: [UserClass], varP: String) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        for each in userArray {
+            if let eachId = each.id {
+                var p = getUsersPoints(userId: eachId, varP: varP)
+                p += 1
+                databaseRef.child("Users/\(eachId)/\(varP)").setValue(p)
+            }
+        }
+    }
+    
+    
+    func setWinForUsers() {
+
+        if let pA = Int(pointsA.text!), let pB = Int(pointsB.text!) {
+            if pA > pB {
+                setUsersPoints(userArray: teamOneArray, varP: "Win")
+                setUsersPoints(userArray: teamTwoArray, varP: "Lose")
+
+            } else if pA < pB {
+                setUsersPoints(userArray: teamTwoArray, varP: "Win")
+                setUsersPoints(userArray: teamOneArray, varP: "Lose")
+
+            } else if pA == pB {
+                setUsersPoints(userArray: teamTwoArray, varP: "Draw")
+                setUsersPoints(userArray: teamOneArray, varP: "Draw")
+            }
+        }
+
+    }
+    
+    // MARK: Alert
+    
+    func alertOkFunctions() {
+        
+    }
+    
+    func alertDismissFunctions() {
+        
+    }
+    
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here")
+            self.alertOkFunctions()
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            print("Handle Cancel logic here")
+            self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
     }
     
     // MARK: - Table view data source
@@ -189,8 +324,6 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         
         if tableView == myTableView {
             integer = (myArray?.count)!
-        } else if tableView == collTableView {
-            integer = 1
         }
         
         return integer
@@ -218,37 +351,12 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
             
             viewCell = cell
             
-        } else if tableView == collTableView {
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifiersCell.TableCollCell.rawValue, for: indexPath) as! TableViewCollCell
-            
-            
-            viewCell = cell
         }
 
         return viewCell
     }
     
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if tableView == collTableView {
-            guard let tableViewCell = cell as? TableViewCollCell else { return }
-            
-            tableViewCell.setCollectionViewDataSourceDelegate(self, forRow: indexPath.row)
-            tableViewCell.collectionViewOffset = storedOffsets[indexPath.row] ?? 0
-        }
-    }
-    
-    var storedOffsets = [Int: CGFloat]()
-    
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if tableView == collTableView {
-            guard let tableViewCell = cell as? TableViewCollCell else { return }
-        
-            storedOffsets[indexPath.row] = tableViewCell.collectionViewOffset
-        }
-    }
     
     // MARK: Collection view
     
@@ -264,6 +372,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         
         // Fetches the appropriate data for the data source layout.
         let scoreLabel = collectionArray
+        cell.backgroundColor = UIColor.yellow
         cell.myLabel.text = scoreLabel[indexPath.row]
         cell.setLabel.text = "Set: \(indexPath.row)"
         

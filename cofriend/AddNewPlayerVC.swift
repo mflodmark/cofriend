@@ -11,7 +11,7 @@ import UIKit
 import FirebaseDatabase
 import Firebase
 
-class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,21 +21,50 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         popUpView.layer.cornerRadius = 10
         popUpView.layer.masksToBounds = true
+        
+        // Default
+        addPhoto.isHidden = true
+        myTextField.isHidden = true
     
     }
     
+    @IBOutlet weak var cancelOutlet: UIButton!
+    @IBOutlet weak var myTableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var doneOutlet: UIButton!
     @IBOutlet weak var popUpView: UIView!
     @IBOutlet weak var addPhoto: UIButton!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var myTextField: UITextField!
+    
     var keyBoardIsActive: Bool = false
+    var filteredData = [UserClass]()
+    var inSearchMode = false
     
     override func viewWillAppear(_ animated: Bool) {
         // Activate keyboard
         myTextField.addTarget(self, action: #selector(myTargetFunction), for: UIControlEvents.touchDown)
+        
+        myTableView.delegate = self
+        myTableView.dataSource = self
+        searchBar.delegate = self
+        searchBar.returnKeyType = UIReturnKeyType.done
+
+
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        dismiss(animated: true, completion: nil)
+        
     }
 
     
     // MARK: Actions
+    
+    @IBAction func segmentedControlToggle(_ sender: UISegmentedControl) {
+        toggle()
+    }
     
     @IBAction func cancelActionButton(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
@@ -60,6 +89,22 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     
 
     // MARK: Functions
+    
+    func toggle() {
+        if segmentedControl.selectedSegmentIndex == 0 {
+            addPhoto.isHidden = true
+            myTextField.isHidden = true
+            myTableView.isHidden = false
+            searchBar.isHidden = false
+            
+        } else {
+            addPhoto.isHidden = false
+            myTextField.isHidden = false
+            myTableView.isHidden = true
+            searchBar.isHidden = true
+            
+        }
+    }
         
     func saveNewUser(text: String) {
         
@@ -67,9 +112,9 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
         databaseRef = Database.database().reference()
         
         if checkUsername(text: text) == true {
-            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
+            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkUsername")
         } else if myTextField.text == "" {
-            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
+            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkTextField")
         } else {
             if let image = addPhoto.image(for: .normal) {
                 
@@ -115,9 +160,9 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func checkUserAndSaveUserData(text: String) {
         if checkUsername(text: text) == true {
-            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
+            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkUsername")
         } else if myTextField.text == "" {
-            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok")
+            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkTextField")
         } else {
             if let image = addPhoto.image(for: .normal) {
                 if let user = StoredUserData(username: text, image: image, id: idForUserData) {
@@ -151,20 +196,28 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     // MARK: Alert
     
-    func alertOkFunctions() {
+    func alertOkFunctions(sender: String) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
         
+        if sender == "checkSelectedCell" {
+            if let uid = Auth.auth().currentUser?.uid, let id = friend.id {
+                databaseRef.child("Users/\(uid)/Friends").updateChildValues([id:"SentFriendRequest"])
+                databaseRef.child("Users/\(id)/Friends").updateChildValues([uid:"ReceivedFriendRequest"])
+            }
+        }
     }
     
     func alertDismissFunctions() {
-
+        
     }
     
-    func showAlert(title: String, message: String, dismissButton: String, okButton: String) {
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String, sender: String) {
         let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
         
         let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
             print("Handle Ok logic here")
-            self.alertOkFunctions()
+            self.alertOkFunctions(sender: sender)
             
         })
         alertController.addAction(actionOk)
@@ -224,4 +277,93 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
+    
+    // MARK: - Table view data source
+    
+    //tells the table view how many sections to display.
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    //Each meal should have its own row in that section
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if inSearchMode {
+            
+            return filteredData.count
+        }
+        
+        return users.count
+    }
+    
+    //only ask for the cells for rows that are being displayed
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        // Table view cells are reused and should be dequeued using a cell identifier.
+        let cellIdentifier = identifiersCell.PlayerCell.rawValue
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? UserCell {
+            
+            // Fetches the appropriate data for the data source layout.
+            var user = users[indexPath.row]
+
+            if inSearchMode {
+                user = filteredData[indexPath.row]
+                cell.alpha = 1
+            }
+            
+            cell.myLabel.text = user.name
+            
+            if let profileImageUrl = user.profileImageUrl {
+                cell.myImage.loadImageUsingCacheWithUrlString(profileImageUrl)
+            }
+            
+            
+            // Cell status
+            tableView.allowsMultipleSelection = true
+            // Don't show users
+            cell.alpha = 0
+            
+            return cell
+        } else {
+            
+            return UITableViewCell()
+        }
+    
+    }
+    
+    var friend: UserClass = UserClass(dictionary: ["":"" as AnyObject])
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let selectedCell = users[(indexPath as NSIndexPath).row]
+        friend = selectedCell
+        
+        if let friendName = friend.name {
+            showAlert(title: "Friend request", message: "Do you want to send a friend request to \(friendName)?", dismissButton: "No", okButton: "Yes", sender: "checkSelectedCell")
+        }
+    }
+    
+    
+    // MARK: Search
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchBar.text == nil || searchBar.text == "" {
+            
+            inSearchMode = false
+            
+            view.endEditing(true)
+            
+            myTableView.reloadData()
+            
+        } else {
+            
+            inSearchMode = true
+            
+            filteredData = users.filter({$0.name == searchBar.text!})
+            
+            myTableView.reloadData()
+        }
+    }
+    
 }

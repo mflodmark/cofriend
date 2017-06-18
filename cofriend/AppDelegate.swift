@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import FirebaseDatabase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,10 +21,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Configuring database
         FirebaseApp.configure()
+        Database.database().isPersistenceEnabled = true
         
-        // Change color of navigation bar
-        //UINavigationBar.appearance().backgroundColor = UIColor.darkGray
-        UINavigationBar.appearance().tintColor = UIColor.darkGray
+        // Configure textfield fix
+        IQKeyboardManager.sharedManager().enable = true
+        
+        
+        // Change color
+        
+        //let greenColor = UIColor(red: 0, green: 144, blue: 123, alpha: 1)
+        
+        // Background color
+        UITabBar.appearance().barTintColor = UIColor.orange
+        UINavigationBar.appearance().barTintColor = UIColor.orange
+        
+        // Text color
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UITabBar.appearance().tintColor = UIColor.white
+        
+
+
+
+        //UIView.appearance().backgroundColor = UIColor.lightGray
+
+        
+
         
         // Change text size and style of navigation bar
         let navigationFont = UIFont(name: "AvenirNextCondensed-DemiBold", size: 18)!

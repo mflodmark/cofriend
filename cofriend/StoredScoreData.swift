@@ -10,8 +10,48 @@ import Foundation
 import UIKit
 import os.log
 
+var scores = [ScoreClass]()
+
+class ScoreClass: NSObject {
+    var id: String?
+    //var tournamentId: String?
+    var gameId: String?
+    var createdByUserId: String?
+    var name: String?
+    var date: String?
+    var teamAPoints: String?
+    var teamBPoints: String?
+    
+    init(dictionary: [String: AnyObject]) {
+        self.id = dictionary["id"] as? String
+        //self.tournamentId = dictionary["tournamentId"] as? String
+        self.gameId = dictionary["gameId"] as? String
+        self.createdByUserId = dictionary["createdByUserId"] as? String
+        self.name = dictionary["name"] as? String
+        self.date = dictionary["date"] as? String
+        self.teamAPoints = dictionary["teamAPoints"] as? String
+        self.teamBPoints = dictionary["teamBPoints"] as? String
+    }
+}
+
+var teamAArray = [ScorePlayerClass]()
+var teamBArray = [ScorePlayerClass]()
 
 
+class ScorePlayerClass: NSObject {
+    var gameId: String?
+    var scoreId: String?
+    var players: [UserClass]?
+    
+    init(gameId: String?, scoreId: String?, players: [UserClass]?) {
+        self.gameId = gameId
+        self.scoreId = scoreId
+        self.players = players
+    }
+}
+
+
+/*
 class StoredTournamentData: NSObject, NSCoding {
     
     // MARK: Properties
@@ -134,7 +174,7 @@ func saveTournamentData() {
     } else {
         os_log("Failed to save...", log: OSLog.default, type: .error)
     }
-}
+}*/
 
 
 

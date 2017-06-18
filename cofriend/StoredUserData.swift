@@ -19,6 +19,9 @@ class UserClass: NSObject {
     var name: String?
     var email: String?
     var profileImageUrl: String?
+    var win: String? = "0"
+    var draw: String? = "0"
+    var lose: String? = "0"
     //var tournaments: [TournamentClass]?
     
     init(dictionary: [String: AnyObject]) {
@@ -26,7 +29,22 @@ class UserClass: NSObject {
         self.name = dictionary["name"] as? String
         self.email = dictionary["email"] as? String
         self.profileImageUrl = dictionary["profileImageUrl"] as? String
+        self.win = dictionary["win"] as? String
+        self.draw = dictionary["draw"] as? String
+        self.lose = dictionary["lose"] as? String
         //self.tournaments = dictionary["tournaments"] as? TournamentClass
+    }
+}
+
+var gameUsers = [gameUserClass]()
+
+class gameUserClass: NSObject {
+    var gamePoints: Int
+    var userId: String
+    
+    init(gamePoints: Int, userId: String) {
+        self.gamePoints = gamePoints
+        self.userId = userId
     }
 }
 

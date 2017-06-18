@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import FirebaseDatabase
+import Firebase
 
 class InsideTourVC: UITableViewController {
     
@@ -17,34 +19,37 @@ class InsideTourVC: UITableViewController {
         setUpRefreshController()
         setViewLayout(view: self.view)
         
+
+        navigationItem.title = selectedGame.name
+
         myTableView.delegate = self
         myTableView.dataSource = self
+        
+
     }
     
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        animateTable(tableView: myTableView)
         
-        // Check id
-        for each in myArray {
-            print("Id counter:   \(each.id)")
-        }
+        fetchScoreId()
+        //refreshData()
+        //animateTable(tableView: myTableView)
+        
     }
     
     // MARK: Declarations
     
     @IBOutlet var myTableView: UITableView!
 
-    var myArray = addTournamentData
+    var gameLeader: String = ""
+    var myArray = [ScoreClass]()
     var refreshController: UIRefreshControl = UIRefreshControl()
     
     // MARK: Functions
     
     func animateTable(tableView: UITableView) {
-        loadAnySavedData()
-        loadMyArray()
         
         tableView.reloadData()
         
@@ -79,27 +84,41 @@ class InsideTourVC: UITableViewController {
     }
     
     func refreshData() {
-        loadAnySavedData()
-        loadMyArray()
-        myTableView.reloadData()
+        fetchScoreId()
+        //myTableView.reloadData()
         refreshController.endRefreshing()
     }
     
-    func loadAnySavedData() {
-        addTournamentData = []
-        if let savedData = loadTournamentData() {
-            addTournamentData += savedData
+    func checkPoints(a: String, b: String) -> Bool {
+        
+        //let cell: InsideTourTableViewCell
+
+        
+        var height: Bool = false
+        if let pA = Int(a), let pB = Int(b) {
+            if pA > pB {
+                height = true
+            }
+        }
+        return height
+        
+    }
+    
+    
+    
+    func loadWithDelay(seconds: Int) {
+        // Converts a delay in seconds to nanoseconds as signed 64 bit integer
+        let delay = Int64(NSEC_PER_SEC * UInt64(seconds))
+        // Calculates a time value to execute the method given current time and delay
+        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
+        
+        // Executes the nextRound method at the dispatch time on the main queue
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+            //self.nextRound()
         }
     }
     
-    func loadMyArray() {
-        myArray = []
-        for each in addTournamentData {
-            if each.tournamentTitle == selectedTour.name && each.gameTitle == selectedGame.name {
-                myArray.append(each)
-            }
-        }
-    }
+
     
     // MARK: - Navigation
     
@@ -122,6 +141,207 @@ class InsideTourVC: UITableViewController {
         }
     }*/
     
+    // MARK: Fetch Data
+    
+    func fetchScoreId() {
+        // Clear arrays
+        scores.removeAll()
+        teamAArray.removeAll()
+        teamBArray.removeAll()
+        
+        // Fetch game ids
+        if let selectedGameId = selectedGame.id {
+            Database.database().reference().child("Scores/Games/\(selectedGameId)").observeSingleEvent(of: .value, with: {
+                
+                (snapshot) in
+                
+                print(snapshot)
+                
+                var snapArray: [String] = [String]()
+                print(snapshot.value as Any)
+                print(snapshot.key)
+                
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    for each in dictionary {
+                        snapArray.append(each.key)
+                    }
+                }
+                
+                for each in snapArray {
+                    self.fetchScores(scoreId: each)
+                    self.fetchUserConnectedToScore(scoreId: each, team: "TeamA")
+                    self.fetchUserConnectedToScore(scoreId: each, team: "TeamB")
+                }
+                
+            }, withCancel: nil)
+        }
+    }
+    
+    func fetchScores(scoreId: String) {
+        
+        // Single fetch tournament from user
+        Database.database().reference().child("Scores/Games/\(selectedGame.id!)/\(scoreId)").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+            
+            (snapshot) in
+            
+            print(snapshot)
+            
+            // Fetch game
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let score = ScoreClass(dictionary: dictionary)
+                
+                // add id
+                score.id = snapshot.key
+                print(score.id as Any)
+                
+                // add to array
+                scores.append(score)
+                self.myArray = scores
+                
+            }
+            
+            //this will crash because of background thread, so lets use dispatch_async to fix
+            DispatchQueue.main.async(execute: {
+                self.animateTable(tableView: self.myTableView)
+            })
+            
+        }, withCancel: nil)
+    }
+    
+    
+    func fetchUserConnectedToScore(scoreId: String, team: String) {
+        // Append players as well
+        Database.database().reference().child("Players/Games/\(selectedGame.id!)/\(scoreId)/\(team)").observeSingleEvent(of: .value, with: {
+            
+            (snapshot: DataSnapshot!) in
+            
+            print(snapshot)
+            
+            var snapArray = [String]()
+            var snapPlayer = [UserClass]()
+            if let snapValue = snapshot.value as? [String: AnyObject] {
+                for each in snapValue {
+                    if let val = each.value as? Bool {
+                        if val == true {
+                            snapArray.append(each.key)
+                        }
+                    }
+
+                }
+            }
+            print(snapArray.count)
+            
+            // fetch user data instead and add to array
+            for eachSnap in snapArray {
+                print("user count -----> \(users.count)")
+                for each in users {
+                    print(each.id!)
+                    print(eachSnap)
+                    if each.id == eachSnap {
+                        print("each id = each snap")
+                        snapPlayer.append(each)
+                        //print(players.count as Any)
+                        print("Each")
+                        print(each.name as Any)
+                        print(each.id as Any)
+                        print(each.email as Any)
+                        print(each.profileImageUrl as Any)
+                        
+                    }
+                }
+            }
+            
+            if team == "TeamA" {
+                teamAArray.append(ScorePlayerClass(gameId: selectedGame.id, scoreId: scoreId, players: snapPlayer))
+                print("TeamAArrayAppending")
+                print("TeamACount ---- \(teamAArray.count)")
+
+            } else if team == "TeamB" {
+                teamBArray.append(ScorePlayerClass(gameId: selectedGame.id, scoreId: scoreId, players: snapPlayer))
+                print("TeamBArrayAppending")
+            }
+            
+            print("counting team AAAAA ----- \(teamAArray.count)")
+
+            
+        }, withCancel: nil)
+    }
+    
+    func deleteScoresConnectedToTournament(id: String) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        databaseRef.child("Scores/Games/\(selectedGame.id!)/\(id)").removeValue()
+    }
+    
+    // MARK: Save data
+    
+    var teamA: Int = 0
+    var teamB: Int = 0
+    
+    func checkPoints(score: [ScorePlayerClass], p: Int) {
+        for each in score {
+            if selectedGame.id == each.gameId {
+                for eachPlayer in each.players! {
+                    for eachP in gamePoints {
+                        let counter: Int = 0
+                        if eachP.userId == eachPlayer.id {
+                            
+                        } else {
+                            let game = GamePointsClass(id: eachPlayer.id, gameId:  each.gameId, points: p)
+                            gamePoints.append(game)
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    
+    func checkLeader() -> String {
+        
+        var leader: String = ""
+        var points: Int = 0
+        
+        for each in gamePoints {
+            if each.points! > points {
+                leader = each.userId!
+                points = each.points!
+            }
+            
+        }
+        
+        return leader
+    }
+    
+    
+    func saveGameLeader() -> String {
+        var leader: String = ""
+        
+        for each in scores {
+            if let pA = Int(each.teamAPoints!), let pB = Int(each.teamBPoints!) {
+                if pA > pB {
+                    
+                    checkPoints(score: teamAArray, p: Int(selectedGame.winPoints!)!)
+                    
+                    
+                    teamB += Int(selectedGame.losePoints!)!
+                } else if pA < pB {
+                    teamB += Int(selectedGame.winPoints!)!
+                    teamA += Int(selectedGame.losePoints!)!
+
+                } else if pA == pB {
+                    teamB += Int(selectedGame.drawPoints!)!
+                    teamA += Int(selectedGame.drawPoints!)!
+                }
+            }
+        }
+        
+        leader = checkLeader()
+        
+        return leader
+    }
+
     
     // MARK: - Table view data source
         
@@ -146,25 +366,48 @@ class InsideTourVC: UITableViewController {
         let tour = myArray[indexPath.row]
         
         cell.date.text = tour.date
-        cell.playerScore.text = String(tour.teamOneScore)
-        cell.friendScore.text = String(tour.teamTwoScore)
+        cell.playerScore.text = tour.teamAPoints
+        cell.friendScore.text = tour.teamBPoints
         
-        if tour.teamOnePlayers.count == 1 {
-            cell.playerOne.text = tour.teamOnePlayers[0].username
-            cell.playerTwo.isHidden = true
-        } else if tour.teamOnePlayers.count == 2 {
-            cell.playerOne.text = tour.teamOnePlayers[0].username
-            cell.playerTwo.text = tour.teamOnePlayers[1].username
+        let font = UIFont(name: "Helvetica", size: 30.0)
+        
+        let height = checkPoints(a: cell.playerScore.text!, b: cell.friendScore.text!)
+        if height == true {
+            cell.playerScore.font = font
+        } else {
+            cell.friendScore.font = font
+        }
+
+        
+        print("eachTourId ---- \(tour.id as Any)")
+        
+        print("counting team A ----- \(teamAArray.count)")
+        print("Counting users ---- \(users.count)")
+        
+        for each in teamAArray {
+            print("eachScoreId ---- \(each.scoreId as Any)")
+            if each.scoreId == tour.id && each.players?.count == 1 {
+                cell.playerOne.text = each.players?[0].name
+                cell.playerTwo.isHidden = true
+            } else if each.scoreId == tour.id && each.players?.count == 2 {
+                cell.playerOne.text = each.players?[0].name
+                cell.playerOne.text = each.players?[1].name
+            }
         }
         
-        if tour.teamTwoPlayers.count == 1 {
-            cell.friendOne.text = tour.teamTwoPlayers[0].username
-            cell.friendTwo.isHidden = true
-        } else if tour.teamTwoPlayers.count == 2 {
-            cell.friendOne.text = tour.teamTwoPlayers[0].username
-            cell.friendTwo.text = tour.teamTwoPlayers[1].username
+        for each in teamBArray {
+            if each.scoreId == tour.id && each.players?.count  == 1 {
+                cell.friendOne.text = each.players?[0].name
+                cell.friendTwo.isHidden = true
+            } else if each.scoreId == tour.id && each.players?.count  == 2 {
+                cell.friendOne.text = each.players?[0].name
+                cell.friendTwo.text = each.players?[1].name
+            }
         }
         
+        // Fix point height with delay
+        //loadWithDelay(seconds: 1)
+
         return cell
     }
     
@@ -174,16 +417,17 @@ class InsideTourVC: UITableViewController {
             print("Deleting..")
             
             // Delete the row from the data source
-            if let id = checkSelectedIdPositionInScoreData(id: myArray[indexPath.row].id) {
-                addTournamentData.remove(at: id)
-            } else {
-                print("Failing to delete..")
+            if let selectedId = myArray[indexPath.row].id {
+                if let id = checkSelectedIdPositionInScoreData(id: selectedId) {
+                    scores.remove(at: id)
+                    deleteScoresConnectedToTournament(id: selectedId)
+                } else {
+                    print("Failing to delete..")
+                }
+                
             }
-            
+
             // This code saves the array whenever an item is deleted.
-            saveTournamentData()
-            loadAnySavedData()
-            loadMyArray()
             myTableView.reloadData()
         }
     }

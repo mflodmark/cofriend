@@ -17,8 +17,9 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
+
+        setViewLayout(view: self.view)
+
         //getPlayer()
         addPointsToLabels()
         addPercentToLabels()
@@ -94,7 +95,7 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
             
             // Adding user to UI
             if let dictionary = snapshot.value as? [String: AnyObject] {
-                self.playerName.text = dictionary["name"] as? String
+                //self.playerName.text = dictionary["name"] as? String
                 self.navigationItem.title = dictionary["name"] as? String
                 
                 if let profileImageUrl = dictionary["profileImageUrl"] as? String {
@@ -102,7 +103,20 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
                     self.myImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
                     self.imageLayout()
                 }
+                
+                // Default values
+                self.winScoreLabel.text = "0"
+                self.drawScoreLabel.text = "0"
+                self.loseScoreLabel.text = "0"
+                
+                self.winScoreLabel.text = dictionary["win"] as? String
+                self.drawScoreLabel.text = dictionary["draw"] as? String
+                self.loseScoreLabel.text = dictionary["lose"] as? String
+
             }
+            
+            self.addPointsToLabels()
+            self.addPercentToLabels()
             
         }, withCancel: nil)
     }
@@ -134,10 +148,15 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     func addPointsToLabels() {
-        winScoreLabel.text = String(pointsWin)
-        drawScoreLabel.text = String(pointsDraw)
-        loseScoreLabel.text = String(pointsLose)
-        
+        winScoreLabel.text = "0"
+        drawScoreLabel.text = "0"
+        loseScoreLabel.text = "0"
+        if let win = Int(winScoreLabel.text!), let draw = Int(drawScoreLabel.text!), let lose = Int(loseScoreLabel.text!) {
+            pointsWin = win
+            pointsDraw = draw
+            pointsLose = lose
+        }
+
         pointsTotal = pointsLose + pointsDraw + pointsWin
         totalScoreLabel.text = String(pointsTotal)
     }
@@ -199,7 +218,8 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         
-        playerImage.setImage(image, for: .normal)
+        myImageView.image = image
+        //playerImage.setImage(image, for: .normal)
         
         picker.dismiss(animated: true, completion: nil)
     }

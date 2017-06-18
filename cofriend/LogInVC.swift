@@ -39,7 +39,9 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
     @IBOutlet weak var textFieldStack: UIStackView!
     @IBOutlet weak var userImage: UIButton!
     
+    @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var registerOutlet: UIButton!
+    
     @IBAction func regiesterButton(_ sender: UIButton) {
         handleLoginRegister()
     }
@@ -48,16 +50,21 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
         toggle()
     }
     
+    @IBAction func forgotPasswordAction(_ sender: UIButton) {
+    
+    }
     
     // MARK: Log In
     
     func toggle() {
         if segmentedControl.selectedSegmentIndex == 0 {
             usernameTextField.isHidden = true
+            forgotPasswordButton.isHidden = false
             registerOutlet.setTitle("Log In", for: .normal)
             
         } else {
             usernameTextField.isHidden = false
+            forgotPasswordButton.isHidden = true
             registerOutlet.setTitle("Register", for: .normal)
 
         }
@@ -97,6 +104,17 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
     }
     
     func handleRegister() {
+        
+        if checkName() == false {
+            showAlert(title: "Not a unique name", message: "Plese try again", dismissButton: "Cancel", okButton: "Ok")
+            return
+        }
+        if checkEmail() == false {
+            showAlert(title: "Not a unique email", message: "Plese try again", dismissButton: "Cancel", okButton: "Ok")
+            return
+        }
+        
+        
         guard let email = emailTextField.text, let password = passwordTextField.text, let name = usernameTextField.text else {
             print("Form is not valid")
             return
@@ -135,7 +153,7 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
                     
                     if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
                         
-                        let values = ["name": name, "email": email, "profileImageUrl": profileImageUrl]
+                        let values = ["name": name, "email": email, "profileImageUrl": profileImageUrl, "win": "0", "lose": "0", "draw": "0"]
                         
                         self.registerUserIntoDatabaseWithUID(uid, values: values as [String : AnyObject])
                     }
@@ -166,6 +184,18 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
     }
     
     // MARK: Functions
+    
+    func checkEmail() -> Bool {
+        let checked = false
+        
+        return checked
+    }
+    
+    func checkName() -> Bool {
+        let checked = false
+        
+        return checked
+    }
     
     // Done button added to textfield
     let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked))
@@ -229,6 +259,37 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: Alert
+    
+    func alertOkFunctions() {
+        
+    }
+    
+    func alertDismissFunctions() {
+        
+    }
+    
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here")
+            self.alertOkFunctions()
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            print("Handle Cancel logic here")
+            self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
     }
     
     

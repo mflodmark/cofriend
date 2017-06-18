@@ -21,6 +21,7 @@ class GameClass: NSObject {
     var winPoints: String?
     var drawPoints: String?
     var losePoints: String?
+    var gameLeader: String?
     
     init(dictionary: [String: AnyObject]) {
         self.id = dictionary["id"] as? String
@@ -30,7 +31,37 @@ class GameClass: NSObject {
         self.winPoints = dictionary["winPoints"] as? String
         self.drawPoints = dictionary["drawPoints"] as? String
         self.losePoints = dictionary["losePoints"] as? String
+        self.gameLeader = dictionary["gameLeader"] as? String
 
+
+    }
+}
+
+var gamePlayers = [GamePlayerClass]()
+
+class GamePlayerClass: NSObject {
+    var id: String?
+    var gameId: String?
+    var players: [UserClass]?
+    
+    init(id: String?, gameId: String?, players: [UserClass]?) {
+        self.id = id
+        self.gameId = gameId
+        self.players = players
+    }
+}
+
+var gamePoints = [GamePointsClass]()
+
+class GamePointsClass: NSObject {
+    var userId: String?
+    var gameId: String?
+    var points: Int?
+    
+    init(id: String?, gameId: String?, points: Int?) {
+        self.userId = id
+        self.gameId = gameId
+        self.points = points
     }
 }
 

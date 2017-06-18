@@ -24,6 +24,9 @@ class ScoreInsideCell: UITableViewCell {
         //configure the view for selected state
     }
     
+    
+
+    
     // MARK: Properties
     
     @IBOutlet weak var teamAButton: UIButton!

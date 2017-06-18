@@ -18,9 +18,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         let cellId = "cellId"
         
-        setViewLayout(view: self.view)
+        //setViewLayout(view: self.view)
         
-        self.navigationController?.hidesBarsOnSwipe = true
+        //self.navigationController?.hidesBarsOnSwipe = true
 
         myTableView.register(UserCell.self, forCellReuseIdentifier: cellId)
 
@@ -34,7 +34,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         // Reset array
         users = []
-        fetchUser()
+        fetchFriends()
         
     }
     
@@ -48,12 +48,50 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: Functions
     
+    func fetchFriends() {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+    
+        // Value added
+        databaseRef.child("Users/\(uid!)/Friends").queryOrderedByKey().observe(.childAdded, with: {
+            
+            (snapshot) in
+            
+            print(snapshot)
+            
+            // Fetch friends
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                for each in dictionary {
+                    if each.value as! String == "ReceivedFriendRequest" {
+                        
+                    }
+                }
+            }
+        }, withCancel: nil)
+        
+        // Value changed
+        databaseRef.child("Users/\(uid!)/Friends").queryOrderedByKey().observe(.childChanged, with: {
+            
+            (snapshot) in
+            
+            print(snapshot)
+            
+            // Fetch friends
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                for each in dictionary {
+                    if each.value as! Bool == true {
+                        self.fetchUser(id: each.key)
+                    }
+                }
+            }
+        }, withCancel: nil)
+    }
 
-    func fetchUser() {
+    func fetchUser(id: String) {
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
         
-        databaseRef.child("Users").queryOrderedByKey().observe(.childAdded, with: {
+        databaseRef.child("Users\(id)").queryOrderedByKey().observeSingleEvent(of: .value, with: {
         
             (snapshot) in
             

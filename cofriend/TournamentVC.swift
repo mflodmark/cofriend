@@ -27,17 +27,18 @@ class TournamentVC: UITableViewController {
         nyTableView.dataSource = self
         
         
-        self.navigationController?.hidesBarsOnSwipe = true
+        //self.navigationController?.hidesBarsOnSwipe = true
+
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tournaments.removeAll()
-        players.removeAll()
-        users.removeAll()
-        fetchUser()
+        
+        //fetchUser()
         fetchUserTournaments()
+        //refreshData()
+        
         animateTable(tableView: nyTableView)
     }
     
@@ -65,6 +66,7 @@ class TournamentVC: UITableViewController {
     }
     
     func refreshData() {
+        fetchUserTournaments()
         nyTableView.reloadData()
         refreshController.endRefreshing()
     }
@@ -90,37 +92,59 @@ class TournamentVC: UITableViewController {
         }
     }
     
+
     
+    
+    // MARK: Fetch data
     
     func fetchUserTournaments() {
+        // Clear arrays
+        tournaments.removeAll()
+        players.removeAll()
+        
         // Current user id
         let uid = Auth.auth().currentUser?.uid
         
-        // Single fetch tournament from user
-        Database.database().reference().child("Users").child(uid!).child("Tournaments").observe(.childAdded, with: {
+        // Fetch tournament from user
+        Database.database().reference().child("Users/\(uid!)/Tournaments").observeSingleEvent(of: .value, with: {
             
             (snapshot) in
             
             print(snapshot)
-
-            var snapArray = [String]()
-            let snap = snapshot.value as! String
-            print(snapArray.count)
             
-            snapArray.append(snap)
+            var snapArray = [String]()
+            print(snapshot.value as Any)
+            print(snapshot.key)
+            
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                for each in dictionary {
+                    if each.value as? Bool == true {
+                        print("adding value")
+                        snapArray.append(each.key)
+                    } else {
+                        print("Didn't add value")
+                    }
+                }
+            }
+            
+
+ 
             
             for each in snapArray {                
-                self.fetchTournamentConnectedWithUserId(userId: each)
+                self.fetchTournamentConnectedWithUserId(tourId: each)
                 self.fetchUserConnectedToTournaments(userId: each)
             }
+            
+            
+            
             
         }, withCancel: nil)
     }
     
-    func fetchTournamentConnectedWithUserId(userId: String) {
+    func fetchTournamentConnectedWithUserId(tourId: String) {
         
         // Single fetch the tournament that the user has access to
-        Database.database().reference().child("Tournaments/\(userId)").observeSingleEvent(of: .value, with: {
+        Database.database().reference().child("Tournaments/\(tourId)").observeSingleEvent(of: .value, with: {
             
             (snapshot) in
             
@@ -149,13 +173,21 @@ class TournamentVC: UITableViewController {
             (snapshot: DataSnapshot!) in
             
             print(snapshot)
-
+            
             var snapArray = [String]()
-            var snapPlayer = [UserClass]()
-            if let snap = snapshot.value as? NSArray  {
-                snapArray = snap as! [String]
+            if let snapValue = snapshot.value as? [String: AnyObject] {
+                for each in snapValue {
+                    if let val = each.value as? Bool {
+                        if val == true {
+                            snapArray.append(each.key)
+                        }
+                    }
+                    
+                }
             }
             print(snapArray.count)
+
+            var snapPlayer = [UserClass]()
             
             // fetch user data instead and add to array
             for eachSnap in snapArray {
@@ -179,22 +211,27 @@ class TournamentVC: UITableViewController {
             
             players.append(PlayerClass(tournamentId: userId, players: snapPlayer))
             
-            
-             //this will crash because of background thread, so lets use dispatch_async to fix
-             DispatchQueue.main.async(execute: {
-             self.animateTable(tableView: self.nyTableView)
-             })
+            //this will crash because of background thread, so lets use dispatch_async to fix
+            DispatchQueue.main.async(execute: {
+                self.animateTable(tableView: self.nyTableView)
+            })
             
         }, withCancel: nil)
     }
     
+    /*
     func fetchUser() {
+        
+        // Clear array
+        users.removeAll()
+        
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
         
         databaseRef.child("Users").queryOrderedByKey().observe(.childAdded, with: {
             
             (snapshot) in
+
             
             // Fetch user
             if let dictionary = snapshot.value as? [String: AnyObject] {
@@ -207,9 +244,9 @@ class TournamentVC: UITableViewController {
             }
             
         }, withCancel: nil)
-    }
+    }*/
     
-    func deleteTournament(id: String, index: Int) {
+    func deleteTournament(id: String) {
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
         
@@ -219,24 +256,19 @@ class TournamentVC: UITableViewController {
         let uid = Auth.auth().currentUser?.uid
         
         // Delete tournament from user as well
-        databaseRef.child("Users").child("\(uid!)").child("\(index)").removeValue()
+        databaseRef.child("Users/\(uid!)/Tournaments/\(id)").setValue(false)
         
-
-    }
-    
-    func deletePlayersConnectedToTournament(id: String) {
-        var databaseRef: DatabaseReference!
-        databaseRef = Database.database().reference()
-        
+        // deletePlayersConnectedToTournament
         databaseRef.child("Players").child("Tournaments").child("\(id)").removeValue()
+
+        // deleteGamesConnectedToTournament
+        databaseRef.child("Games").child("Tournaments").child("\(id)").removeValue()
+
+        // deleteScoresConnectedToTournament
     }
     
-    func deleteGamesConnectedToTournament(id: String) {
-        var databaseRef: DatabaseReference!
-        databaseRef = Database.database().reference()
-        
-        databaseRef.child("Games").child("Tournaments").child("\(id)").removeValue()
-    }
+
+
 
     
     // MARK: - Table view data source
@@ -300,9 +332,7 @@ class TournamentVC: UITableViewController {
             if let id = tournaments[indexPath.row].id {
                 if let selectedId = checkSelectedIdPositionInTournamentData(id: id) {
                     tournaments.remove(at: selectedId)
-                    deleteTournament(id: id, index: indexPath.row)
-                    deletePlayersConnectedToTournament(id: id)
-                    deleteGamesConnectedToTournament(id: id)
+                    deleteTournament(id: id)
                 } else {
                     print("Failing to delete..")
                 }

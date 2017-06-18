@@ -18,6 +18,11 @@ class DatePickerClass: UIViewController {
         popUpView.layer.masksToBounds = true
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        dismiss(animated: true, completion: nil)
+        
+    }
+    
 
     @IBOutlet weak var popUpView: UIView!
     @IBOutlet weak var datePicker: UIDatePicker!

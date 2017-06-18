@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2804C7671EA627D500913ACE /* OnboardingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804C7661EA627D500913ACE /* OnboardingVC.swift */; };
 		2804C7691EA6443D00913ACE /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804C7681EA6443D00913ACE /* Identifiers.swift */; };
 		2804C76B1EA6B4F800913ACE /* StoredUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804C76A1EA6B4F800913ACE /* StoredUserData.swift */; };
 		2804C76E1EA7C10B00913ACE /* StoredTitleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804C76D1EA7C10B00913ACE /* StoredTitleData.swift */; };
@@ -25,8 +24,8 @@
 		2867D8B21EACDAA300B72CDE /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B11EACDAA200B72CDE /* GradientView.swift */; };
 		2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B41EACE40300B72CDE /* TournamentVC.swift */; };
 		2867D8B91EACED2500B72CDE /* InsideTourVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B81EACED2400B72CDE /* InsideTourVC.swift */; };
-		2867D8BB1EACF47500B72CDE /* ScoreInsideTourVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8BA1EACF47500B72CDE /* ScoreInsideTourVC.swift */; };
-		2867D8BD1EAD006200B72CDE /* StoredTournamentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8BC1EAD006200B72CDE /* StoredTournamentData.swift */; };
+		2867D8BB1EACF47500B72CDE /* ScoreInsideTour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8BA1EACF47500B72CDE /* ScoreInsideTour.swift */; };
+		2867D8BD1EAD006200B72CDE /* StoredScoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8BC1EAD006200B72CDE /* StoredScoreData.swift */; };
 		2867D8BF1EAD0C3800B72CDE /* InsideTourTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8BE1EAD0C3800B72CDE /* InsideTourTableViewCell.swift */; };
 		2867D8C11EAD25EC00B72CDE /* AddTourVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8C01EAD25EC00B72CDE /* AddTourVC.swift */; };
 		2867D8C51EAD2AB600B72CDE /* TourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8C41EAD2AB600B72CDE /* TourCell.swift */; };
@@ -40,6 +39,24 @@
 		2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */; };
 		2867D8DE1ECA301400B72CDE /* ScoreCollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */; };
 		2867D8E01ECD5D5E00B72CDE /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */; };
+		28C328431EEE5E0B00077B9D /* IQNSArray+Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3282D1EEE5E0B00077B9D /* IQNSArray+Sort.swift */; };
+		28C328441EEE5E0B00077B9D /* IQUIScrollView+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3282E1EEE5E0B00077B9D /* IQUIScrollView+Additions.swift */; };
+		28C328451EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3282F1EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift */; };
+		28C328461EEE5E0B00077B9D /* IQUIView+Hierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328301EEE5E0B00077B9D /* IQUIView+Hierarchy.swift */; };
+		28C328471EEE5E0B00077B9D /* IQUIViewController+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328311EEE5E0B00077B9D /* IQUIViewController+Additions.swift */; };
+		28C328481EEE5E0B00077B9D /* IQUIWindow+Hierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328321EEE5E0B00077B9D /* IQUIWindow+Hierarchy.swift */; };
+		28C328491EEE5E0B00077B9D /* IQKeyboardManagerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328341EEE5E0B00077B9D /* IQKeyboardManagerConstants.swift */; };
+		28C3284A1EEE5E0B00077B9D /* IQKeyboardManagerConstantsInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328351EEE5E0B00077B9D /* IQKeyboardManagerConstantsInternal.swift */; };
+		28C3284B1EEE5E0B00077B9D /* IQKeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328361EEE5E0B00077B9D /* IQKeyboardManager.swift */; };
+		28C3284C1EEE5E0B00077B9D /* IQKeyboardReturnKeyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328381EEE5E0B00077B9D /* IQKeyboardReturnKeyHandler.swift */; };
+		28C3284D1EEE5E0B00077B9D /* IQTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3283A1EEE5E0B00077B9D /* IQTextView.swift */; };
+		28C3284E1EEE5E0B00077B9D /* IQBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3283C1EEE5E0B00077B9D /* IQBarButtonItem.swift */; };
+		28C3284F1EEE5E0B00077B9D /* IQPreviousNextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3283D1EEE5E0B00077B9D /* IQPreviousNextView.swift */; };
+		28C328501EEE5E0B00077B9D /* IQTitleBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3283E1EEE5E0B00077B9D /* IQTitleBarButtonItem.swift */; };
+		28C328511EEE5E0B00077B9D /* IQToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3283F1EEE5E0B00077B9D /* IQToolbar.swift */; };
+		28C328521EEE5E0B00077B9D /* IQUIView+IQKeyboardToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328401EEE5E0B00077B9D /* IQUIView+IQKeyboardToolbar.swift */; };
+		28C328531EEE5E0B00077B9D /* IQKeyboardManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 28C328421EEE5E0B00077B9D /* IQKeyboardManager.bundle */; };
+		28C328551EF1D82600077B9D /* Emitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C328541EF1D82600077B9D /* Emitter.swift */; };
 		28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */; };
 		28F034251ED49883000AAFCB /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F034241ED49882000AAFCB /* UserCell.swift */; };
 		28F034271ED6C829000AAFCB /* TableViewCollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F034261ED6C829000AAFCB /* TableViewCollCell.swift */; };
@@ -61,7 +78,6 @@
 
 /* Begin PBXFileReference section */
 		2221154FAC88C8886C110389 /* libPods-cofriend.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cofriend.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2804C7661EA627D500913ACE /* OnboardingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingVC.swift; sourceTree = "<group>"; };
 		2804C7681EA6443D00913ACE /* Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		2804C76A1EA6B4F800913ACE /* StoredUserData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredUserData.swift; sourceTree = "<group>"; };
 		2804C76D1EA7C10B00913ACE /* StoredTitleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredTitleData.swift; sourceTree = "<group>"; };
@@ -83,8 +99,8 @@
 		2867D8B11EACDAA200B72CDE /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2867D8B41EACE40300B72CDE /* TournamentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TournamentVC.swift; sourceTree = "<group>"; };
 		2867D8B81EACED2400B72CDE /* InsideTourVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsideTourVC.swift; sourceTree = "<group>"; };
-		2867D8BA1EACF47500B72CDE /* ScoreInsideTourVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreInsideTourVC.swift; sourceTree = "<group>"; };
-		2867D8BC1EAD006200B72CDE /* StoredTournamentData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredTournamentData.swift; sourceTree = "<group>"; };
+		2867D8BA1EACF47500B72CDE /* ScoreInsideTour.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreInsideTour.swift; sourceTree = "<group>"; };
+		2867D8BC1EAD006200B72CDE /* StoredScoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredScoreData.swift; sourceTree = "<group>"; };
 		2867D8BE1EAD0C3800B72CDE /* InsideTourTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsideTourTableViewCell.swift; sourceTree = "<group>"; };
 		2867D8C01EAD25EC00B72CDE /* AddTourVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTourVC.swift; sourceTree = "<group>"; };
 		2867D8C41EAD2AB600B72CDE /* TourCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TourCell.swift; sourceTree = "<group>"; };
@@ -98,6 +114,25 @@
 		2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreInsideCell.swift; sourceTree = "<group>"; };
 		2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreCollCell.swift; sourceTree = "<group>"; };
 		2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
+		28C3282D1EEE5E0B00077B9D /* IQNSArray+Sort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQNSArray+Sort.swift"; sourceTree = "<group>"; };
+		28C3282E1EEE5E0B00077B9D /* IQUIScrollView+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQUIScrollView+Additions.swift"; sourceTree = "<group>"; };
+		28C3282F1EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQUITextFieldView+Additions.swift"; sourceTree = "<group>"; };
+		28C328301EEE5E0B00077B9D /* IQUIView+Hierarchy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQUIView+Hierarchy.swift"; sourceTree = "<group>"; };
+		28C328311EEE5E0B00077B9D /* IQUIViewController+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQUIViewController+Additions.swift"; sourceTree = "<group>"; };
+		28C328321EEE5E0B00077B9D /* IQUIWindow+Hierarchy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQUIWindow+Hierarchy.swift"; sourceTree = "<group>"; };
+		28C328341EEE5E0B00077B9D /* IQKeyboardManagerConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQKeyboardManagerConstants.swift; sourceTree = "<group>"; };
+		28C328351EEE5E0B00077B9D /* IQKeyboardManagerConstantsInternal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQKeyboardManagerConstantsInternal.swift; sourceTree = "<group>"; };
+		28C328361EEE5E0B00077B9D /* IQKeyboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQKeyboardManager.swift; sourceTree = "<group>"; };
+		28C328371EEE5E0B00077B9D /* IQKeyboardManagerSwift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQKeyboardManagerSwift.h; sourceTree = "<group>"; };
+		28C328381EEE5E0B00077B9D /* IQKeyboardReturnKeyHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQKeyboardReturnKeyHandler.swift; sourceTree = "<group>"; };
+		28C3283A1EEE5E0B00077B9D /* IQTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQTextView.swift; sourceTree = "<group>"; };
+		28C3283C1EEE5E0B00077B9D /* IQBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQBarButtonItem.swift; sourceTree = "<group>"; };
+		28C3283D1EEE5E0B00077B9D /* IQPreviousNextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQPreviousNextView.swift; sourceTree = "<group>"; };
+		28C3283E1EEE5E0B00077B9D /* IQTitleBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQTitleBarButtonItem.swift; sourceTree = "<group>"; };
+		28C3283F1EEE5E0B00077B9D /* IQToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQToolbar.swift; sourceTree = "<group>"; };
+		28C328401EEE5E0B00077B9D /* IQUIView+IQKeyboardToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IQUIView+IQKeyboardToolbar.swift"; sourceTree = "<group>"; };
+		28C328421EEE5E0B00077B9D /* IQKeyboardManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IQKeyboardManager.bundle; sourceTree = "<group>"; };
+		28C328541EF1D82600077B9D /* Emitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Emitter.swift; sourceTree = "<group>"; };
 		28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomControls.swift; sourceTree = "<group>"; };
 		28F034241ED49882000AAFCB /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		28F034261ED6C829000AAFCB /* TableViewCollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCollCell.swift; sourceTree = "<group>"; };
@@ -127,20 +162,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2804C7651EA627BA00913ACE /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				2804C7661EA627D500913ACE /* OnboardingVC.swift */,
-			);
-			name = Onboarding;
-			sourceTree = "<group>";
-		};
 		2804C76C1EA7C0B100913ACE /* StoredData */ = {
 			isa = PBXGroup;
 			children = (
 				28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */,
 				2804C76A1EA6B4F800913ACE /* StoredUserData.swift */,
-				2867D8BC1EAD006200B72CDE /* StoredTournamentData.swift */,
+				2867D8BC1EAD006200B72CDE /* StoredScoreData.swift */,
 				2867D8C71EAD2C6600B72CDE /* StoredTourData.swift */,
 				2804C76D1EA7C10B00913ACE /* StoredTitleData.swift */,
 				2867D8D41EB90BB500B72CDE /* StoredGameTitleData.swift */,
@@ -171,9 +198,9 @@
 		2804CE211E85CE6C000008E8 /* cofriend */ = {
 			isa = PBXGroup;
 			children = (
+				28C3282B1EEE5E0B00077B9D /* IQKeyboardManagerSwift */,
 				2804CE501E8AF290000008E8 /* User */,
 				2804CE511E8AF296000008E8 /* Friends */,
-				2804C7651EA627BA00913ACE /* Onboarding */,
 				2867D8B31EACE3E400B72CDE /* ScoreTournament */,
 				2804CE5A1E9F40DE000008E8 /* Main */,
 				2804C76C1EA7C0B100913ACE /* StoredData */,
@@ -225,6 +252,7 @@
 				2804CE441E8AE5E4000008E8 /* Layout.swift */,
 				2804C7681EA6443D00913ACE /* Identifiers.swift */,
 				2804CE581E9F40C5000008E8 /* Errors.swift */,
+				28C328541EF1D82600077B9D /* Emitter.swift */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -239,21 +267,16 @@
 			name = ScoreTournament;
 			sourceTree = "<group>";
 		};
-		2867D8C21EAD2A7800B72CDE /* Add */ = {
-			isa = PBXGroup;
-			children = (
-				2867D8C01EAD25EC00B72CDE /* AddTourVC.swift */,
-				2867D8C91EAE75C700B72CDE /* AddTourCell.swift */,
-			);
-			name = Add;
-			sourceTree = "<group>";
-		};
 		2867D8C31EAD2A8300B72CDE /* Inside */ = {
 			isa = PBXGroup;
 			children = (
 				2867D8B81EACED2400B72CDE /* InsideTourVC.swift */,
 				2867D8BE1EAD0C3800B72CDE /* InsideTourTableViewCell.swift */,
-				2867D8DA1EBA8A0100B72CDE /* Add */,
+				2867D8BA1EACF47500B72CDE /* ScoreInsideTour.swift */,
+				28F034261ED6C829000AAFCB /* TableViewCollCell.swift */,
+				2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */,
+				2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */,
+				2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */,
 			);
 			name = Inside;
 			sourceTree = "<group>";
@@ -263,7 +286,8 @@
 			children = (
 				2867D8B41EACE40300B72CDE /* TournamentVC.swift */,
 				2867D8C41EAD2AB600B72CDE /* TourCell.swift */,
-				2867D8C21EAD2A7800B72CDE /* Add */,
+				2867D8C01EAD25EC00B72CDE /* AddTourVC.swift */,
+				2867D8C91EAE75C700B72CDE /* AddTourCell.swift */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -273,29 +297,74 @@
 			children = (
 				2867D8CE1EB852B900B72CDE /* GamesTVC.swift */,
 				2867D8D21EB9093A00B72CDE /* AddGameCell.swift */,
-				2867D8D01EB8530500B72CDE /* Add */,
+				2867D8D61EB9154100B72CDE /* AddGameTitleVC.swift */,
 			);
 			name = Games;
 			sourceTree = "<group>";
 		};
-		2867D8D01EB8530500B72CDE /* Add */ = {
+		28C3282B1EEE5E0B00077B9D /* IQKeyboardManagerSwift */ = {
 			isa = PBXGroup;
 			children = (
-				2867D8D61EB9154100B72CDE /* AddGameTitleVC.swift */,
+				28C3282C1EEE5E0B00077B9D /* Categories */,
+				28C328331EEE5E0B00077B9D /* Constants */,
+				28C328361EEE5E0B00077B9D /* IQKeyboardManager.swift */,
+				28C328371EEE5E0B00077B9D /* IQKeyboardManagerSwift.h */,
+				28C328381EEE5E0B00077B9D /* IQKeyboardReturnKeyHandler.swift */,
+				28C328391EEE5E0B00077B9D /* IQTextView */,
+				28C3283B1EEE5E0B00077B9D /* IQToolbar */,
+				28C328411EEE5E0B00077B9D /* Resources */,
 			);
-			name = Add;
+			path = IQKeyboardManagerSwift;
 			sourceTree = "<group>";
 		};
-		2867D8DA1EBA8A0100B72CDE /* Add */ = {
+		28C3282C1EEE5E0B00077B9D /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				2867D8BA1EACF47500B72CDE /* ScoreInsideTourVC.swift */,
-				28F034261ED6C829000AAFCB /* TableViewCollCell.swift */,
-				2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */,
-				2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */,
-				2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */,
+				28C3282D1EEE5E0B00077B9D /* IQNSArray+Sort.swift */,
+				28C3282E1EEE5E0B00077B9D /* IQUIScrollView+Additions.swift */,
+				28C3282F1EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift */,
+				28C328301EEE5E0B00077B9D /* IQUIView+Hierarchy.swift */,
+				28C328311EEE5E0B00077B9D /* IQUIViewController+Additions.swift */,
+				28C328321EEE5E0B00077B9D /* IQUIWindow+Hierarchy.swift */,
 			);
-			name = Add;
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		28C328331EEE5E0B00077B9D /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				28C328341EEE5E0B00077B9D /* IQKeyboardManagerConstants.swift */,
+				28C328351EEE5E0B00077B9D /* IQKeyboardManagerConstantsInternal.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		28C328391EEE5E0B00077B9D /* IQTextView */ = {
+			isa = PBXGroup;
+			children = (
+				28C3283A1EEE5E0B00077B9D /* IQTextView.swift */,
+			);
+			path = IQTextView;
+			sourceTree = "<group>";
+		};
+		28C3283B1EEE5E0B00077B9D /* IQToolbar */ = {
+			isa = PBXGroup;
+			children = (
+				28C3283C1EEE5E0B00077B9D /* IQBarButtonItem.swift */,
+				28C3283D1EEE5E0B00077B9D /* IQPreviousNextView.swift */,
+				28C3283E1EEE5E0B00077B9D /* IQTitleBarButtonItem.swift */,
+				28C3283F1EEE5E0B00077B9D /* IQToolbar.swift */,
+				28C328401EEE5E0B00077B9D /* IQUIView+IQKeyboardToolbar.swift */,
+			);
+			path = IQToolbar;
+			sourceTree = "<group>";
+		};
+		28C328411EEE5E0B00077B9D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				28C328421EEE5E0B00077B9D /* IQKeyboardManager.bundle */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		28F034211ECEAFAC000AAFCB /* CustomControls */ = {
@@ -413,6 +482,7 @@
 			files = (
 				2804C7721EAB51DA00913ACE /* File in Resources */,
 				2804CE2D1E85CE6C000008E8 /* LaunchScreen.storyboard in Resources */,
+				28C328531EEE5E0B00077B9D /* IQKeyboardManager.bundle in Resources */,
 				28F034291EDCBDC7000AAFCB /* GoogleService-Info.plist in Resources */,
 				2804CE2A1E85CE6C000008E8 /* Assets.xcassets in Resources */,
 				2804CE281E85CE6C000008E8 /* Main.storyboard in Resources */,
@@ -485,35 +555,51 @@
 				2804C7761EAB8F9A00913ACE /* GlobalFuncs.swift in Sources */,
 				2867D8C81EAD2C6600B72CDE /* StoredTourData.swift in Sources */,
 				2867D8B91EACED2500B72CDE /* InsideTourVC.swift in Sources */,
+				28C328431EEE5E0B00077B9D /* IQNSArray+Sort.swift in Sources */,
 				2867D8D91EB91F8E00B72CDE /* AddNewPlayerVC.swift in Sources */,
+				28C3284B1EEE5E0B00077B9D /* IQKeyboardManager.swift in Sources */,
 				2804C76E1EA7C10B00913ACE /* StoredTitleData.swift in Sources */,
-				2867D8BD1EAD006200B72CDE /* StoredTournamentData.swift in Sources */,
+				2867D8BD1EAD006200B72CDE /* StoredScoreData.swift in Sources */,
 				2867D8C51EAD2AB600B72CDE /* TourCell.swift in Sources */,
 				2867D8D51EB90BB500B72CDE /* StoredGameTitleData.swift in Sources */,
 				28F0342D1EDF6793000AAFCB /* LoadImages.swift in Sources */,
+				28C328461EEE5E0B00077B9D /* IQUIView+Hierarchy.swift in Sources */,
+				28C328501EEE5E0B00077B9D /* IQTitleBarButtonItem.swift in Sources */,
+				28C328471EEE5E0B00077B9D /* IQUIViewController+Additions.swift in Sources */,
 				2867D8BF1EAD0C3800B72CDE /* InsideTourTableViewCell.swift in Sources */,
 				2867D8D71EB9154100B72CDE /* AddGameTitleVC.swift in Sources */,
 				2867D8CF1EB852BA00B72CDE /* GamesTVC.swift in Sources */,
+				28C328451EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift in Sources */,
+				28C3284F1EEE5E0B00077B9D /* IQPreviousNextView.swift in Sources */,
 				2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */,
 				28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */,
 				2867D8DE1ECA301400B72CDE /* ScoreCollCell.swift in Sources */,
+				28C328511EEE5E0B00077B9D /* IQToolbar.swift in Sources */,
 				28F034251ED49883000AAFCB /* UserCell.swift in Sources */,
 				2867D8C11EAD25EC00B72CDE /* AddTourVC.swift in Sources */,
 				2804CE591E9F40C6000008E8 /* Errors.swift in Sources */,
 				2867D8B21EACDAA300B72CDE /* GradientView.swift in Sources */,
+				28C3284C1EEE5E0B00077B9D /* IQKeyboardReturnKeyHandler.swift in Sources */,
 				2804CE231E85CE6C000008E8 /* AppDelegate.swift in Sources */,
-				2867D8BB1EACF47500B72CDE /* ScoreInsideTourVC.swift in Sources */,
+				2867D8BB1EACF47500B72CDE /* ScoreInsideTour.swift in Sources */,
 				2804C76B1EA6B4F800913ACE /* StoredUserData.swift in Sources */,
 				2804CE491E8AEC48000008E8 /* FriendsViewController.swift in Sources */,
+				28C328491EEE5E0B00077B9D /* IQKeyboardManagerConstants.swift in Sources */,
 				28F034271ED6C829000AAFCB /* TableViewCollCell.swift in Sources */,
+				28C328521EEE5E0B00077B9D /* IQUIView+IQKeyboardToolbar.swift in Sources */,
 				2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */,
 				2804C7691EA6443D00913ACE /* Identifiers.swift in Sources */,
+				28C328551EF1D82600077B9D /* Emitter.swift in Sources */,
 				28F0342B1EDDFE1C000AAFCB /* LogInVC.swift in Sources */,
-				2804C7671EA627D500913ACE /* OnboardingVC.swift in Sources */,
 				2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */,
 				2867D8CA1EAE75C700B72CDE /* AddTourCell.swift in Sources */,
 				2867D8D31EB9093A00B72CDE /* AddGameCell.swift in Sources */,
+				28C3284E1EEE5E0B00077B9D /* IQBarButtonItem.swift in Sources */,
+				28C328481EEE5E0B00077B9D /* IQUIWindow+Hierarchy.swift in Sources */,
+				28C328441EEE5E0B00077B9D /* IQUIScrollView+Additions.swift in Sources */,
+				28C3284D1EEE5E0B00077B9D /* IQTextView.swift in Sources */,
 				2867D8E01ECD5D5E00B72CDE /* DatePicker.swift in Sources */,
+				28C3284A1EEE5E0B00077B9D /* IQKeyboardManagerConstantsInternal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

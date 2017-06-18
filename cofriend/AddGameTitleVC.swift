@@ -16,22 +16,34 @@ class AddGameTitleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        sportButtons = [tennisButton, tableTennisButton, fifaButton, nhlButton, squashButton, badmintonButton]
+        //sportButtonsCenter: [CGPoint] = [tennisCenter, tableTennisCenter, fifaCenter, nhlCenter, squashCenter, badmintonCenter]
+
+        
+        createTitles()
+        stepperValues()
         addButtonsToTextField(field: myTextField)
         
         popUpView.layer.cornerRadius = 10
         popUpView.layer.masksToBounds = true
-  
         
+        setCenter()
+        setUpPopUpButtons()
+  
     }
 
     override func viewWillAppear(_ animated: Bool) {
         myTextField.addTarget(self, action: #selector(myTargetFunction), for: UIControlEvents.touchDown)
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        dismiss(animated: true, completion: nil)
+
+    }
+    
     @IBOutlet weak var myTextField: UITextField!
     @IBOutlet weak var popUpView: UIView!
     var keyBoardIsActive: Bool = false
-    @IBOutlet weak var topConstraintOfTextFIeld: NSLayoutConstraint!
     
 
     
@@ -42,13 +54,28 @@ class AddGameTitleVC: UIViewController {
     @IBOutlet weak var drawStepper: UIStepper!
     @IBOutlet weak var loseStepper: UIStepper!
     
+    @IBOutlet weak var popUpButton: UIButton!
+    @IBOutlet weak var tennisButton: UIButton!
+    
+    
+    @IBOutlet weak var tableTennisButton: UIButton!
+    @IBOutlet weak var badmintonButton: UIButton!
+    @IBOutlet weak var nhlButton: UIButton!
+    @IBOutlet weak var squashButton: UIButton!
+    @IBOutlet weak var fifaButton: UIButton!
+    
     
     
     var win = 0
     var draw = 0
     var lose = 0
+    let popUpButtonColor = UIColor.clear
     
     // MARK: Actions
+    @IBAction func doneButton(_ sender: UIButton) {
+        saveNewGame()
+        dismiss(animated: true, completion: nil)
+    }
 
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
         if sender == winStepper {
@@ -61,7 +88,163 @@ class AddGameTitleVC: UIViewController {
         createTitles()
     }
     
+    @IBAction func popUpButtonAction(_ sender: UIButton) {
+        animatePopUpButton(sender: sender)
+
+    }
+    
+
+    
+    
     // MARK: Functions
+    
+    func snow(image: UIImage) {
+        let emitter = Emitter.get(image: image)
+        emitter.emitterPosition = CGPoint(x: view.frame.size.width / 2, y: 0)
+        emitter.emitterSize = CGSize(width: view.frame.size.width, height: 2.0)
+        view.layer.addSublayer(emitter)
+    }
+    
+    func animatePopUpButton(sender: UIButton) {
+        if sender == popUpButton {
+            bounce(button: sender)
+            if sender.backgroundColor == popUpButtonColor {
+                UIView.animate(withDuration: 0.3, animations: {
+                    // Animations here
+                    //self.tennisButton.center = self.tennisCenter
+                    self.spreadOutButtons()
+                })
+                selectedPopUpButton(sender: sender)
+                
+            } else {
+                
+                UIView.animate(withDuration: 0.3, animations: {
+                    // Animations here
+                    self.setCenter()
+                })
+                
+                setUpPopUpButtons()
+                
+            }
+        } else {
+            selectedPopUpButton(sender: sender)
+            bounce(button: sender)
+            setButtonTextToTextField(sender: sender)
+            if let title = sender.title(for: .normal) {
+                if let imageSet = UIImage(named: title) {
+                    //snow(image: imageSet)
+                }
+            }
+        }
+    }
+    
+    
+    func bounce(button: UIButton) {
+        // Make the label bounce
+        button.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 6, options: .allowUserInteraction, animations: {
+            
+            button.transform = CGAffineTransform.identity
+
+        }, completion: nil)
+    }
+    
+    func setButtonTextToTextField(sender: UIButton) {
+        if let text = sender.title(for: .normal) {
+            myTextField.text = "\(text)"
+        }
+    }
+    
+    var tennisCenter: CGPoint!
+    var badmintonCenter: CGPoint!
+    var fifaCenter: CGPoint!
+    var nhlCenter: CGPoint!
+    var squashCenter: CGPoint!
+    var tableTennisCenter: CGPoint!
+    var sportButtons: [UIButton] = []
+    //var sportButtonsCenter: [CGPoint] = []
+
+
+    
+    func setCenter() {
+        tennisCenter = tennisButton.center
+        badmintonCenter = badmintonButton.center
+        fifaCenter = fifaButton.center
+        nhlCenter = nhlButton.center
+        squashCenter = squashButton.center
+        tableTennisCenter = tableTennisButton.center
+        
+        for each in sportButtons {
+            each.translatesAutoresizingMaskIntoConstraints = true
+            each.center = popUpButton.center
+        }
+        //tennisButton.translatesAutoresizingMaskIntoConstraints = true
+        //tennisCenter = tennisButton.center
+
+        //tennisButton.center = popUpButton.center
+    }
+    
+    func spreadOutButtons() {
+        tennisButton.center = tennisCenter
+        badmintonButton.center = badmintonCenter
+        squashButton.center = squashCenter
+        nhlButton.center = nhlCenter
+        fifaButton.center = fifaCenter
+        tableTennisButton.center = tableTennisCenter
+
+    }
+    
+    
+    
+    func setUpPopUpButtons() {
+        // Layout for deselected button
+        let popUp = [popUpButton, tennisButton, tableTennisButton, fifaButton, nhlButton, squashButton, badmintonButton]
+        
+        for each in popUp {
+            each?.layer.borderWidth = 1
+            each?.layer.borderColor = UIColor.orange.cgColor
+            each?.layer.cornerRadius = 5
+            each?.backgroundColor = UIColor.clear
+            each?.setTitleColor(UIColor.orange, for: .normal)
+        }
+
+        
+        for each in sportButtons {
+            each.alpha = 0
+        }
+        
+        
+    }
+    
+    func selectedPopUpButton(sender: UIButton) {
+        
+        if sender.backgroundColor == popUpButtonColor {
+            // Layout for selected button
+            sender.setTitleColor(UIColor.white, for: .normal)
+            sender.backgroundColor = UIColor.orange
+        } else if sender.backgroundColor == UIColor.orange {
+            // Layout for deselected button
+            sender.setTitleColor(UIColor.orange, for: .normal)
+            sender.backgroundColor = popUpButtonColor
+        }
+        
+        // Change backgroundcolor of all button except selected and popupbutton
+        if sender != popUpButton {
+            for each in sportButtons {
+                if each != sender {
+                    each.backgroundColor = popUpButtonColor
+                }
+            }
+        }
+
+        // Change alpha of all buttons except popupbutton
+        if sender == popUpButton {
+            for each in sportButtons {
+                each.alpha = 1
+            }
+        }
+    }
     
     func stepperValues() {
         
@@ -82,6 +265,10 @@ class AddGameTitleVC: UIViewController {
         pointsWin.text = "Points for win: \(win)"
         pointsDraw.text = "Points for draw: \(draw)"
         pointsLose.text = "Points for lose: \(lose)"
+        pointsWin.tintColor = UIColor.orange
+        pointsDraw.tintColor = UIColor.orange
+        pointsLose.tintColor = UIColor.orange
+
     }
     
 
@@ -90,7 +277,7 @@ class AddGameTitleVC: UIViewController {
         UIView.animate(withDuration: 0.8) {
             self.view.layoutIfNeeded()
             self.keyBoardIsActive = true
-            self.topConstraintOfTextFIeld.constant = -200
+            //self.topConstraintOfTextFIeld.constant = -200
         }
 
     }
@@ -101,7 +288,7 @@ class AddGameTitleVC: UIViewController {
         } else {
             myTextField.resignFirstResponder()
             keyBoardIsActive = false
-            topConstraintOfTextFIeld.constant = -300
+            //topConstraintOfTextFIeld.constant = -300
         }
     }
     
@@ -119,13 +306,14 @@ class AddGameTitleVC: UIViewController {
     }
     
     func cancelClicked() {
-        dismiss(animated: true, completion: nil)
+        myTextField.resignFirstResponder()
+        //dismiss(animated: true, completion: nil)
     }
     
     func doneClicked() {
         //prepareSavingData()
-        saveNewGame()
-        dismiss(animated: true, completion: nil)
+        myTextField.resignFirstResponder()
+
     }
     
     /*
@@ -159,7 +347,7 @@ class AddGameTitleVC: UIViewController {
             var databaseRef: DatabaseReference!
             databaseRef = Database.database().reference()
                 
-            let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject]
+            let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject, "winPoints" : win as AnyObject, "drawPoints" : draw as AnyObject, "losePoints" : lose as AnyObject]
             
             // Games -> Tournaments -> Id => post
             databaseRef.child("Games").child("Tournaments").child("\(tournamentId)").childByAutoId().setValue(post)

@@ -20,19 +20,23 @@ class GamesTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         setUpRefreshController()
         setViewLayout(view: self.view)
+        
+        navigationItem.title = selectedTour.name
         
         myTableView.delegate = self
         myTableView.dataSource = self
         
-        //print("viewdidload --- \(String(describing: selectedTour?.tournamentTitle))")
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchTournamentGames()
+        fetchGamesId()
+        //refreshData()
         animateTable(tableView: myTableView)
         
     }
@@ -60,7 +64,8 @@ class GamesTVC: UITableViewController {
     }
     
     func refreshData() {
-        fetchTournamentGames()
+        games.removeAll()
+        fetchGamesId()
         myTableView.reloadData()
         refreshController.endRefreshing()
 
@@ -86,15 +91,58 @@ class GamesTVC: UITableViewController {
         
     }
     
-    
-    func fetchTournamentGames() {
-        // Single fetch
+    func fetchGamesId() {
+        // Clear array
+        games.removeAll()
+        myArray.removeAll()
+        
+        // Fetch game ids
         if let selectedId = selectedTour.id {
-            Database.database().reference().child("Games").child("Tournaments").child("\(selectedId)").observe(.childAdded, with: {
+            Database.database().reference().child("Games/Tournaments/\(selectedId)").observe(.childAdded, with: {
+                
+                (snapshot) in
+                
+                print(snapshot)
+                
+                var snapArray: [String] = [String]()
+                print(snapshot.value as Any)
+                print(snapshot.key)
+                
+                
+                snapArray.append(snapshot.key)
+                
+                /*
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    for each in dictionary {
+                        snapArray.append(each.key)
+                    }
+                }*/
+                
+         
+                for each in snapArray {
+                    self.fetchTournamentGames(gameId: each)
+                }
+                
+                //this will crash because of background thread, so lets use dispatch_async to fix
+                
+                 DispatchQueue.main.async(execute: {
+                    self.myTableView.reloadData()
+                 })
+                
+            }, withCancel: nil)
+        }
+    }
+    
+    
+    func fetchTournamentGames(gameId: String) {
+        //  Fetch
+        if let selectedId = selectedTour.id {
+            Database.database().reference().child("Games").child("Tournaments").child("\(selectedId)").child("\(gameId)").observeSingleEvent(of: .value, with: {
             
             (snapshot) in
             
-            print(snapshot)
+                
+                print(snapshot)
             
             
                 // Fetch games
@@ -113,13 +161,23 @@ class GamesTVC: UITableViewController {
                 
                 self.myArray = games
                 
-                //this will crash because of background thread, so lets use dispatch_async to fix
                 DispatchQueue.main.async(execute: {
-                    self.animateTable(tableView: self.myTableView)
+                    self.myTableView.reloadData()
                 })
                 
             }, withCancel: nil)
         }
+    }
+    
+    func deleteGameConnectedToTournament(id: String) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        databaseRef.child("Games/Tournaments/\(selectedTour.id!)/\(id)").removeValue()
+        databaseRef.child("Players/Games/\(id)").removeValue()
+        databaseRef.child("Scores/Games/\(id)").removeValue()
+
+
     }
     
     
@@ -153,7 +211,7 @@ class GamesTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectGame = myArray[(indexPath as NSIndexPath).row]
         selectedGame = selectGame
-        print(selectGame.name)
+        print(selectGame.name as Any)
 
     }
     
@@ -168,9 +226,10 @@ class GamesTVC: UITableViewController {
             print("Deleting..")
             
             // Delete the row from the data source
-            if let gamesId = games[indexPath.row].id {
+            if let gamesId = myArray[indexPath.row].id {
                 if let id = checkSelectedIdPositionInGameData(id: gamesId) {
                     games.remove(at: id)
+                    deleteGameConnectedToTournament(id: gamesId)
                     } else {
                     print("Failing to delete..")
                 }

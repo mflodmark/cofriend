@@ -18,16 +18,17 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        createTitles()
-        stepperValues()
+
         setUpRefreshController()
         setViewLayout(view: self.view)
         
         myTableView.delegate = self
         myTableView.dataSource = self
         
+        createTitles()
+        
         setRound(button: newPlayer)
-        users = []
+        //users = []
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -36,7 +37,15 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchUser()
+        playerArray.removeAll()
+        animateTable(tableView: self.myTableView)
+        //fetchUser()
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        dismiss(animated: true, completion: nil)
+        
     }
     
 
@@ -44,12 +53,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     // MARK: Declaration
     
     @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var pointsWin: UILabel!
-    @IBOutlet weak var pointsDraw: UILabel!
-    @IBOutlet weak var pointsLose: UILabel!
-    @IBOutlet weak var winStepper: UIStepper!
-    @IBOutlet weak var drawStepper: UIStepper!
-    @IBOutlet weak var loseStepper: UIStepper!
     @IBOutlet weak var addedPlayers: UILabel!
     
     @IBOutlet weak var myTableView: UITableView!
@@ -78,16 +81,6 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func stepperValueChanged(_ sender: UIStepper) {
-        if sender == winStepper {
-            win = Int(sender.value)
-        } else if sender == drawStepper {
-            draw = Int(sender.value)
-        } else if sender == loseStepper {
-            lose = Int(sender.value)
-        }
-        createTitles()
-    }
     
     
     @IBAction func newPlayerAction(_ sender: UIButton) {
@@ -95,7 +88,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
     // MARK: Fetch Users
-        
+        /*
     func fetchUser() {
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
@@ -121,8 +114,12 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             
         }, withCancel: nil)
     }
-    
+    */
     // MARK: Functions
+    
+    func createTitles() {
+        addedPlayers.text = "Added players: \(playerArray.count)"
+    }
     
     func bounceButton(theButton: UIButton) {
         let bounds = theButton.bounds
@@ -197,28 +194,18 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     }
     
 
-    func stepperValues() {
+    func checkUidInPlayerArray() -> Bool {
+        var checked: Bool = false
+        let uid = Auth.auth().currentUser?.uid
         
-        winStepper.wraps = true
-        winStepper.autorepeat = true
-        winStepper.maximumValue = 100
+        for each in playerArray {
+            if uid! == each.id {
+                checked = true
+            }
+        }
         
-        drawStepper.wraps = true
-        drawStepper.autorepeat = true
-        drawStepper.maximumValue = 100
-        
-        loseStepper.wraps = true
-        loseStepper.autorepeat = true
-        loseStepper.maximumValue = 100
+        return checked
     }
-    
-    func createTitles() {
-        pointsWin.text = "Points for win: \(win)"
-        pointsDraw.text = "Points for draw: \(draw)"
-        pointsLose.text = "Points for lose: \(lose)"
-        addedPlayers.text = "Added players: \(playerArray.count)"
-    }
-    
 
 
     func saveNewTournament() {
@@ -231,31 +218,50 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                 
                 let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject]
                 
-                var postPlayers: [String] = []
+                //var postPlayers: [String:AnyObject] = [:]
                 
-                for each in playerArray {
-                    if let id = each.id {
-                        postPlayers.append(id)
-                    }
-                }
-                
-                // Save to folder tournament
-                let newRef = databaseRef.child("Tournaments").childByAutoId()
-                let newId = newRef.key
-                newRef.setValue(post)
-                
-                
-                // Tournaments -> Id -> Players => add players
-                databaseRef.child("Players").child("Tournaments").child("\(newId)").setValue(postPlayers)
-                
-                for each in playerArray {
-                    if let eachId = each.id {
-                        databaseRef.child("Users/\(eachId)/Tournaments").setValue([newId])
-                        
+                // Check i user have choosed themselves
+                if checkUidInPlayerArray() == false {
+                    showAlert(title: "Missing you as a player", message: "Please add yourself as a player", dismissButton: "Cancel", okButton: "Ok")
+                } else {
+                    
+                    // Save to folder tournament
+                    let newRef = databaseRef.child("Tournaments").childByAutoId()
+                    let newId = newRef.key
+                    newRef.setValue(post)
+                    
+                    
+                    // Tournaments -> Id -> Players => add players
+                    for each in playerArray {
+                        if let id = each.id {
+                            databaseRef.child("Players").child("Tournaments").child("\(newId)").setValue([id:true])
+                            databaseRef.child("Users/\(id)/Tournaments").updateChildValues([newId:true])
+                        }
                     }
                 }
             }
         }
+    }
+    
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here")
+            //self.alertOkFunctions()
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            print("Handle Cancel logic here")
+            //self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
     }
 
     
@@ -305,8 +311,8 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         let user = users[indexPath.row]
         if let id = user.id {
             if let check = checkSelectedIdPositionInUserData(id: id) {
-            playerArray.remove(at: check)
-            createTitles()
+                playerArray.remove(at: check)
+                createTitles()
             }
         }
 

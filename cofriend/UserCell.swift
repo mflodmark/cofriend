@@ -22,8 +22,6 @@ class UserCell: UITableViewCell {
         myImage.layer.masksToBounds = true
         myImage.contentMode = .scaleAspectFill
     }
-
-    
-    
-    
 }
+
+
