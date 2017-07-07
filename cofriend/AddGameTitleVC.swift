@@ -16,9 +16,8 @@ class AddGameTitleVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sportButtons = [tennisButton, tableTennisButton, fifaButton, nhlButton, squashButton, badmintonButton]
-        //sportButtonsCenter: [CGPoint] = [tennisCenter, tableTennisCenter, fifaCenter, nhlCenter, squashCenter, badmintonCenter]
-
+        sportButtons = [fifaButton, nhlButton]
+        hideInactiveButtons()
         
         createTitles()
         stepperValues()
@@ -85,7 +84,7 @@ class AddGameTitleVC: UIViewController {
         } else if sender == loseStepper {
             lose = Int(sender.value)
         }
-        createTitles()
+        createPoints()
     }
     
     @IBAction func popUpButtonAction(_ sender: UIButton) {
@@ -97,6 +96,15 @@ class AddGameTitleVC: UIViewController {
     
     
     // MARK: Functions
+    
+    func hideInactiveButtons() {
+        // Hidden buttons: 
+        tennisButton.isHidden = true
+        tableTennisButton.isHidden = true
+        squashButton.isHidden = true
+        badmintonButton.isHidden = true
+
+    }
     
     func snow(image: UIImage) {
         let emitter = Emitter.get(image: image)
@@ -132,7 +140,7 @@ class AddGameTitleVC: UIViewController {
             setButtonTextToTextField(sender: sender)
             if let title = sender.title(for: .normal) {
                 if let imageSet = UIImage(named: title) {
-                    //snow(image: imageSet)
+                    snow(image: imageSet)
                 }
             }
         }
@@ -262,13 +270,45 @@ class AddGameTitleVC: UIViewController {
     }
     
     func createTitles() {
+
+        if selectedGameCell == false {
+            myTextField.text = ""
+            
+        } else if selectedGameCell == true {
+            // Must divide them since update to 0 should only be for that specific one
+            if let winText = selectedGame.winPoints {
+                win = Int(winText)!
+            } else {
+                win = 0
+            }
+            
+            if let loseText = selectedGame.losePoints {
+                lose = Int(loseText)!
+            } else {
+                lose = 0
+            }
+            
+            if let drawText = selectedGame.drawPoints {
+                draw = Int(drawText)!
+            } else {
+                draw = 0
+            }
+
+            myTextField.text = selectedGame.name!
+        }
+        
         pointsWin.text = "Points for win: \(win)"
         pointsDraw.text = "Points for draw: \(draw)"
         pointsLose.text = "Points for lose: \(lose)"
         pointsWin.tintColor = UIColor.orange
         pointsDraw.tintColor = UIColor.orange
         pointsLose.tintColor = UIColor.orange
-
+    }
+    
+    func createPoints() {
+        pointsWin.text = "Points for win: \(win)"
+        pointsDraw.text = "Points for draw: \(draw)"
+        pointsLose.text = "Points for lose: \(lose)"
     }
     
 
@@ -346,11 +386,19 @@ class AddGameTitleVC: UIViewController {
         
             var databaseRef: DatabaseReference!
             databaseRef = Database.database().reference()
-                
-            let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject, "winPoints" : win as AnyObject, "drawPoints" : draw as AnyObject, "losePoints" : lose as AnyObject]
+            let newRef = databaseRef.child("Games").child("Tournaments").child("\(tournamentId)").childByAutoId()
+            
+            let post: [String : AnyObject] = ["name" : text as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject, "winPoints" : String(win) as AnyObject, "drawPoints" : String(draw) as AnyObject, "losePoints" : String(lose) as AnyObject]
             
             // Games -> Tournaments -> Id => post
-            databaseRef.child("Games").child("Tournaments").child("\(tournamentId)").childByAutoId().setValue(post)
+            if selectedGameCell == false {
+                newRef.setValue(post)
+            } else if selectedGameCell == true {
+                // Edit
+                if let selId = selectedGame.id {
+                    databaseRef.child("Games/Tournaments/\(tournamentId)/\(selId)").setValue(post)
+                }
+            }
         }
     }
     
@@ -368,14 +416,12 @@ class AddGameTitleVC: UIViewController {
         let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
         
         let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
-            print("Handle Ok logic here")
             self.alertOkFunctions()
             
         })
         alertController.addAction(actionOk)
         
         let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
-            print("Handle Cancel logic here")
             self.alertDismissFunctions()
             
         })

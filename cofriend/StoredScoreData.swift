@@ -21,6 +21,8 @@ class ScoreClass: NSObject {
     var date: String?
     var teamAPoints: String?
     var teamBPoints: String?
+    var overtime: Bool?
+    var penalties: Bool?
     
     init(dictionary: [String: AnyObject]) {
         self.id = dictionary["id"] as? String
@@ -36,12 +38,17 @@ class ScoreClass: NSObject {
 
 var teamAArray = [ScorePlayerClass]()
 var teamBArray = [ScorePlayerClass]()
+var teamAOneGoals: Int = 0
+var teamATwoGoals: Int = 0
+var teamBOneGoals: Int = 0
+var teamBTwoGoals: Int = 0
 
 
 class ScorePlayerClass: NSObject {
     var gameId: String?
     var scoreId: String?
     var players: [UserClass]?
+    var goalscorers: [UserClass:String]?
     
     init(gameId: String?, scoreId: String?, players: [UserClass]?) {
         self.gameId = gameId
@@ -49,6 +56,8 @@ class ScorePlayerClass: NSObject {
         self.players = players
     }
 }
+
+
 
 
 /*

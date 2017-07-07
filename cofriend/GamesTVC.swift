@@ -11,9 +11,6 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 
-var selectedTour = TournamentClass(dictionary: ["" : "" as AnyObject])
-var selectedPlayer = PlayerClass(tournamentId: "", players: [])
-var selectedGame = GameClass(dictionary: ["" : "" as AnyObject])
 
 class GamesTVC: UITableViewController {
     
@@ -30,13 +27,14 @@ class GamesTVC: UITableViewController {
         myTableView.delegate = self
         myTableView.dataSource = self
         
+
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchGamesId()
-        //refreshData()
+        //fetchGamesId()
+        refreshData()
         animateTable(tableView: myTableView)
         
     }
@@ -104,11 +102,7 @@ class GamesTVC: UITableViewController {
                 
                 print(snapshot)
                 
-                var snapArray: [String] = [String]()
-                print(snapshot.value as Any)
-                print(snapshot.key)
-                
-                
+                var snapArray: [String] = []
                 snapArray.append(snapshot.key)
                 
                 /*
@@ -152,7 +146,6 @@ class GamesTVC: UITableViewController {
                     // add game id
                     game.id = snapshot.key
                     game.tournamentId = selectedId
-                    print(game.id as Any)
                     
                     // add game to array
                     games.append(game)
@@ -160,6 +153,7 @@ class GamesTVC: UITableViewController {
                 }
                 
                 self.myArray = games
+                
                 
                 DispatchQueue.main.async(execute: {
                     self.myTableView.reloadData()
@@ -211,15 +205,11 @@ class GamesTVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectGame = myArray[(indexPath as NSIndexPath).row]
         selectedGame = selectGame
-        print(selectGame.name as Any)
 
     }
+
     
-    
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        
-    }
-    
+    /*
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -239,8 +229,104 @@ class GamesTVC: UITableViewController {
             // This code saves the array whenever an item is deleted.
             myTableView.reloadData()
         }
+    }*/
+    
+    // MARK: Edit table view
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
+            print("edit button tapped")
+            self.editButton(indexPath: indexPath)
+        }
+        edit.backgroundColor = editColor
+        
+        let delete = UITableViewRowAction(style: .normal, title: "Delete") { action, index in
+            print("delete button tapped")
+            self.deleteButton(indexPath: indexPath)
+        }
+        delete.backgroundColor = deleteColor
+        
+        return [delete, edit]
     }
     
+    func editButton(indexPath: IndexPath) {
+        let selectedGameInArray = games[(indexPath as NSIndexPath).row]
+        selectedGame = selectedGameInArray
+        
+        // Check if player created the tournament or not
+        if let id = selectedGame.createdByUserId {
+            if userCreatedGame(id: id) == true {
+                selectedGameCell = true
+                
+                // Perform segue to edit
+                performSegue(withIdentifier: identifiersSegue.AddGame.rawValue, sender: "selectedCell")
+            }
+        } else {
+            // Alert that edit is not possible because user did not create tournament
+            showAlert(title: "Edit mode not possible", message: "You are not the creator of this game", dismissButton: "Cancel", okButton: "Ok", sender: "Edit", indexPath: indexPath)
+        }
+    }
+    
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String, sender: String, indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            self.alertOkFunctions(sender: sender, indexPath: indexPath)
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            //self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
+    }
+    
+
+    
+    func alertOkFunctions(sender: String, indexPath: IndexPath) {
+        if sender == "Delete" {
+            // Delete the row from the data source
+            if let gamesId = myArray[indexPath.row].id {
+                if let id = checkSelectedIdPositionInGameData(id: gamesId) {
+                    games.remove(at: id)
+                    deleteGameConnectedToTournament(id: gamesId)
+                } else {
+                    print("Failing to delete..")
+                }
+            }
+            
+            // This code saves the array whenever an item is deleted.
+            refreshData()
+        }
+    }
+    
+    func userCreatedGame(id: String) -> Bool {
+        var checked = false
+        if currentUser.id == id {
+            checked = true
+        }
+        return checked
+    }
+    
+    func deleteButton(indexPath: IndexPath) {
+        showAlert(title: "Deleting", message: "Do you want to delete?", dismissButton: "Cancel", okButton: "Ok", sender: "Delete", indexPath: indexPath)
+        
+    }
+    
+    // MARK: Segue
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == identifiersSegue.AddGame.rawValue && sender as? String != "selectedCell"{
+            selectedGameCell = false
+        }
+    }
 
     
 }

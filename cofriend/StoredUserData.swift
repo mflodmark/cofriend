@@ -12,6 +12,7 @@ import os.log
 
 
 var users = [UserClass]()
+var currentUser: UserClass = UserClass(dictionary: ["":"" as AnyObject])
 
 
 class UserClass: NSObject {
@@ -22,6 +23,9 @@ class UserClass: NSObject {
     var win: String? = "0"
     var draw: String? = "0"
     var lose: String? = "0"
+    var penaltyWin: String? = "0"
+    var penaltyLose: String? = "0"
+
     //var tournaments: [TournamentClass]?
     
     init(dictionary: [String: AnyObject]) {
@@ -32,6 +36,9 @@ class UserClass: NSObject {
         self.win = dictionary["win"] as? String
         self.draw = dictionary["draw"] as? String
         self.lose = dictionary["lose"] as? String
+        self.penaltyWin = dictionary["penaltyWin"] as? String
+        self.penaltyLose = dictionary["penaltyLose"] as? String
+
         //self.tournaments = dictionary["tournaments"] as? TournamentClass
     }
 }
@@ -48,7 +55,7 @@ class gameUserClass: NSObject {
     }
 }
 
-
+/*
 class StoredUserData: NSObject, NSCoding {
     
     // MARK: Properties
@@ -134,4 +141,4 @@ func saveUserData() {
 
 func loadUserData() -> [StoredUserData]?  {
     return NSKeyedUnarchiver.unarchiveObject(withFile: StoredUserData.ArchiveURL.path) as? [StoredUserData]
-}
+}*/

@@ -9,8 +9,19 @@
 import Foundation
 import FirebaseAuth
 import Firebase
+import FirebaseDatabase
 
 let uid = Auth.auth().currentUser?.uid
+var selectedTour = TournamentClass(dictionary: ["" : "" as AnyObject])
+var selectedPlayer = PlayerClass(tournamentId: "", players: [])
+var selectedGame = GameClass(dictionary: ["" : "" as AnyObject])
+var selectedScore = ScoreClass(dictionary: ["": "" as AnyObject])
+var selectedScorePlayer = ScorePlayerClass(gameId: nil, scoreId: nil, players: [])
+var selectedTourCell: Bool = false
+var selectedGameCell: Bool = false
+var selectedScoreCell: Bool = false
+var preSelectedScore = ScoreClass(dictionary: ["": "" as AnyObject])
+var friendRequest: [UserClass] = [UserClass]()
 
 
 enum forKey: String {
@@ -21,6 +32,15 @@ enum forKey: String {
     case TourDataId
     case GameTitleId
     case TournamentDataId
+}
+
+enum defaultGames: String {
+    case tennis = "Tennis"
+    case tableTennis = "Table Tennis"
+    case fifa = "FIFA"
+    case nhl = "NHL"
+    case squash = "Squash"
+    case badminton = "Badminton"
 }
 
 /*
@@ -36,6 +56,9 @@ enum identifiersSegue: String {
     case CellToAddTournamentScore
     case CellToGame
     case CellToInputs
+    case AddGame
+    case AddScore
+    case AddGoalscorers
 }
 
 enum identifiersCell: String {
@@ -47,6 +70,8 @@ enum identifiersCell: String {
     case ScoreCollCell
     case PlayerCell
     case TableCollCell
+    case AddPlayerCell
+    case CellToDetails
 }
 
 enum identifiersStoryboard: String {
@@ -61,7 +86,7 @@ enum identifiersArchiveUrl: String {
     case storedScoreData
     case storedUserData
 }
-
+/*
 // Counter for data id
 var id = Int()
 var idForUserData = Int()
@@ -128,4 +153,5 @@ func getIdForSavedData() {
     
     
 }
+ */
 

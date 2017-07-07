@@ -79,9 +79,7 @@ class DatePickerClass: UIViewController {
         // Set date format
         dateFormatter.dateFormat = "yyyy-MM-dd"
         dateFromDatePicker = datePicker.date
-        
-        print("Date -------> " + dateFormatter.string(from: sender.date))
-        
+                
         stringFromDatePicker = dateFormatter.string(from: sender.date)
         
     }

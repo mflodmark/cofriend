@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import FirebaseDatabase
+import Firebase
 
 // Hide & Show
 
@@ -56,7 +58,25 @@ func checkSelectedIdPositionInUserData(id: String) -> Int? {
     return checked
 }
 
-// Check position of tournament id in
+func checkSelectedIdPositionInPlayer(id: String) -> Int? {
+    // starter value
+    print("PlayerData")
+    var checked: Int = 0
+    var counter: Int = 0
+    for user in playerArray {
+        print("UserId -----> \(String(describing: user.id)) ")
+        if id == user.id {
+            // Selected user
+            checked = counter
+            
+        }
+        counter += 1
+    }
+    
+    return checked
+}
+
+// Check position of player id in
 func checkSelectedIdPositionInTournamentData(id: String) -> Int? {
     // starter value
     print("Tournamentdata: ")
@@ -119,13 +139,61 @@ func checkSelectedIdPositionInGameData(id: String) -> Int? {
     return checked
 }
 
+func fetchFriends() {
+    var databaseRef: DatabaseReference!
+    databaseRef = Database.database().reference()
+    users.removeAll()
+    
+    // Value added
+    databaseRef.child("Users/\(uid!)/Friends").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+        
+        (snapshot) in
+        
+        print(snapshot)
+        
+        // Fetch friends
+        if let dict = snapshot.value as? [String: AnyObject] {
+            for each in dict {
+                if each.value as? Bool == true {
+                    fetchUser(userId: each.key, sender: "true")
+                }
+            }
 
+        }
+        
 
+        
+    }, withCancel: nil)
+}
+
+func fetchUser(userId: String, sender: String) {
+    var databaseRef: DatabaseReference!
+    databaseRef = Database.database().reference()
+        friendRequest.removeAll()
+    
+    databaseRef.child("Users/\(userId)").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+        
+        (snapshot) in
+        print(snapshot)
+        
+        // Fetch user
+        if let dictionary = snapshot.value as? [String: AnyObject] {
+            
+            if sender == "true" {
+                let user = UserClass(dictionary: dictionary)
+                user.id = snapshot.key
+                users.append(user)
+            }
+            
+        }
+        
+    }, withCancel: nil)
+}
 
 
 
 /*
-// MARK: Refresh 
+// MARK: Refresh
 
 func setUpRefreshController(refreshController: UIRefreshControl, myTableView: UITableView, myView: UIView) {
     

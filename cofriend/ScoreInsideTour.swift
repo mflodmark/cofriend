@@ -16,31 +16,34 @@ var teamOneArray = [UserClass]()
 var teamTwoArray = [UserClass]()
 var dateString: String? = "No date available"
 
-class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
+class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        addTodaysDate()
+        addDate()
         setViewLayout(view: self.view)
-        setRoundButtons()
         
-        collectionArray.append("Markus")
+        //collectionArray = ["1-0", "2-1"]
         
         
         myTableView.delegate = self
         myTableView.dataSource = self
+        //myCollectionView.delegate = self
         
         // Clear array before adding new users to score
         teamOneArray.removeAll()
         teamTwoArray.removeAll()
-    
+        
+        hidePenaltiesQuestion()
+        setPreSeclectedScore()
+        hideButtons()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         print("Viewwillappear --- \(String(describing: dateString))")
         if dateString == "No date available" {
-            addTodaysDate()
+            addDate()
         } else {
             if let text = dateString {
                 dateButton.setTitle(text, for: .normal)
@@ -50,31 +53,43 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     
     
     // MARK: Declarations
-    let teamOneDefault = StoredUserData(username: "No Data", image: #imageLiteral(resourceName: "DefaultImage"), id: 0)
-    let teamTwoDefault = StoredUserData(username: "No Data", image: #imageLiteral(resourceName: "DefaultImage"), id: 0)
+    //let teamOneDefault = StoredUserData(username: "No Data", image: #imageLiteral(resourceName: "DefaultImage"), id: 0)
+    //let teamTwoDefault = StoredUserData(username: "No Data", image: #imageLiteral(resourceName: "DefaultImage"), id: 0)
 
     //var tournament = StoredTournamentData(tournamentTitle: "No Data", gameTitle: "", teamOnePlayers: [], teamTwoPlayers: [], teamOneScore: 0, teamTwoScore: 0, image: #imageLiteral(resourceName: "DefaultImage"), date: "No Data", id: 0)
 
     
+    //@IBOutlet weak var myCollectionView: UICollectionView!
     @IBOutlet weak var dateButton: UIButton!
     @IBOutlet weak var pointsA: UILabel!
     @IBOutlet weak var pointsB: UILabel!
-    @IBOutlet weak var addPointsButton: UIButton!
+    @IBOutlet weak var addGoalScorerButton: UIButton!
     @IBOutlet weak var stepperA: UIStepper!
     @IBOutlet weak var stepperB: UIStepper!
     @IBOutlet weak var myTableView: UITableView!
     @IBOutlet weak var navBar: UINavigationItem!
     
+    
+    @IBOutlet weak var overtimeStack: UIStackView!
+    
+    @IBOutlet weak var penaltyStack: UIStackView!
+    @IBOutlet weak var penaltiesQuestion: UIStackView!
+    @IBOutlet weak var penaltiesSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var overtimeSegmentedControl: UISegmentedControl!
     var pointA = Int()
     var pointB = Int()
     var myArray = selectedPlayer.players
-    var collectionArray = [String]()
+    //var collectionArray = [String]()
     //var buttonPressed: UIButton = UIButton()
     //let datePickerClass = DatePickerClass()
     //let scoreInsideCell = ScoreInsideCell()
     var image: UIImage = UIImage()
+    var overtime: Bool = false
+    var penalties: Bool = false
+    var penaltyWinner: String = ""
     
-    
+    @IBOutlet weak var penaltyB: UIButton!
+    @IBOutlet weak var penaltyA: UIButton!
     
     // MARK: Actions
     
@@ -93,8 +108,11 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
 
     }
     
-    @IBAction func addPointsActionButton(_ sender: UIButton) {
-
+    @IBAction func addGoalscorerAction(_ sender: UIButton) {
+        if teamOneArray.count < 1 || teamTwoArray.count < 1 {
+            // Alert if no player is chosen
+            //showAlert(title: "Add goalscorers", message: "Please choose players first", dismissButton: "Cancel", okButton: "Ok")
+        }
     }
     
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
@@ -103,17 +121,86 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         } else if sender == stepperB {
             bounceLabelStepper(label: pointsB, sender: sender)
         }
+        setPreSeclectedScore()
+    }
+    
+    
+    @IBAction func segmentedControlToggle(_ sender: UISegmentedControl) {
+        if sender == overtimeSegmentedControl {
+            if sender.selectedSegmentIndex == 0 {
+                overtime = true
+            } else {
+                overtime = false
+            }
+            
+        } else if sender == penaltiesSegmentedControl {
+            if sender.selectedSegmentIndex == 0 {
+                penalties = true
+                showPenaltiesQuestion()
+            } else {
+                penalties = false
+                hidePenaltiesQuestion()
+            }
+        }
+    }
+    
+    @IBAction func penaltyWinner(_ sender: UIButton) {
+        if sender == penaltyA {
+            penaltyWinner = "A"
+            sender.setTitleShadowColor(.darkGray, for: .normal)
+        } else if sender == penaltyB {
+            penaltyWinner = "B"
+            sender.setTitleShadowColor(.darkGray, for: .normal)
+        }
     }
     
     
     
     // MARK: Functions
     
-    
-    func setRoundButtons() {
-        setRound(button: dateButton)
-        setRound(button: addPointsButton)
+    func hideButtons() {
+        addGoalScorerButton.isHidden = true
+        overtimeStack.isHidden = true
+        penaltyStack.isHidden = true
+        
+        if selectedGame.name == "FIFA" || selectedGame.name == "NHL" {
+            addGoalScorerButton.isHidden = false
+            overtimeStack.isHidden = false
+            penaltyStack.isHidden = false
+        }
     }
+    
+    func setPreSeclectedScore() {
+        preSelectedScore.teamAPoints = pointsA.text!
+        preSelectedScore.teamBPoints = pointsB.text!
+    }
+    
+    func hidePenaltiesQuestion() {
+        penaltiesQuestion.isHidden = true
+    }
+    
+    func showPenaltiesQuestion() {
+        penaltiesQuestion.isHidden = false
+    }
+    
+    func setValues() {
+        if selectedScoreCell == false {
+            setValuesForSelectedGame()
+            pointA = 0
+            pointB = 0
+        } else if selectedScoreCell == true {
+            pointA = Int(selectedScore.teamAPoints!)!
+            pointB = Int(selectedScore.teamBPoints!)!
+        }
+    }
+    
+    func setValuesForSelectedGame() {
+        if selectedGame.name == defaultGames.fifa.rawValue {
+            
+        }
+    }
+    
+ 
     
     func bounceLabelStepper(label: UILabel, sender: UIStepper) {
         // Make the label bounce
@@ -146,16 +233,20 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     }
 
     
-    func addTodaysDate() {
+    func addDate() {
         // Add todays date to dateButton
         let date = Date()
         let formatter = DateFormatter()
         
         formatter.dateFormat = "yyyy-MM-dd"
-        
         let result = formatter.string(from: date)
         
-        dateButton.setTitle(result, for: .normal)
+        if selectedScoreCell == false {
+            dateButton.setTitle(result, for: .normal)
+        } else if selectedScoreCell == true {
+            dateButton.setTitle(selectedScore.date!, for: .normal)
+        }
+
     }
     
     func getDateFromDatePicker() {
@@ -178,6 +269,9 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
             UserDefaults.standard.set(String(idForTournamentData), forKey: forKey.TournamentDataId.rawValue)
         }
     }*/
+
+    
+
     
     func saveNewScore() {
         
@@ -186,7 +280,8 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
             var databaseRef: DatabaseReference!
             databaseRef = Database.database().reference()
             
-            let post: [String : AnyObject] = ["name" : game as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject, "date" : date as AnyObject, "teamAPoints" : pointsA as AnyObject, "teamBPoints" : pointsB as AnyObject]
+            let post: [String : AnyObject] = ["name" : game as AnyObject, "createdByUserId": Auth.auth().currentUser?.uid as AnyObject, "date" : date as AnyObject, "teamAPoints" : pointsA as AnyObject, "teamBPoints" : pointsB as AnyObject, "overtime": overtime as AnyObject, "penalties": penalties as AnyObject, "penaltyWinner": penaltyWinner as AnyObject]
+            
             
             // Games -> Tournaments -> Id => post
             if let selectedGameId = selectedGame.id {
@@ -202,27 +297,47 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
                     let newId = newRef.key
                     newRef.setValue(post)
                     
+                    // Update selected goalscorers
+                    //selectedScorePlayer.gameId = selectedGame.id
+                    //selectedScorePlayer.scoreId = newId
                     
-                    
+                    var count = 0
                     for each in teamOneArray {
+                        
                         // Save A array
                         if let eachId = each.id {
-                            databaseRef.child("Players/Games/\(selectedGameId)/\(newId)").child("TeamA").setValue([eachId:true])
+                            count += 1
+                            databaseRef.child("Players/Games/\(selectedGameId)/\(newId)/TeamA/\(eachId)").setValue(true)
+                            if count == 1 {
+                                databaseRef.child("Players/Games/\(selectedGameId)/\(newId)/TeamAGoals/\(eachId)").setValue(String(teamAOneGoals))
+                            } else if count == 2 {
+                                databaseRef.child("Players/Games/\(selectedGameId)/\(newId)/TeamAGoals/\(eachId)").setValue(String(teamATwoGoals))
+                            }
                         }
                     }
                     
+                    count = 0
                     for each in teamTwoArray {
                         // Save B array
                         if let eachId = each.id {
-                            databaseRef.child("Players/Games/\(selectedGameId)/\(newId)").child("TeamB").setValue([eachId:true])
+                            count += 1
+                            databaseRef.child("Players/Games/\(selectedGameId)/\(newId)/TeamB/\(eachId)").setValue(true)
+                            if count == 1 {
+                                databaseRef.child("Players/Games/\(selectedGameId)/\(newId)/TeamBGoals/\(eachId)").setValue(String(teamBOneGoals))
+                            } else if count == 2 {
+                                databaseRef.child("Players/Games/\(selectedGameId)/\(newId)/TeamBGoals/\(eachId)").setValue(String(teamBTwoGoals))
+                            }
                         }
+
                     }
-                    
+                
                     setWinForUsers()
                 }
             }
         }
     }
+    
+    
     
     func getUsersPoints(userId: String, varP: String) -> Int {
         
@@ -255,7 +370,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
             if let eachId = each.id {
                 var p = getUsersPoints(userId: eachId, varP: varP)
                 p += 1
-                databaseRef.child("Users/\(eachId)/\(varP)").setValue(p)
+                databaseRef.child("Users/\(eachId)/\(varP)").setValue(String(p))
             }
         }
     }
@@ -265,16 +380,16 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
 
         if let pA = Int(pointsA.text!), let pB = Int(pointsB.text!) {
             if pA > pB {
-                setUsersPoints(userArray: teamOneArray, varP: "Win")
-                setUsersPoints(userArray: teamTwoArray, varP: "Lose")
+                setUsersPoints(userArray: teamOneArray, varP: "win")
+                setUsersPoints(userArray: teamTwoArray, varP: "lose")
 
             } else if pA < pB {
-                setUsersPoints(userArray: teamTwoArray, varP: "Win")
-                setUsersPoints(userArray: teamOneArray, varP: "Lose")
+                setUsersPoints(userArray: teamTwoArray, varP: "win")
+                setUsersPoints(userArray: teamOneArray, varP: "lose")
 
             } else if pA == pB {
-                setUsersPoints(userArray: teamTwoArray, varP: "Draw")
-                setUsersPoints(userArray: teamOneArray, varP: "Draw")
+                setUsersPoints(userArray: teamTwoArray, varP: "draw")
+                setUsersPoints(userArray: teamOneArray, varP: "draw")
             }
         }
 
@@ -359,7 +474,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     
     
     // MARK: Collection view
-    
+    /*
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return collectionArray.count
     }
@@ -381,7 +496,7 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Collection view at row \(collectionView.tag) selected index path \(indexPath)")
-    }
+    }*/
 
     
 

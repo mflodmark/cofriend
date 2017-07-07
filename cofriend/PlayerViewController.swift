@@ -35,7 +35,6 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     // MARK: Declarations
     
     @IBOutlet weak var myImageView: UIImageView!
-    @IBOutlet weak var playerName: UILabel!
     @IBOutlet weak var playerImage: UIButton!
     @IBOutlet weak var winLabel: UILabel!
     @IBOutlet weak var winScoreLabel: UILabel!
@@ -84,6 +83,7 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
     }
     
+    
     func fetchUser() {
         // Current user id
         let uid = Auth.auth().currentUser?.uid
@@ -112,6 +112,11 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
                 self.winScoreLabel.text = dictionary["win"] as? String
                 self.drawScoreLabel.text = dictionary["draw"] as? String
                 self.loseScoreLabel.text = dictionary["lose"] as? String
+                
+                // Set values for current user
+                let user = UserClass(dictionary: dictionary)
+                currentUser = user
+                currentUser.id = uid!
 
             }
             
@@ -148,9 +153,9 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     func addPointsToLabels() {
-        winScoreLabel.text = "0"
-        drawScoreLabel.text = "0"
-        loseScoreLabel.text = "0"
+        //winScoreLabel.text = "0"
+        //drawScoreLabel.text = "0"
+        //loseScoreLabel.text = "0"
         if let win = Int(winScoreLabel.text!), let draw = Int(drawScoreLabel.text!), let lose = Int(loseScoreLabel.text!) {
             pointsWin = win
             pointsDraw = draw
@@ -163,20 +168,23 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     func addPercentToLabels() {
         if pointsWin != 0 || pointsTotal != 0 {
-            percentWin = Double(pointsWin / pointsTotal)
+            print(pointsWin)
+            print(pointsTotal)
+            percentWin = Double(pointsWin) / Double(pointsTotal)
+            print(percentWin)
         }
         
         if pointsDraw != 0 || pointsTotal != 0 {
-            percentDraw = Double(pointsDraw / pointsTotal)
+            percentDraw = Double(pointsDraw) / Double(pointsTotal)
 
         }
         
         if pointsLose != 0 || pointsTotal != 0 {
-            percentLose = Double(pointsLose / pointsTotal)
+            percentLose = Double(pointsLose) / Double(pointsTotal)
 
         }
         
-        winPercentLabel.text = String(percentWin) + " %"
+        winPercentLabel.text = "\(percentWin) %"
         drawPercentLabel.text = String(percentDraw) + " %"
         losePercentLabel.text = String(percentLose) + " %"
     }

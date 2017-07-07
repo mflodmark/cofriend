@@ -26,6 +26,7 @@ class TournamentVC: UITableViewController {
         nyTableView.delegate = self
         nyTableView.dataSource = self
         
+        selectedTourCell = false
         
         //self.navigationController?.hidesBarsOnSwipe = true
 
@@ -49,7 +50,14 @@ class TournamentVC: UITableViewController {
     @IBOutlet var nyTableView: UITableView!
     var refreshController: UIRefreshControl = UIRefreshControl()
     
+    // MARK: Segue
+
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == identifiersSegue.AddToAddTournamentScore.rawValue && sender as? String != "selectedCell"{
+            selectedTourCell = false
+        }
+    }
     // MARK: Functions
     
     func setUpRefreshController() {
@@ -100,7 +108,7 @@ class TournamentVC: UITableViewController {
     func fetchUserTournaments() {
         // Clear arrays
         tournaments.removeAll()
-        players.removeAll()
+        //players.removeAll()
         
         // Current user id
         let uid = Auth.auth().currentUser?.uid
@@ -113,8 +121,6 @@ class TournamentVC: UITableViewController {
             print(snapshot)
             
             var snapArray = [String]()
-            print(snapshot.value as Any)
-            print(snapshot.key)
             
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 for each in dictionary {
@@ -185,29 +191,20 @@ class TournamentVC: UITableViewController {
                     
                 }
             }
-            print(snapArray.count)
 
             var snapPlayer = [UserClass]()
             
             // fetch user data instead and add to array
             for eachSnap in snapArray {
-                print("user count -----> \(users.count)")
                 for each in users {
-                    print(each.id!)
-                    print(eachSnap)
                     if each.id == eachSnap {
-                        print("each id = each snap")
                         snapPlayer.append(each)
-                        //print(players.count as Any)
-                        print("Each")
-                        print(each.name as Any)
-                        print(each.id as Any)
-                        print(each.email as Any)
-                        print(each.profileImageUrl as Any)
-                        
                     }
                 }
             }
+            
+            // Must append current user since the user is not within "users"
+            snapPlayer.append(currentUser)
             
             players.append(PlayerClass(tournamentId: userId, players: snapPlayer))
             
@@ -305,7 +302,6 @@ class TournamentVC: UITableViewController {
             cell.countingPlayer.text = String(countingPlayers.count)
         }
         
-        
         return cell
     }
     
@@ -315,14 +311,19 @@ class TournamentVC: UITableViewController {
             let selectedTournament = tournaments[(indexPath as NSIndexPath).row]
             selectedTour = selectedTournament
             print(selectedTournament.name as Any)
-            
+        
+        for each in players {
+            if each.tournamentId == selectedTournament.id {
+                selectedPlayer.tournamentId = each.tournamentId
+                selectedPlayer.players = each.players
+            }
+        }
+        
     }
     
 
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-
-    }
     
+    /*
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -343,7 +344,90 @@ class TournamentVC: UITableViewController {
             //saveTourData()
             nyTableView.reloadData()
         }
+    }*/
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
+            print("edit button tapped")
+            self.editButton(indexPath: indexPath)
+        }
+        edit.backgroundColor = editColor
+        
+        let delete = UITableViewRowAction(style: .normal, title: "Delete") { action, index in
+            print("delete button tapped")
+            self.deleteButton(indexPath: indexPath)
+        }
+        delete.backgroundColor = deleteColor
+        
+        return [delete, edit]
     }
     
+    func editButton(indexPath: IndexPath) {
+        let selectedTournament = tournaments[(indexPath as NSIndexPath).row]
+        selectedTour = selectedTournament
+        
+        // Check if player created the tournament or not
+        if let id = selectedTournament.createdByUserId {
+            if userCreatedTournament(id: id) == true {
+                selectedTourCell = true
+                
+                // Perform segue to edit
+                performSegue(withIdentifier: identifiersSegue.AddToAddTournamentScore.rawValue, sender: "selectedCell")
+            }
+        } else {
+            // Alert that edit is not possible because user did not create tournament
+            showAlert(title: "Edit mode not possible", message: "You are not the creator of this tournament", dismissButton: "Cancel", okButton: "Ok", sender: "Edit", indexPath: indexPath)
+        }
+    }
     
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String, sender: String, indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            self.alertOkFunctions(sender: sender, indexPath: indexPath)
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            //self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    func alertOkFunctions(sender: String, indexPath: IndexPath) {
+        if sender == "Delete" {
+            // Delete the row from the data source
+            if let id = tournaments[indexPath.row].id {
+                if let selectedId = checkSelectedIdPositionInTournamentData(id: id) {
+                    tournaments.remove(at: selectedId)
+                    deleteTournament(id: id)
+                } else {
+                    print("Failing to delete..")
+                }
+            }
+            
+            // This code saves the array whenever an item is deleted.
+            refreshData()
+        }
+    }
+    
+    func userCreatedTournament(id: String) -> Bool {
+        var checked = false
+        if currentUser.id == id {
+            checked = true
+        }
+        return checked
+    }
+    
+    func deleteButton(indexPath: IndexPath) {
+        showAlert(title: "Deleting", message: "Do you want to delete?", dismissButton: "Cancel", okButton: "Ok", sender: "Delete", indexPath: indexPath)
+
+    }
+
 }

@@ -71,10 +71,13 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @IBAction func doneActionButton(_ sender: UIButton) {
-        if let text = myTextField.text {
-            //checkUserAndSaveUserData(text: text)
-            saveNewUser(text: text)
+        if myTextField.text == "" {
+            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkTextField")
+        } else if let text = myTextField.text {
+            handleRegister(text: text)
+            dismiss(animated: true, completion: nil)
         }
+        
     }
     
     
@@ -89,6 +92,61 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
     
 
     // MARK: Functions
+    
+    func saveFriend(id: String) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        databaseRef.child("Users/\(uid!)/Friends").updateChildValues([id:true])
+        databaseRef.child("Users/\(id)/Friends").updateChildValues([uid!:true])
+
+    }
+    
+    func handleRegister(text: String) {
+        // Make global
+        /*
+        if checkName() == false {
+            showAlert(title: "Not a unique name", message: "Plese try again", dismissButton: "Cancel", okButton: "Ok")
+            return
+        }*/
+        
+        // Create user
+
+            
+        //successfully authenticated user
+        let imageName = NSUUID().uuidString
+        
+        // Create folder profile_images
+        let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).jpg")
+        
+        // Selecting image, uploading using jpeg to minimize image size
+        if let profileImage = self.addPhoto.image(for: .normal), let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
+            // Uploading image
+            storageRef.putData(uploadData, metadata: nil, completion: {
+                
+                (metadata, error) in
+                
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
+                    
+                    let values = ["name": text, "email": "notAvailable", "profileImageUrl": profileImageUrl, "win": "0", "lose": "0", "draw": "0"] as [String : Any]
+                    
+                    let ref = Database.database().reference()
+                    let usersReference = ref.child("Users").childByAutoId()
+                    let newId = usersReference.key
+                    usersReference.setValue(values)
+                    
+                    self.saveFriend(id: newId)
+                }
+            })
+        }
+    }
+    
+    
     
     func toggle() {
         if segmentedControl.selectedSegmentIndex == 0 {
@@ -106,30 +164,6 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
         
-    func saveNewUser(text: String) {
-        
-        var databaseRef: DatabaseReference!
-        databaseRef = Database.database().reference()
-        
-        if checkUsername(text: text) == true {
-            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkUsername")
-        } else if myTextField.text == "" {
-            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkTextField")
-        } else {
-            if let image = addPhoto.image(for: .normal) {
-                
-                
-                let post : [String : Any] = ["username" : text, "image": "No image available"]
-                
-                databaseRef.child("Users").childByAutoId().setValue(post)
-                
-                // Dismiss view
-                dismiss(animated: true, completion: nil)
-                
-            }
-            
-        }
-    }
     
     @objc func myTargetFunction() {
         // user touch field
@@ -157,42 +191,8 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
         myTextField.resignFirstResponder()
     }
     
-    
-    func checkUserAndSaveUserData(text: String) {
-        if checkUsername(text: text) == true {
-            showAlert(title: "Username already exist", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkUsername")
-        } else if myTextField.text == "" {
-            showAlert(title: "Missing Username", message: "Please try again", dismissButton: "Cancel", okButton: "Ok", sender: "checkTextField")
-        } else {
-            if let image = addPhoto.image(for: .normal) {
-                if let user = StoredUserData(username: text, image: image, id: idForUserData) {
-                    
-                    addUserData.append(user)
-                    saveUserData()
-                    idForUserData += 1
-                    
-                    // Save id
-                    UserDefaults.standard.set(String(idForUserData), forKey: forKey.UsernameDataId.rawValue)
-                    
-                    // Dismiss view
-                    dismiss(animated: true, completion: nil)
-                }
-            }
 
-        }
-    }
 
-    func checkUsername(text: String) -> Bool {
-        // starter value
-        var checked = false
-        for user in addUserData {
-            if text == user.username {
-                // Username already exists
-                checked = true
-            }
-        }
-        return checked
-    }
 
     // MARK: Alert
     
@@ -216,14 +216,12 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
         let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
         
         let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
-            print("Handle Ok logic here")
             self.alertOkFunctions(sender: sender)
             
         })
         alertController.addAction(actionOk)
         
         let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
-            print("Handle Cancel logic here")
             self.alertDismissFunctions()
             
         })

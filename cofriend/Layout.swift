@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+let editColor = UIColor.purple
+let deleteColor = UIColor.red
+
 func setViewLayout(view: UIView) {
     view.backgroundColor? = UIColor.lightGray
 }

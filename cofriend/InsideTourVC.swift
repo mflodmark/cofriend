@@ -24,8 +24,8 @@ class InsideTourVC: UITableViewController {
 
         myTableView.delegate = self
         myTableView.dataSource = self
-        
-
+        myUserArray = users
+        myUserArray.append(currentUser)
     }
     
     
@@ -45,6 +45,7 @@ class InsideTourVC: UITableViewController {
 
     var gameLeader: String = ""
     var myArray = [ScoreClass]()
+    var myUserArray: [UserClass] = []
     var refreshController: UIRefreshControl = UIRefreshControl()
     
     // MARK: Functions
@@ -85,7 +86,7 @@ class InsideTourVC: UITableViewController {
     
     func refreshData() {
         fetchScoreId()
-        //myTableView.reloadData()
+        myTableView.reloadData()
         refreshController.endRefreshing()
     }
     
@@ -158,8 +159,6 @@ class InsideTourVC: UITableViewController {
                 print(snapshot)
                 
                 var snapArray: [String] = [String]()
-                print(snapshot.value as Any)
-                print(snapshot.key)
                 
                 if let dictionary = snapshot.value as? [String: AnyObject] {
                     for each in dictionary {
@@ -168,9 +167,9 @@ class InsideTourVC: UITableViewController {
                 }
                 
                 for each in snapArray {
-                    self.fetchScores(scoreId: each)
                     self.fetchUserConnectedToScore(scoreId: each, team: "TeamA")
                     self.fetchUserConnectedToScore(scoreId: each, team: "TeamB")
+                    self.fetchScores(scoreId: each)
                 }
                 
             }, withCancel: nil)
@@ -192,7 +191,6 @@ class InsideTourVC: UITableViewController {
                 
                 // add id
                 score.id = snapshot.key
-                print(score.id as Any)
                 
                 // add to array
                 scores.append(score)
@@ -229,41 +227,30 @@ class InsideTourVC: UITableViewController {
 
                 }
             }
-            print(snapArray.count)
             
             // fetch user data instead and add to array
             for eachSnap in snapArray {
-                print("user count -----> \(users.count)")
-                for each in users {
-                    print(each.id!)
-                    print(eachSnap)
+                for each in self.myUserArray {
                     if each.id == eachSnap {
-                        print("each id = each snap")
                         snapPlayer.append(each)
                         //print(players.count as Any)
-                        print("Each")
-                        print(each.name as Any)
-                        print(each.id as Any)
-                        print(each.email as Any)
-                        print(each.profileImageUrl as Any)
-                        
                     }
                 }
             }
             
             if team == "TeamA" {
                 teamAArray.append(ScorePlayerClass(gameId: selectedGame.id, scoreId: scoreId, players: snapPlayer))
-                print("TeamAArrayAppending")
-                print("TeamACount ---- \(teamAArray.count)")
 
             } else if team == "TeamB" {
                 teamBArray.append(ScorePlayerClass(gameId: selectedGame.id, scoreId: scoreId, players: snapPlayer))
-                print("TeamBArrayAppending")
             }
             
-            print("counting team AAAAA ----- \(teamAArray.count)")
+            /*
+            //this will crash because of background thread, so lets use dispatch_async to fix
+            DispatchQueue.main.async(execute: {
+                self.animateTable(tableView: self.myTableView)
+            })*/
 
-            
         }, withCancel: nil)
     }
     
@@ -363,11 +350,11 @@ class InsideTourVC: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! InsideTourTableViewCell
         
         // Fetches the appropriate data for the data source layout.
-        let tour = myArray[indexPath.row]
+        let score = myArray[indexPath.row]
         
-        cell.date.text = tour.date
-        cell.playerScore.text = tour.teamAPoints
-        cell.friendScore.text = tour.teamBPoints
+        cell.date.text = score.date
+        cell.playerScore.text = score.teamAPoints
+        cell.friendScore.text = score.teamBPoints
         
         let font = UIFont(name: "Helvetica", size: 30.0)
         
@@ -378,28 +365,21 @@ class InsideTourVC: UITableViewController {
             cell.friendScore.font = font
         }
 
-        
-        print("eachTourId ---- \(tour.id as Any)")
-        
-        print("counting team A ----- \(teamAArray.count)")
-        print("Counting users ---- \(users.count)")
-        
         for each in teamAArray {
-            print("eachScoreId ---- \(each.scoreId as Any)")
-            if each.scoreId == tour.id && each.players?.count == 1 {
+            if each.scoreId == score.id && each.players?.count == 1 {
                 cell.playerOne.text = each.players?[0].name
                 cell.playerTwo.isHidden = true
-            } else if each.scoreId == tour.id && each.players?.count == 2 {
+            } else if each.scoreId == score.id && each.players?.count == 2 {
                 cell.playerOne.text = each.players?[0].name
-                cell.playerOne.text = each.players?[1].name
+                cell.playerTwo.text = each.players?[1].name
             }
         }
         
         for each in teamBArray {
-            if each.scoreId == tour.id && each.players?.count  == 1 {
+            if each.scoreId == score.id && each.players?.count  == 1 {
                 cell.friendOne.text = each.players?[0].name
                 cell.friendTwo.isHidden = true
-            } else if each.scoreId == tour.id && each.players?.count  == 2 {
+            } else if each.scoreId == score.id && each.players?.count  == 2 {
                 cell.friendOne.text = each.players?[0].name
                 cell.friendTwo.text = each.players?[1].name
             }
@@ -411,6 +391,7 @@ class InsideTourVC: UITableViewController {
         return cell
     }
     
+    /*
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -430,7 +411,7 @@ class InsideTourVC: UITableViewController {
             // This code saves the array whenever an item is deleted.
             myTableView.reloadData()
         }
-    }
+    }*/
     
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -438,6 +419,103 @@ class InsideTourVC: UITableViewController {
         return true
     }
     
+    // MARK: Edit table view
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
+            print("edit button tapped")
+            self.editButton(indexPath: indexPath)
+        }
+        edit.backgroundColor = editColor
+        
+        let delete = UITableViewRowAction(style: .normal, title: "Delete") { action, index in
+            print("delete button tapped")
+            self.deleteButton(indexPath: indexPath)
+        }
+        delete.backgroundColor = deleteColor
+        
+        return [delete, edit]
+    }
+    
+    func editButton(indexPath: IndexPath) {
+        let selectedScoreInArray = myArray[(indexPath as NSIndexPath).row]
+        selectedScore = selectedScoreInArray
+
+        // Check if player created the tournament or not
+        if let id = selectedScore.createdByUserId {
+            if userCreatedScore(id: id) == true {
+                selectedScoreCell = true
+                
+                // Perform segue to edit
+                performSegue(withIdentifier: identifiersSegue.AddScore.rawValue, sender: "selectedCell")
+            }
+        } else {
+            // Alert that edit is not possible because user did not create tournament
+            showAlert(title: "Edit mode not possible", message: "You are not the creator of this score", dismissButton: "Cancel", okButton: "Ok", sender: "Edit", indexPath: indexPath)
+        }
+    }
+    
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String, sender: String, indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            self.alertOkFunctions(sender: sender, indexPath: indexPath)
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            //self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    func alertOkFunctions(sender: String, indexPath: IndexPath) {
+        if sender == "Delete" {
+            // Delete the row from the data source
+            if let selectedId = myArray[indexPath.row].id {
+                if let id = checkSelectedIdPositionInScoreData(id: selectedId) {
+                    scores.remove(at: id)
+                    deleteScoresConnectedToTournament(id: selectedId)
+                } else {
+                    print("Failing to delete..")
+                }
+                
+            }
+            
+            // This code saves the array whenever an item is deleted.
+            refreshData()
+        }
+    }
+    
+    func userCreatedScore(id: String) -> Bool {
+        var checked = false
+        if currentUser.id == id {
+            checked = true
+        }
+        return checked
+    }
+    
+    func deleteButton(indexPath: IndexPath) {
+        showAlert(title: "Deleting", message: "Do you want to delete?", dismissButton: "Cancel", okButton: "Ok", sender: "Delete", indexPath: indexPath)
+        
+    }
+    
+    // MARK: Segue
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == identifiersSegue.AddScore.rawValue && sender as? String != "selectedCell"{
+            selectedScoreCell = false
+        }
+    }
     
     
 }

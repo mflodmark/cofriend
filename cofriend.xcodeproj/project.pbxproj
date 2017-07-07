@@ -21,6 +21,8 @@
 		2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE461E8AEABB000008E8 /* PlayerViewController.swift */; };
 		2804CE491E8AEC48000008E8 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE481E8AEC48000008E8 /* FriendsViewController.swift */; };
 		2804CE591E9F40C6000008E8 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE581E9F40C5000008E8 /* Errors.swift */; };
+		286119FB1F02FE2600AFCC42 /* DetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286119FA1F02FE2600AFCC42 /* DetailsVC.swift */; };
+		286119FD1F0451AA00AFCC42 /* AddGoalscorersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286119FC1F0451AA00AFCC42 /* AddGoalscorersVC.swift */; };
 		2867D8B21EACDAA300B72CDE /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B11EACDAA200B72CDE /* GradientView.swift */; };
 		2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B41EACE40300B72CDE /* TournamentVC.swift */; };
 		2867D8B91EACED2500B72CDE /* InsideTourVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B81EACED2400B72CDE /* InsideTourVC.swift */; };
@@ -63,7 +65,7 @@
 		28F034291EDCBDC7000AAFCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */; };
 		28F0342B1EDDFE1C000AAFCB /* LogInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0342A1EDDFE1C000AAFCB /* LogInVC.swift */; };
 		28F0342D1EDF6793000AAFCB /* LoadImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0342C1EDF6793000AAFCB /* LoadImages.swift */; };
-		7D69A5B3322085118DCEDF14 /* libPods-cofriend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2221154FAC88C8886C110389 /* libPods-cofriend.a */; };
+		2F0F4319F13DA0F1E16DC915 /* Pods_cofriend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032787382005FC7D7AC12FEB /* Pods_cofriend.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +79,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2221154FAC88C8886C110389 /* libPods-cofriend.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cofriend.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		032787382005FC7D7AC12FEB /* Pods_cofriend.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_cofriend.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2804C7681EA6443D00913ACE /* Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		2804C76A1EA6B4F800913ACE /* StoredUserData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredUserData.swift; sourceTree = "<group>"; };
 		2804C76D1EA7C10B00913ACE /* StoredTitleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredTitleData.swift; sourceTree = "<group>"; };
@@ -96,6 +98,8 @@
 		2804CE461E8AEABB000008E8 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		2804CE481E8AEC48000008E8 /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		2804CE581E9F40C5000008E8 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		286119FA1F02FE2600AFCC42 /* DetailsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailsVC.swift; sourceTree = "<group>"; };
+		286119FC1F0451AA00AFCC42 /* AddGoalscorersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddGoalscorersVC.swift; sourceTree = "<group>"; };
 		2867D8B11EACDAA200B72CDE /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2867D8B41EACE40300B72CDE /* TournamentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TournamentVC.swift; sourceTree = "<group>"; };
 		2867D8B81EACED2400B72CDE /* InsideTourVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsideTourVC.swift; sourceTree = "<group>"; };
@@ -148,7 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D69A5B3322085118DCEDF14 /* libPods-cofriend.a in Frameworks */,
+				2F0F4319F13DA0F1E16DC915 /* Pods_cofriend.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +281,8 @@
 				2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */,
 				2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */,
 				2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */,
+				286119FA1F02FE2600AFCC42 /* DetailsVC.swift */,
+				286119FC1F0451AA00AFCC42 /* AddGoalscorersVC.swift */,
 			);
 			name = Inside;
 			sourceTree = "<group>";
@@ -378,7 +384,7 @@
 		6DBFF2059D9A78E2E8ACC393 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2221154FAC88C8886C110389 /* libPods-cofriend.a */,
+				032787382005FC7D7AC12FEB /* Pods_cofriend.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -570,6 +576,7 @@
 				2867D8D71EB9154100B72CDE /* AddGameTitleVC.swift in Sources */,
 				2867D8CF1EB852BA00B72CDE /* GamesTVC.swift in Sources */,
 				28C328451EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift in Sources */,
+				286119FB1F02FE2600AFCC42 /* DetailsVC.swift in Sources */,
 				28C3284F1EEE5E0B00077B9D /* IQPreviousNextView.swift in Sources */,
 				2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */,
 				28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */,
@@ -590,6 +597,7 @@
 				2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */,
 				2804C7691EA6443D00913ACE /* Identifiers.swift in Sources */,
 				28C328551EF1D82600077B9D /* Emitter.swift in Sources */,
+				286119FD1F0451AA00AFCC42 /* AddGoalscorersVC.swift in Sources */,
 				28F0342B1EDDFE1C000AAFCB /* LogInVC.swift in Sources */,
 				2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */,
 				2867D8CA1EAE75C700B72CDE /* AddTourCell.swift in Sources */,
@@ -739,6 +747,7 @@
 			baseConfigurationReference = 414285CB8C9100E1C91C2823 /* Pods-cofriend.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = 3W6ZL6R93D;
 				INFOPLIST_FILE = cofriend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -753,6 +762,7 @@
 			baseConfigurationReference = F7DBD34477F4DFCB607551C5 /* Pods-cofriend.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = 3W6ZL6R93D;
 				INFOPLIST_FILE = cofriend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

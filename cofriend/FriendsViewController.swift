@@ -35,7 +35,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Reset array
         users = []
         fetchFriends()
-        
     }
     
 
@@ -47,7 +46,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     // MARK: Functions
-    
+        
     func fetchFriends() {
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
@@ -60,15 +59,20 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             print(snapshot)
             
             // Fetch friends
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                for each in dictionary {
-                    if each.value as! String == "ReceivedFriendRequest" {
-                        
+
+            if snapshot.value as? String == "ReceivedFriendRequest" {
+                for eachFriend in friendRequest {
+                    if let friendName = eachFriend.name {
+                        self.showAlert(title: "Friend request", message: "Do you want to be friends with \(friendName)", dismissButton: "No", okButton: "Yes", friend: eachFriend, key: snapshot.key)
                     }
                 }
+            } else if snapshot.value as? Bool == true {
+                self.fetchUser(userId: snapshot.key, sender: "true")
             }
+   
         }, withCancel: nil)
         
+        /*
         // Value changed
         databaseRef.child("Users/\(uid!)/Friends").queryOrderedByKey().observe(.childChanged, with: {
             
@@ -77,32 +81,40 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             print(snapshot)
             
             // Fetch friends
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                for each in dictionary {
-                    if each.value as! Bool == true {
-                        self.fetchUser(id: each.key)
-                    }
-                }
+            if snapshot.value as? Bool == true {
+                self.fetchUser(userId: snapshot.key, sender: "true")
             }
-        }, withCancel: nil)
+
+        }, withCancel: nil)*/
     }
 
-    func fetchUser(id: String) {
+    func fetchUser(userId: String, sender: String) {
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
         
-        databaseRef.child("Users\(id)").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+        friendRequest.removeAll()
+        
+        databaseRef.child("Users/\(userId)").queryOrderedByKey().observeSingleEvent(of: .value, with: {
         
             (snapshot) in
+            print(snapshot)
             
             // Fetch user
             if let dictionary = snapshot.value as? [String: AnyObject] {
-                let user = UserClass(dictionary: dictionary)
-                print(user)
-                user.id = snapshot.key
-                users.append(user)
+                
+                if sender == "true" {
+                    let user = UserClass(dictionary: dictionary)
+                    user.id = snapshot.key
+                    users.append(user)
+                } else if sender == "ReceivedFriendRequest" {
+                    let user = UserClass(dictionary: dictionary)
+                    user.id = snapshot.key
+                    friendRequest.append(user)
+                }
+
                 
                 //this will crash because of background thread, so lets use dispatch_async to fix
+                
                 DispatchQueue.main.async(execute: {
                     self.animateTable(tableView: self.myTableView)
                 })
@@ -112,6 +124,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         }, withCancel: nil)
     }
     
+
     
     func animateTable(tableView: UITableView) {
 
@@ -177,5 +190,48 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cell
     }
     
+    // MARK: Alert
+    
+    func alertOkFunctions(friend: UserClass, key: String) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+
+        if let id = friend.id {
+            databaseRef.child("Users/\(uid!)/Friends").updateChildValues([id:true])
+            databaseRef.child("Users/\(id)/Friends").updateChildValues([uid!:true])
+        
+        }
+        
+        self.fetchUser(userId: key, sender: "ReceivedFriendRequest")
+    }
+    
+    func alertDismissFunctions(friend: UserClass) {
+        var databaseRef: DatabaseReference!
+        databaseRef = Database.database().reference()
+        
+        if let id = friend.id {
+            databaseRef.child("Users/\(uid!)/Friends").updateChildValues([id:false])
+            databaseRef.child("Users/\(id)/Friends").updateChildValues([uid!:false])
+        }
+    }
+
+    func showAlert(title: String, message: String, dismissButton: String, okButton: String, friend: UserClass, key: String) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            self.alertOkFunctions(friend: friend, key: key)
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            self.alertDismissFunctions(friend: friend)
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
+    }
     
 }

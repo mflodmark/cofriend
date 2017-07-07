@@ -105,11 +105,11 @@ class LogInVC: UIViewController, UIImagePickerControllerDelegate, UINavigationCo
     
     func handleRegister() {
         
-        if checkName() == false {
+        if checkName() == true {
             showAlert(title: "Not a unique name", message: "Plese try again", dismissButton: "Cancel", okButton: "Ok")
             return
         }
-        if checkEmail() == false {
+        if checkEmail() == true {
             showAlert(title: "Not a unique email", message: "Plese try again", dismissButton: "Cancel", okButton: "Ok")
             return
         }

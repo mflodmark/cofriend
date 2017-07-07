@@ -28,7 +28,9 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         createTitles()
         
         setRound(button: newPlayer)
-        //users = []
+        myArray.removeAll()
+        myArray = users
+        myArray.append(currentUser)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -38,6 +40,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         playerArray.removeAll()
+        getAlreadySelectedPlayers()
         animateTable(tableView: self.myTableView)
         //fetchUser()
     }
@@ -63,7 +66,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var draw = 0
     var lose = 0
     var refreshController: UIRefreshControl = UIRefreshControl()
-
+    var myArray: [UserClass] = [UserClass]()
 
     
     // MARK: Actions
@@ -78,6 +81,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBAction func doneAction(_ sender: UIBarButtonItem) {
         saveNewTournament()
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -115,9 +119,21 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         }, withCancel: nil)
     }
     */
+    
     // MARK: Functions
     
     func createTitles() {
+        addedPlayers.text = "Added players: \(playerArray.count)"
+        if selectedTourCell == true {
+            if let name = selectedTour.name {
+                textField.text = name
+            }
+        } else if selectedTourCell == false {
+            textField.text = ""
+        }
+    }
+    
+    func updatePlayerTitles() {
         addedPlayers.text = "Added players: \(playerArray.count)"
     }
     
@@ -207,7 +223,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         return checked
     }
 
-
+    
     func saveNewTournament() {
         
         var databaseRef: DatabaseReference!
@@ -228,14 +244,38 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
                     // Save to folder tournament
                     let newRef = databaseRef.child("Tournaments").childByAutoId()
                     let newId = newRef.key
-                    newRef.setValue(post)
                     
+                    // Check if in save or edit mode
+                    if selectedTourCell == false {
+                        // Save tournament
+                        newRef.setValue(post)
+                        
+                    } else {
+                        // Edit tournament
+                        if let selId = selectedTour.id {
+                            databaseRef.child("Tournaments/\(selId)").setValue(post)
+                            // Remove all players
+                            databaseRef.child("Players/Tournaments/\(selId)").removeValue()
+                        }
+                    }
+                    
+                    addToPlayersArray(id: newId, playerArray: playerArray)
                     
                     // Tournaments -> Id -> Players => add players
                     for each in playerArray {
                         if let id = each.id {
-                            databaseRef.child("Players").child("Tournaments").child("\(newId)").setValue([id:true])
-                            databaseRef.child("Users/\(id)/Tournaments").updateChildValues([newId:true])
+                            // Check if in save or edit mode
+                            if selectedTourCell == false {
+                                // Save
+                                databaseRef.child("Players/Tournaments/\(newId)/\(id)").setValue(true)
+                                databaseRef.child("Users/\(id)/Tournaments").updateChildValues([newId:true])
+                            } else {
+                                // Edit
+                                if let selId = selectedTour.id {
+                                    databaseRef.child("Players/Tournaments/\(selId)/\(id)").setValue(true)
+                                    databaseRef.child("Users/\(id)/Tournaments").updateChildValues([selId:true])
+                                }
+                            }
                         }
                     }
                 }
@@ -243,18 +283,20 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         }
     }
     
+    func addToPlayersArray(id: String, playerArray: [UserClass]) {
+        players.append(PlayerClass(tournamentId: id, players: playerArray))
+    }
+    
     func showAlert(title: String, message: String, dismissButton: String, okButton: String) {
         let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
         
         let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
-            print("Handle Ok logic here")
             //self.alertOkFunctions()
             
         })
         alertController.addAction(actionOk)
         
         let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
-            print("Handle Cancel logic here")
             //self.alertDismissFunctions()
             
         })
@@ -264,6 +306,14 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
     }
 
+    func getAlreadySelectedPlayers() {
+        for each in players {
+            // If selected tour
+            if each.tournamentId == selectedTour.id {
+                playerArray = each.players!
+            }
+        }
+    }
     
     // MARK: - Table view data source
     
@@ -274,47 +324,94 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     //Each meal should have its own row in that section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        var counter = 0
+        if tableView == myTableView {
+            counter = myArray.count
+        }
+        return counter
     }
     
     //only ask for the cells for rows that are being displayed
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // Table view cells are reused and should be dequeued using a cell identifier.
+        // Identifiers
         let cellIdentifier = identifiersCell.AddTourCell.rawValue
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AddTourCell
+        let cellPlayerIdentifier = identifiersCell.AddPlayerCell.rawValue
         
-        // Fetches the appropriate data for the data source layout.
-        let user = users[indexPath.row]
-        cell.myLabel.text = user.name
-        
-        // Cell status
-        tableView.allowsMultipleSelection = true
-        
-        
-        return cell
+        if tableView == myTableView {
+            // Table view cells are reused and should be dequeued using a cell identifier.
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AddTourCell
+            
+            // Fetches the appropriate data for the data source layout.
+            let user = myArray[indexPath.row]
+            
+            cell.myLabel.text = user.name
+            
+            for each in players {
+                // If selected tour
+                if each.tournamentId == selectedTour.id {
+                    for eachP in each.players! {
+                        if eachP.id == user.id {
+                            cell.myLabel.backgroundColor = UIColor.darkGray
+                        }
+                    }
+                }
+            }
+            
+            // Cell status
+            tableView.allowsMultipleSelection = true
+            return cell
+
+        } else {
+            // Table view cells are reused and should be dequeued using a cell identifier.
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellPlayerIdentifier, for: indexPath) as! AddTourCell
+            
+            // Fetches the appropriate data for the data source layout.
+            let user = playerArray[indexPath.row]
+            cell.myLabel.text = user.name
+            
+            // Cell status
+            tableView.allowsSelection = false
+
+            return cell
+        }
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let user = users[indexPath.row]
-        //let cell: AddTourCell = tableView.cellForRow(at: indexPath) as! AddTourCell
-        
-        playerArray.append(user)
-        
-        createTitles()
-        print("Selected cell")
+        didSelect(indexPath: indexPath)
     }
     
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let user = users[indexPath.row]
+        didDeselect(indexPath: indexPath)
+        
+    }
+    
+    func didSelect(indexPath: IndexPath) {
+        let user = myArray[indexPath.row]
+        playerArray.append(user)
+        addedPlayers.text = "Added players: \(playerArray.count)"
+    }
+    
+    func didDeselect(indexPath: IndexPath) {
+        let user = myArray[indexPath.row]
+        
         if let id = user.id {
-            if let check = checkSelectedIdPositionInUserData(id: id) {
+            if let check = checkSelectedIdPositionInPlayer(id: id) {
                 playerArray.remove(at: check)
-                createTitles()
+                updatePlayerTitles()
             }
         }
-
+    }
+    
+    func checkPlayerArray(indexPath: IndexPath) -> Bool {
+        var check: Bool = false
+        for each in playerArray {
+            if each.id == myArray[indexPath.row].id {
+                check = true
+                
+            }
+        }
+        return check
     }
 }

@@ -26,6 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Configure textfield fix
         IQKeyboardManager.sharedManager().enable = true
         
+        //let friendVC = FriendsViewController()
+        //friendVC.fetchFriends()
+        fetchFriends()
+        
         
         // Change color
         
