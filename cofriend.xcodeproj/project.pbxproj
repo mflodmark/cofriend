@@ -21,7 +21,7 @@
 		2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE461E8AEABB000008E8 /* PlayerViewController.swift */; };
 		2804CE491E8AEC48000008E8 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE481E8AEC48000008E8 /* FriendsViewController.swift */; };
 		2804CE591E9F40C6000008E8 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804CE581E9F40C5000008E8 /* Errors.swift */; };
-		286119FB1F02FE2600AFCC42 /* DetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286119FA1F02FE2600AFCC42 /* DetailsVC.swift */; };
+		282788451F167D2A00208944 /* StoredPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282788441F167D2900208944 /* StoredPoints.swift */; };
 		286119FD1F0451AA00AFCC42 /* AddGoalscorersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286119FC1F0451AA00AFCC42 /* AddGoalscorersVC.swift */; };
 		2867D8B21EACDAA300B72CDE /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B11EACDAA200B72CDE /* GradientView.swift */; };
 		2867D8B51EACE40300B72CDE /* TournamentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2867D8B41EACE40300B72CDE /* TournamentVC.swift */; };
@@ -65,6 +65,8 @@
 		28F034291EDCBDC7000AAFCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */; };
 		28F0342B1EDDFE1C000AAFCB /* LogInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0342A1EDDFE1C000AAFCB /* LogInVC.swift */; };
 		28F0342D1EDF6793000AAFCB /* LoadImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0342C1EDF6793000AAFCB /* LoadImages.swift */; };
+		28F10EDA1F0FEF9100936C1B /* DetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F10ED91F0FEF9000936C1B /* DetailsCell.swift */; };
+		28F10EDC1F1002D100936C1B /* StatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F10EDB1F1002D100936C1B /* StatVC.swift */; };
 		2F0F4319F13DA0F1E16DC915 /* Pods_cofriend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 032787382005FC7D7AC12FEB /* Pods_cofriend.framework */; };
 /* End PBXBuildFile section */
 
@@ -98,7 +100,7 @@
 		2804CE461E8AEABB000008E8 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		2804CE481E8AEC48000008E8 /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		2804CE581E9F40C5000008E8 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		286119FA1F02FE2600AFCC42 /* DetailsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailsVC.swift; sourceTree = "<group>"; };
+		282788441F167D2900208944 /* StoredPoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredPoints.swift; sourceTree = "<group>"; };
 		286119FC1F0451AA00AFCC42 /* AddGoalscorersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddGoalscorersVC.swift; sourceTree = "<group>"; };
 		2867D8B11EACDAA200B72CDE /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2867D8B41EACE40300B72CDE /* TournamentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TournamentVC.swift; sourceTree = "<group>"; };
@@ -143,6 +145,8 @@
 		28F034281EDCBDC6000AAFCB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		28F0342A1EDDFE1C000AAFCB /* LogInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInVC.swift; sourceTree = "<group>"; };
 		28F0342C1EDF6793000AAFCB /* LoadImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadImages.swift; sourceTree = "<group>"; };
+		28F10ED91F0FEF9000936C1B /* DetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailsCell.swift; sourceTree = "<group>"; };
+		28F10EDB1F1002D100936C1B /* StatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatVC.swift; sourceTree = "<group>"; };
 		414285CB8C9100E1C91C2823 /* Pods-cofriend.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cofriend.debug.xcconfig"; path = "Pods/Target Support Files/Pods-cofriend/Pods-cofriend.debug.xcconfig"; sourceTree = "<group>"; };
 		F7DBD34477F4DFCB607551C5 /* Pods-cofriend.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cofriend.release.xcconfig"; path = "Pods/Target Support Files/Pods-cofriend/Pods-cofriend.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -173,6 +177,7 @@
 				2804C76A1EA6B4F800913ACE /* StoredUserData.swift */,
 				2867D8BC1EAD006200B72CDE /* StoredScoreData.swift */,
 				2867D8C71EAD2C6600B72CDE /* StoredTourData.swift */,
+				282788441F167D2900208944 /* StoredPoints.swift */,
 				2804C76D1EA7C10B00913ACE /* StoredTitleData.swift */,
 				2867D8D41EB90BB500B72CDE /* StoredGameTitleData.swift */,
 			);
@@ -264,6 +269,7 @@
 		2867D8B31EACE3E400B72CDE /* ScoreTournament */ = {
 			isa = PBXGroup;
 			children = (
+				28F10ED81F0FE2B400936C1B /* Statistics */,
 				2867D8CD1EB8528E00B72CDE /* Games */,
 				2867D8C61EAD2AE800B72CDE /* Main */,
 				2867D8C31EAD2A8300B72CDE /* Inside */,
@@ -281,7 +287,6 @@
 				2867D8DF1ECD5D5D00B72CDE /* DatePicker.swift */,
 				2867D8DB1EBAF17F00B72CDE /* ScoreInsideCell.swift */,
 				2867D8DD1ECA301400B72CDE /* ScoreCollCell.swift */,
-				286119FA1F02FE2600AFCC42 /* DetailsVC.swift */,
 				286119FC1F0451AA00AFCC42 /* AddGoalscorersVC.swift */,
 			);
 			name = Inside;
@@ -379,6 +384,15 @@
 				28F0341F1ECEAFA1000AAFCB /* CustomControls.swift */,
 			);
 			name = CustomControls;
+			sourceTree = "<group>";
+		};
+		28F10ED81F0FE2B400936C1B /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				28F10EDB1F1002D100936C1B /* StatVC.swift */,
+				28F10ED91F0FEF9000936C1B /* DetailsCell.swift */,
+			);
+			name = Statistics;
 			sourceTree = "<group>";
 		};
 		6DBFF2059D9A78E2E8ACC393 /* Frameworks */ = {
@@ -557,8 +571,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28F10EDC1F1002D100936C1B /* StatVC.swift in Sources */,
 				2804CE451E8AE5E4000008E8 /* Layout.swift in Sources */,
 				2804C7761EAB8F9A00913ACE /* GlobalFuncs.swift in Sources */,
+				28F10EDA1F0FEF9100936C1B /* DetailsCell.swift in Sources */,
 				2867D8C81EAD2C6600B72CDE /* StoredTourData.swift in Sources */,
 				2867D8B91EACED2500B72CDE /* InsideTourVC.swift in Sources */,
 				28C328431EEE5E0B00077B9D /* IQNSArray+Sort.swift in Sources */,
@@ -576,7 +592,6 @@
 				2867D8D71EB9154100B72CDE /* AddGameTitleVC.swift in Sources */,
 				2867D8CF1EB852BA00B72CDE /* GamesTVC.swift in Sources */,
 				28C328451EEE5E0B00077B9D /* IQUITextFieldView+Additions.swift in Sources */,
-				286119FB1F02FE2600AFCC42 /* DetailsVC.swift in Sources */,
 				28C3284F1EEE5E0B00077B9D /* IQPreviousNextView.swift in Sources */,
 				2867D8DC1EBAF17F00B72CDE /* ScoreInsideCell.swift in Sources */,
 				28F034201ECEAFA1000AAFCB /* CustomControls.swift in Sources */,
@@ -592,6 +607,7 @@
 				2804C76B1EA6B4F800913ACE /* StoredUserData.swift in Sources */,
 				2804CE491E8AEC48000008E8 /* FriendsViewController.swift in Sources */,
 				28C328491EEE5E0B00077B9D /* IQKeyboardManagerConstants.swift in Sources */,
+				282788451F167D2A00208944 /* StoredPoints.swift in Sources */,
 				28F034271ED6C829000AAFCB /* TableViewCollCell.swift in Sources */,
 				28C328521EEE5E0B00077B9D /* IQUIView+IQKeyboardToolbar.swift in Sources */,
 				2804CE471E8AEABB000008E8 /* PlayerViewController.swift in Sources */,

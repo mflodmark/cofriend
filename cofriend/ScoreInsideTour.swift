@@ -101,7 +101,10 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         //prepareSavingData()
         //saveTournamentData()
         saveNewScore()
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {
+            //let insideTour = InsideTourVC()
+            //insideTour.refreshData()
+        })
     }
     
     @IBAction func dateActionButton(_ sender: UIButton) {
@@ -346,15 +349,33 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         for each in users {
             if each.id == userId && varP == "Win" {
                 // Default value
-                each.win = "0"
+                //each.win = "0"
                 p = Int(each.win!)!
             } else if each.id == userId && varP == "Draw" {
                 // Default value
-                each.draw = "0"
+                //each.draw = "0"
                 p = Int(each.draw!)!
             } else if each.id == userId && varP == "Lose" {
                 // Default value
-                each.lose = "0"
+                //each.lose = "0"
+                p = Int(each.lose!)!
+            }
+        }
+        
+        return p
+    }
+    
+    
+    func getGamePoints(id: String, varP: String) -> Int {
+        
+        var p: Int = 0
+        
+        for each in points {
+            if each.nameId == id && each.gameId == selectedGame.id && varP == "Win" {
+                p = Int(each.win!)!
+            } else if each.nameId == id && each.gameId == selectedGame.id && varP == "Draw" {
+                p = Int(each.draw!)!
+            } else if each.nameId == id && each.gameId == selectedGame.id && varP == "Lose" {
                 p = Int(each.lose!)!
             }
         }
@@ -368,9 +389,26 @@ class ScoreInsideTourVC: UIViewController, UITableViewDelegate, UITableViewDataS
         
         for each in userArray {
             if let eachId = each.id {
+                // Get and set total user points
                 var p = getUsersPoints(userId: eachId, varP: varP)
                 p += 1
                 databaseRef.child("Users/\(eachId)/\(varP)").setValue(String(p))
+                
+                // Get and set games
+                var pG = getGamePoints(id: eachId, varP: varP)
+                pG += 1
+                if let selGameId = selectedGame.id {
+                    databaseRef.child("Points/Games/\(selGameId)/\(eachId)/\(varP)").setValue(String(pG))
+                }
+
+                // Update points
+                fetchPoints()
+                
+                // Get and set tournaments
+                //var pT =
+                  //  pT += 1
+                //databaseRef.child("Points/Tournaments/\(selectedTour.id)\(eachId)/\(varP)").setValue(String(pT))
+
             }
         }
     }

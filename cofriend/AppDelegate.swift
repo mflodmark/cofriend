@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //let friendVC = FriendsViewController()
         //friendVC.fetchFriends()
         fetchFriends()
+        fetchPoints()
         
         
         // Change color
@@ -43,12 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().tintColor = UIColor.white
         UITabBar.appearance().tintColor = UIColor.white
         
-
-
-
-        //UIView.appearance().backgroundColor = UIColor.lightGray
-
-        
+ 
 
         
         // Change text size and style of navigation bar

@@ -25,6 +25,7 @@ class UserClass: NSObject {
     var lose: String? = "0"
     var penaltyWin: String? = "0"
     var penaltyLose: String? = "0"
+    var createdByUserId: String?
 
     //var tournaments: [TournamentClass]?
     
@@ -38,6 +39,7 @@ class UserClass: NSObject {
         self.lose = dictionary["lose"] as? String
         self.penaltyWin = dictionary["penaltyWin"] as? String
         self.penaltyLose = dictionary["penaltyLose"] as? String
+        self.createdByUserId = dictionary["createdByUserId"] as? String
 
         //self.tournaments = dictionary["tournaments"] as? TournamentClass
     }

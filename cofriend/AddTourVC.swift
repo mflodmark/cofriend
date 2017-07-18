@@ -12,6 +12,7 @@ import Firebase
 import FirebaseDatabase
 
 var playerArray = [UserClass]()
+var userArray = [UserClass]()
 
 class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -24,13 +25,11 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         myTableView.delegate = self
         myTableView.dataSource = self
+        selectedTableView.delegate = self
+        selectedTableView.dataSource = self
         
-        createTitles()
         
         setRound(button: newPlayer)
-        myArray.removeAll()
-        myArray = users
-        myArray.append(currentUser)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -41,7 +40,12 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
         super.viewWillAppear(animated)
         playerArray.removeAll()
         getAlreadySelectedPlayers()
+        setMyArray()
+        //selectedArray = playerArray
+        createTitles()
         animateTable(tableView: self.myTableView)
+        animateTable(tableView: self.selectedTableView)
+
         //fetchUser()
     }
     
@@ -58,6 +62,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var addedPlayers: UILabel!
     
+    @IBOutlet weak var selectedTableView: UITableView!
     @IBOutlet weak var myTableView: UITableView!
     
     @IBOutlet weak var newPlayer: UIButton!
@@ -66,7 +71,8 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var draw = 0
     var lose = 0
     var refreshController: UIRefreshControl = UIRefreshControl()
-    var myArray: [UserClass] = [UserClass]()
+    var myArray: [UserClass] = []
+    //var selectedArray: [UserClass] = []
 
     
     // MARK: Actions
@@ -121,6 +127,21 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     */
     
     // MARK: Functions
+    
+    func setMyArray() {
+        // Default array
+        myArray = users
+        myArray.append(currentUser)
+        
+        // remove selected users from user array
+        for each in playerArray {
+            if let id = each.id {
+                if let check = checkSelectedIdPositionInUserArray(id: id, array: myArray) {
+                    myArray.remove(at: check)
+                }
+            }
+        }
+    }
     
     func createTitles() {
         addedPlayers.text = "Added players: \(playerArray.count)"
@@ -324,11 +345,13 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     //Each meal should have its own row in that section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var counter = 0
+       
         if tableView == myTableView {
-            counter = myArray.count
+            return myArray.count
+        } else {
+            return playerArray.count
         }
-        return counter
+        
     }
     
     //only ask for the cells for rows that are being displayed
@@ -370,7 +393,7 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
             cell.myLabel.text = user.name
             
             // Cell status
-            tableView.allowsSelection = false
+            //tableView.allowsSelection = false
 
             return cell
         }
@@ -378,30 +401,43 @@ class AddTourVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        didSelect(indexPath: indexPath)
-    }
-    
-    
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        didDeselect(indexPath: indexPath)
+        if tableView == myTableView {
+            didSelect(indexPath: indexPath)
+        } else {
+            didDeselect(indexPath: indexPath)
+        }
         
+        updatePlayerTitles()
+        myTableView.reloadData()
+        selectedTableView.reloadData()
     }
+    
     
     func didSelect(indexPath: IndexPath) {
+        // append to selected array
         let user = myArray[indexPath.row]
         playerArray.append(user)
-        addedPlayers.text = "Added players: \(playerArray.count)"
+
+        // remove from user array
+        if let id = user.id {
+            if let check = checkSelectedIdPositionInUserArray(id: id, array: myArray) {
+                myArray.remove(at: check)
+            }
+        }
     }
     
     func didDeselect(indexPath: IndexPath) {
-        let user = myArray[indexPath.row]
+        // append to user array
+        let user = playerArray[indexPath.row]
+        myArray.append(user)
         
+        // remove from selected array
         if let id = user.id {
-            if let check = checkSelectedIdPositionInPlayer(id: id) {
+            if let check = checkSelectedIdPositionInUserArray(id: id, array: playerArray) {
                 playerArray.remove(at: check)
-                updatePlayerTitles()
             }
         }
+
     }
     
     func checkPlayerArray(indexPath: IndexPath) -> Bool {

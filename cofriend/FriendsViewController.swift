@@ -46,31 +46,38 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     
     // MARK: Functions
+    
+    func refreshData() {
+        
+    }
         
     func fetchFriends() {
         var databaseRef: DatabaseReference!
         databaseRef = Database.database().reference()
     
         // Value added
-        databaseRef.child("Users/\(uid!)/Friends").queryOrderedByKey().observe(.childAdded, with: {
-            
-            (snapshot) in
-            
-            print(snapshot)
-            
-            // Fetch friends
-
-            if snapshot.value as? String == "ReceivedFriendRequest" {
-                for eachFriend in friendRequest {
-                    if let friendName = eachFriend.name {
-                        self.showAlert(title: "Friend request", message: "Do you want to be friends with \(friendName)", dismissButton: "No", okButton: "Yes", friend: eachFriend, key: snapshot.key)
+        if let userId = uid {
+            databaseRef.child("Users/\(userId)/Friends").queryOrderedByKey().observe(.childAdded, with: {
+                
+                (snapshot) in
+                
+                print(snapshot)
+                
+                // Fetch friends
+                
+                if snapshot.value as? String == "ReceivedFriendRequest" {
+                    for eachFriend in friendRequest {
+                        if let friendName = eachFriend.name {
+                            self.showAlert(title: "Friend request", message: "Do you want to be friends with \(friendName)", dismissButton: "No", okButton: "Yes", friend: eachFriend, key: snapshot.key)
+                        }
                     }
+                } else if snapshot.value as? Bool == true {
+                    self.fetchUser(userId: snapshot.key, sender: "true")
                 }
-            } else if snapshot.value as? Bool == true {
-                self.fetchUser(userId: snapshot.key, sender: "true")
-            }
-   
-        }, withCancel: nil)
+                
+            }, withCancel: nil)
+        }
+        
         
         /*
         // Value changed
@@ -233,5 +240,97 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         present(alertController, animated: true, completion: nil)
         
     }
+    
+    // MARK: Edit table view
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
+            print("edit button tapped")
+            self.editButton(indexPath: indexPath)
+        }
+        edit.backgroundColor = editColor
+        
+        let delete = UITableViewRowAction(style: .normal, title: "Delete") { action, index in
+            print("delete button tapped")
+            self.deleteButton(indexPath: indexPath)
+        }
+        delete.backgroundColor = deleteColor
+        
+        return [delete, edit]
+    }
+    
+    func editButton(indexPath: IndexPath) {
+        let selectedUserInArray = users[(indexPath as NSIndexPath).row]
+        selectedUser = selectedUserInArray
+        
+        // Check if player created the tournament or not
+        if let id = selectedUser.createdByUserId {
+            if userCreatedUser(id: id) == true {
+                //selectedScoreCell = true
+                
+                // Perform segue to edit
+                performSegue(withIdentifier: identifiersSegue.AddUser.rawValue, sender: "selectedCell")
+            }
+        } else {
+            // Alert that edit is not possible because user did not create tournament
+            showAlertForUser(title: "Edit mode not possible", message: "You are not the creator of this user", dismissButton: "Cancel", okButton: "Ok", sender: "Edit", indexPath: indexPath)
+        }
+    }
+    
+    func showAlertForUser(title: String, message: String, dismissButton: String, okButton: String, sender: String, indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "\(title)", message: "\(message)", preferredStyle: .alert)
+        
+        let actionOk = UIAlertAction(title: okButton, style: .default, handler: { (action: UIAlertAction!) in
+            self.alertOkFunctionsForUser(sender: sender, indexPath: indexPath)
+            
+        })
+        alertController.addAction(actionOk)
+        
+        let actionCancel = UIAlertAction(title: dismissButton, style: .cancel, handler: { (action: UIAlertAction!) in
+            //self.alertDismissFunctions()
+            
+        })
+        alertController.addAction(actionCancel)
+        
+        present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    func alertOkFunctionsForUser(sender: String, indexPath: IndexPath) {
+        if sender == "Delete" {
+            // Delete the row from the data source
+            if let selectedId = users[indexPath.row].id {
+                if let id = checkSelectedIdPositionInUserData(id: selectedId) {
+                    users.remove(at: id)
+                    // FIXME: Delete/ set to false in database as well
+                    //deleteScoresConnectedToTournament(id: selectedId)
+                } else {
+                    print("Failing to delete..")
+                }
+                
+            }
+            
+            // This code saves the array whenever an item is deleted.
+            refreshData()
+        }
+    }
+    
+    func userCreatedUser(id: String) -> Bool {
+        var checked = false
+        if currentUser.id == id {
+            checked = true
+        }
+        return checked
+    }
+    
+    func deleteButton(indexPath: IndexPath) {
+        showAlertForUser(title: "Deleting", message: "Do you want to delete?", dismissButton: "Cancel", okButton: "Ok", sender: "Delete", indexPath: indexPath)
+        
+    }
+    
+
     
 }

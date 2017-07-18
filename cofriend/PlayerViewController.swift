@@ -168,25 +168,22 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     func addPercentToLabels() {
         if pointsWin != 0 || pointsTotal != 0 {
-            print(pointsWin)
-            print(pointsTotal)
-            percentWin = Double(pointsWin) / Double(pointsTotal)
-            print(percentWin)
+            percentWin = Double(pointsWin) / Double(pointsTotal) * 100
         }
         
         if pointsDraw != 0 || pointsTotal != 0 {
-            percentDraw = Double(pointsDraw) / Double(pointsTotal)
+            percentDraw = Double(pointsDraw) / Double(pointsTotal) * 100
 
         }
         
         if pointsLose != 0 || pointsTotal != 0 {
-            percentLose = Double(pointsLose) / Double(pointsTotal)
+            percentLose = Double(pointsLose) / Double(pointsTotal) * 100
 
         }
         
-        winPercentLabel.text = "\(percentWin) %"
-        drawPercentLabel.text = String(percentDraw) + " %"
-        losePercentLabel.text = String(percentLose) + " %"
+        winPercentLabel.text = String(format: "%.1f", percentWin) + " %"
+        drawPercentLabel.text = String(format: "%.1f", percentDraw) + " %"
+        losePercentLabel.text =  String(format: "%.1f", percentLose) + " %"
     }
     
     // MARK: Image Picker
@@ -228,6 +225,7 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         myImageView.image = image
         //playerImage.setImage(image, for: .normal)
+        saveImage()
         
         picker.dismiss(animated: true, completion: nil)
     }
@@ -236,5 +234,36 @@ class PlayerViewController: UIViewController, UIImagePickerControllerDelegate, U
         picker.dismiss(animated: true, completion: nil)
     }
     
+    func saveImage() {
+        //successfully authenticated user
+        let imageName = NSUUID().uuidString
+        
+        // Create folder profile_images
+        let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).jpg")
+        
+        // Selecting image, uploading using jpeg to minimize image size
+        if let profileImage = self.myImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
+            // Uploading image
+            storageRef.putData(uploadData, metadata: nil, completion: {
+                
+                (metadata, error) in
+                
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
+                    
+                    let ref = Database.database().reference()
+                    let usersReference = ref.child("Users/\(uid!)/profileImageUrl")
+                    usersReference.setValue(profileImageUrl)
+                    
+                }
+            })
+        }
+    }
+    
+
     
 }

@@ -33,8 +33,8 @@ class InsideTourVC: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        fetchScoreId()
-        //refreshData()
+        //fetchScoreId()
+        refreshData()
         //animateTable(tableView: myTableView)
         
     }
@@ -271,7 +271,6 @@ class InsideTourVC: UITableViewController {
             if selectedGame.id == each.gameId {
                 for eachPlayer in each.players! {
                     for eachP in gamePoints {
-                        let counter: Int = 0
                         if eachP.userId == eachPlayer.id {
                             
                         } else {
@@ -357,12 +356,20 @@ class InsideTourVC: UITableViewController {
         cell.friendScore.text = score.teamBPoints
         
         let font = UIFont(name: "Helvetica", size: 30.0)
+        let fontSmall = UIFont(name: "Helvetica", size: 20.0)
+
         
         let height = checkPoints(a: cell.playerScore.text!, b: cell.friendScore.text!)
         if height == true {
             cell.playerScore.font = font
         } else {
             cell.friendScore.font = font
+        }
+        
+        // Draw will have same size
+        if cell.playerScore.text! == cell.playerScore.text! {
+            cell.playerScore.font = fontSmall
+            cell.friendScore.font = fontSmall
         }
 
         for each in teamAArray {

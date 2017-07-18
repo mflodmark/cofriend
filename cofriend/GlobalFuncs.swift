@@ -58,12 +58,13 @@ func checkSelectedIdPositionInUserData(id: String) -> Int? {
     return checked
 }
 
-func checkSelectedIdPositionInPlayer(id: String) -> Int? {
+
+func checkSelectedIdPositionInUserArray(id: String, array: [UserClass]) -> Int? {
     // starter value
     print("PlayerData")
     var checked: Int = 0
     var counter: Int = 0
-    for user in playerArray {
+    for user in array {
         print("UserId -----> \(String(describing: user.id)) ")
         if id == user.id {
             // Selected user
@@ -145,25 +146,28 @@ func fetchFriends() {
     users.removeAll()
     
     // Value added
-    databaseRef.child("Users/\(uid!)/Friends").queryOrderedByKey().observeSingleEvent(of: .value, with: {
-        
-        (snapshot) in
-        
-        print(snapshot)
-        
-        // Fetch friends
-        if let dict = snapshot.value as? [String: AnyObject] {
-            for each in dict {
-                if each.value as? Bool == true {
-                    fetchUser(userId: each.key, sender: "true")
+    if let usersId = uid {
+        databaseRef.child("Users/\(usersId)/Friends").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+            
+            (snapshot) in
+            
+            print(snapshot)
+            
+            // Fetch friends
+            if let dict = snapshot.value as? [String: AnyObject] {
+                for each in dict {
+                    if each.value as? Bool == true {
+                        fetchUser(userId: each.key, sender: "true")
+                    }
                 }
+                
             }
+            
+            
+            
+        }, withCancel: nil)
+    }
 
-        }
-        
-
-        
-    }, withCancel: nil)
 }
 
 func fetchUser(userId: String, sender: String) {
@@ -189,6 +193,53 @@ func fetchUser(userId: String, sender: String) {
         
     }, withCancel: nil)
 }
+
+func fetchPoints() {
+    points.removeAll()
+    
+    var databaseRef: DatabaseReference!
+    databaseRef = Database.database().reference()
+    
+    databaseRef.child("Points/Games").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+        
+        (snapshot) in
+        print(snapshot)
+        
+        // Fetch points
+        var snapArray: [String] = []
+        snapArray.append(snapshot.key)
+        
+        for each in snapArray {
+            fetchPointsForEach(id: each)
+        }
+    }, withCancel: nil)
+}
+
+func fetchPointsForEach(id: String) {
+    var databaseRef: DatabaseReference!
+    databaseRef = Database.database().reference()
+    
+    databaseRef.child("Points/Games/\(id)").queryOrderedByKey().observeSingleEvent(of: .value, with: {
+        
+        (snapshot) in
+        print(snapshot)
+        
+        // Fetch user
+        if let dictionary = snapshot.value as? [String: AnyObject] {
+            let point = PointClass(dictionary: dictionary)
+            
+            // add game id
+            point.id = snapshot.key
+            point.gameId = id
+            
+            // add game to array
+            points.append(point)
+        }
+        
+    }, withCancel: nil)
+}
+
+
 
 
 
@@ -217,6 +268,16 @@ func refreshData(refreshController: UIRefreshControl, myTableView: UITableView) 
     refreshController.endRefreshing()
 }*/
 
+/*
+extension UITabBarController {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tabBar.items?.forEach({ (item) -> () in
+            item.image = item.selectedImage?.imageWithColor(UIColor.redColor()).imageWithRenderingMode(.AlwaysOriginal)
+        })
+    }
+}*/
 
 
 

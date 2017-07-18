@@ -133,7 +133,7 @@ class AddNewPlayerVC: UIViewController, UIImagePickerControllerDelegate, UINavig
                 
                 if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
                     
-                    let values = ["name": text, "email": "notAvailable", "profileImageUrl": profileImageUrl, "win": "0", "lose": "0", "draw": "0"] as [String : Any]
+                    let values = ["name": text, "email": "notAvailable", "profileImageUrl": profileImageUrl, "win": "0", "lose": "0", "draw": "0", "createdByUserId":uid!] as [String : Any]
                     
                     let ref = Database.database().reference()
                     let usersReference = ref.child("Users").childByAutoId()

@@ -17,6 +17,7 @@ var selectedPlayer = PlayerClass(tournamentId: "", players: [])
 var selectedGame = GameClass(dictionary: ["" : "" as AnyObject])
 var selectedScore = ScoreClass(dictionary: ["": "" as AnyObject])
 var selectedScorePlayer = ScorePlayerClass(gameId: nil, scoreId: nil, players: [])
+var selectedUser = UserClass(dictionary: ["":"" as AnyObject])
 var selectedTourCell: Bool = false
 var selectedGameCell: Bool = false
 var selectedScoreCell: Bool = false
@@ -59,6 +60,7 @@ enum identifiersSegue: String {
     case AddGame
     case AddScore
     case AddGoalscorers
+    case AddUser
 }
 
 enum identifiersCell: String {
@@ -72,6 +74,7 @@ enum identifiersCell: String {
     case TableCollCell
     case AddPlayerCell
     case CellToDetails
+    case StatisticsCell
 }
 
 enum identifiersStoryboard: String {
